@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 The Git route clones the repository before installing, so git and network access are required. The repository is public. The three routes are equivalent: npm name, Git URL, local directory or tgz.
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.7.1.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.7.2.tgz
 ```
 
 Copying `skills/digital-logic-lectern` into `~/.dsh/skills/` works too. Pick one route; installing twice makes the two copies of the same skill shadow each other. Restart the client afterwards.
@@ -59,7 +59,7 @@ The square button at the top right cycles follow-system, light, and dark; the ch
 
 **Study.** Chapters 1 to 7, plus a Verilog appendix and a glossary. The contents tree goes down to subsection level, the search box covers headings and body text, and every glossary row links to its subsection. The footer carries the textbook title, editors, publisher, edition, and the plugin version.
 
-**Quiz.** Pick a chapter, a mode, and a question count. Human-vs-AI mode adds a difficulty level:
+**Quiz.** Pick a chapter, a mode, and a question count, then press "开始自测" to start. Human-vs-AI mode adds a difficulty level:
 
 | Level | Base accuracy | Answer delay | Points per correct answer |
 | --- | --- | --- | --- |
@@ -67,11 +67,13 @@ The square button at the top right cycles follow-system, light, and dark; the ch
 | Normal | 80% | 2.5–4.2 s | 100 |
 | Hard | 93% | 1.7–2.8 s | 150 |
 
-Harder questions lower the AI's accuracy and shorten its delay a little further. Answer with the mouse or keys 1 to 4; Enter moves on.
+Harder questions lower the AI's accuracy and shorten its delay a little further. Clicking an option only selects it; press "确认答案" or Enter to grade the answer and show the explanation. Keys 1 to 4 select, and Enter moves on once the answer is revealed.
 
 The "搜题" (Ask) button at the top right of a question hands the stem and options to the `digital-logic-lectern` skill in the conversation: inside the DSH app it switches back to the current session and drops `/digital-logic-lectern` plus the question into the input box; when the page is opened in a plain browser it copies the text instead.
 
-**Review.** Wrong answers are collected automatically and can be redone. Data stays in the browser's local storage.
+**Favorites.** The star at the top right of a question saves it; the star beside a chapter title saves the chapter. The favorites tab lists chapters and questions separately and can jump to a chapter, redo a question, or remove an entry.
+
+**Review.** Wrong answers are collected automatically and can be redone. Favorites and wrong answers stay in the browser's local storage.
 
 ## Command-line tools
 

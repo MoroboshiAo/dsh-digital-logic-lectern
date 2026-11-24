@@ -359,10 +359,26 @@
 		display: grid; place-items: center; background: var(--soft);
 		color: var(--muted); font-size: 13px; font-weight: 700;
 	}
+	.option.picked { border-color: var(--blue); background: var(--chip-active); }
+	.option.picked .key { background: var(--blue); color: #fff; }
 	.option.correct { border-color: var(--primary); background: var(--primary-soft); }
 	.option.correct .key { background: var(--primary); color: #fff; }
 	.option.wrong { border-color: var(--bad); background: var(--option-wrong); }
 	.option.wrong .key { background: var(--bad); color: #fff; }
+	.submit-row { display: flex; justify-content: flex-end; margin-top: 16px; }
+	.submit-row[hidden] { display: none; }
+
+	.chapter-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+	.chapter-head h1 { margin: 0; }
+	.fav {
+		width: 32px; height: 32px; flex: 0 0 auto; display: grid; place-items: center;
+		padding: 0; border: 1px solid var(--line); border-radius: 9px;
+		background: var(--card); color: var(--muted); cursor: pointer;
+	}
+	.fav:hover { color: var(--warn); border-color: var(--hover-line); }
+	.fav svg { width: 16px; height: 16px; }
+	.fav.on { color: var(--warn); border-color: var(--warn); background: var(--soft); }
+	.fav.on svg { fill: currentColor; }
 
 	.feedback { margin-top: 18px; padding: 16px; border-radius: 12px; border: 2px solid var(--line); background: var(--soft-bg); font-size: 14px; line-height: 1.8; animation: rise 0.2s ease; }
 	.feedback.ok { border-color: var(--ok-border); background: var(--ok-bg); }
@@ -404,6 +420,17 @@
 	.wrong-card .line .yours { color: var(--bad); }
 	.wrong-card .foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; gap: 10px; }
 	.wrong-card .count { font-size: 12px; color: var(--gold); }
+	.foot-actions { display: flex; align-items: center; gap: 6px; }
+	.fav-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 4px 0 18px; }
+	.fav-head h2 { font-size: 18px; margin: 0; display: flex; align-items: center; }
+	.fav-head .count { font-size: 12px; color: var(--muted); margin-left: 8px; }
+	.fav-group { margin-bottom: 24px; }
+	.fav-group h3 { font-size: 13px; color: var(--muted); font-weight: 600; margin: 0 0 10px; }
+	.fav-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; }
+	.fav-open { flex: 1; text-align: left; border: none; background: transparent; color: var(--text); font: inherit; font-size: 14px; cursor: pointer; padding: 0; }
+	.fav-open:hover { color: var(--link); }
+	.fav-list { display: grid; gap: 10px; }
+	.fav-list .qfig { max-width: 380px; }
 
 	.empty { text-align: center; padding: 56px 24px; }
 	.empty p { margin: 0 0 18px; color: var(--muted); font-size: 14px; line-height: 1.8; }
@@ -461,6 +488,7 @@
 			<button class="tab" data-tab="learn"></button>
 			<button class="tab" data-tab="quiz"></button>
 			<button class="tab" data-tab="wrong"></button>
+			<button class="tab" data-tab="fav"></button>
 		</div>
 		<button class="themebtn" id="themeToggle" type="button"></button>
 	</div>
@@ -485,7 +513,8 @@
 	var app = document.getElementById("app");
 	var footer = document.getElementById("footer");
 	var STORAGE_KEY = "dl-wrong-book-v1";
-	var APP_VERSION = "0.7.1";
+	var FAV_KEY = "dl-favorites-v1";
+	var APP_VERSION = "0.7.2";
 
 	var MODULES = {
 		M1: "数制与编码", M2: "逻辑代数", M3: "组合逻辑", M4: "时序逻辑",
@@ -518,7 +547,8 @@
 		trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M10 17h4M9 21h6"/>',
 		sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/>',
 		moon: '<path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8z"/>',
-		ask: '<circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/>'
+		ask: '<circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/>',
+		star: '<path d="m12 3.6 2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.6 9.7l5.8-.8z"/>'
 	};
 
 	function icon(name) {
@@ -586,7 +616,8 @@
 	var TABS = [
 		{ id: "learn", label: "学习", icon: "learn" },
 		{ id: "quiz", label: "自测", icon: "quiz" },
-		{ id: "wrong", label: "错题本", icon: "wrong" }
+		{ id: "wrong", label: "错题本", icon: "wrong" },
+		{ id: "fav", label: "收藏", icon: "star" }
 	];
 
 	var state = {
@@ -595,6 +626,7 @@
 		quizChapter: "all",
 		quizMode: "solo",
 		quizLevel: 2,
+		quizCount: 10,
 		quiz: null,
 		search: "",
 		openSubs: {}
@@ -645,9 +677,63 @@
 		saveWrong(loadWrong().filter(function (entry) { return entry.id !== id; }));
 	}
 
+	/* ---------- 收藏夹存储 ---------- */
+
+	function loadFavorites() {
+		try {
+			var raw = localStorage.getItem(FAV_KEY);
+			var list = raw === null ? [] : JSON.parse(raw);
+			return Array.isArray(list) ? list : [];
+		} catch (error) {
+			return [];
+		}
+	}
+
+	function saveFavorites(list) {
+		try { localStorage.setItem(FAV_KEY, JSON.stringify(list)); } catch (error) { /* 隐私模式忽略 */ }
+	}
+
+	function isFavorite(kind, id) {
+		return loadFavorites().some(function (item) { return item.kind === kind && item.id === id; });
+	}
+
+	function toggleFavorite(entry) {
+		var list = loadFavorites();
+		var at = list.findIndex(function (item) { return item.kind === entry.kind && item.id === entry.id; });
+		if (at >= 0) list.splice(at, 1);
+		else list.unshift(entry);
+		saveFavorites(list);
+		updateBadge();
+		return at < 0;
+	}
+
+	function toggleFavoriteQuestion(question) {
+		return toggleFavorite({
+			kind: "question",
+			id: question.id,
+			module: question.module,
+			difficulty: question.difficulty,
+			stem: question.stem,
+			options: question.options,
+			answer: question.answer,
+			explain: question.explain,
+			image: question.image,
+			imageAlt: question.imageAlt,
+			at: Date.now()
+		});
+	}
+
+	function toggleFavoriteChapter(chapter) {
+		return toggleFavorite({ kind: "chapter", id: chapter.id, title: chapter.title, at: Date.now() });
+	}
+
 	function updateBadge() {
-		var count = loadWrong().length;
-		var badge = document.getElementById("wrongBadge");
+		setBadge("wrongBadge", loadWrong().length);
+		setBadge("favBadge", loadFavorites().length);
+	}
+
+	function setBadge(id, count) {
+		var badge = document.getElementById(id);
 		if (badge === null) return;
 		badge.textContent = String(count);
 		badge.hidden = count === 0;
@@ -706,6 +792,7 @@
 		renderFooter();
 		if (state.tab === "learn") renderLearn();
 		else if (state.tab === "quiz") renderQuizTab();
+		else if (state.tab === "fav") renderFav();
 		else renderWrong();
 	}
 
@@ -853,7 +940,9 @@
 
 		main.innerHTML = '<div class="layout">'
 			+ '<aside class="panel toc" id="toc"></aside>'
-			+ '<article class="panel reader"><h1>' + esc(chapter.title) + '</h1>'
+			+ '<article class="panel reader"><div class="chapter-head"><h1>' + esc(chapter.title) + '</h1>'
+			+ '<button type="button" class="fav' + (isFavorite("chapter", chapter.id) ? " on" : "") + '" id="favChapter"'
+			+ ' aria-label="收藏本章" aria-pressed="' + isFavorite("chapter", chapter.id) + '">' + icon("star") + '</button></div>'
 			+ body
 			+ '<div class="chapter-actions">' + quizButton
 			+ '<button class="btn ghost" id="learnWrong">' + icon("wrong") + '看错题本</button></div>'
@@ -861,6 +950,12 @@
 
 		renderToc();
 
+		var favChapter = document.getElementById("favChapter");
+		favChapter.addEventListener("click", function () {
+			var on = toggleFavoriteChapter(chapter);
+			favChapter.classList.toggle("on", on);
+			favChapter.setAttribute("aria-pressed", String(on));
+		});
 		document.getElementById("learnWrong").addEventListener("click", function () { setTab("wrong"); });
 		var quizButtonNode = document.getElementById("learnQuiz");
 		if (quizButtonNode !== null) {
@@ -1008,7 +1103,8 @@
 			+ '<div class="field"><label>题数' + info("从选中章节的题库随机抽取，计算题答案在生成时已由脚本复核。") + '</label><div class="chips">'
 			+ [5, 10, 20].map(function (count) {
 				var disabled = pool.length < count ? " disabled" : "";
-				return '<button class="chip" data-count="' + count + '"' + disabled + '>' + count + ' 题</button>';
+				var active = state.quizCount === count ? " active" : "";
+				return '<button class="chip' + active + '" data-count="' + count + '"' + disabled + '>' + count + ' 题</button>';
 			}).join("")
 			+ '</div></div>'
 			+ '<button class="btn primary" id="startQuiz">' + icon("play") + '开始自测</button>'
@@ -1035,11 +1131,12 @@
 		app.querySelectorAll("[data-count]").forEach(function (button) {
 			button.addEventListener("click", function () {
 				if (button.disabled) return;
-				startQuiz(Number(button.getAttribute("data-count")));
+				state.quizCount = Number(button.getAttribute("data-count"));
+				renderQuizTab();
 			});
 		});
 		document.getElementById("startQuiz").addEventListener("click", function () {
-			startQuiz(Math.min(10, pool.length));
+			startQuiz(Math.min(state.quizCount, pool.length));
 		});
 	}
 
@@ -1073,6 +1170,7 @@
 		var question = currentQuestion();
 		if (question === undefined) { finishQuiz(); return; }
 		quiz.locked = false;
+		quiz.pick = null;
 
 		var options = question.options.map(function (text, index) {
 			return '<button class="option" data-index="' + index + '">'
@@ -1099,17 +1197,42 @@
 			+ '<div class="panel card">'
 			+ '<div class="qhead"><span class="tag">' + (MODULES[question.module] || question.module) + '</span>'
 			+ '<span class="stars">' + stars + '</span>'
-			+ '<button type="button" class="ask" id="askQuestion">' + icon("ask") + '<span>搜题</span></button></div>'
+			+ '<button type="button" class="ask" id="askQuestion">' + icon("ask") + '<span>搜题</span></button>'
+			+ '<button type="button" class="fav' + (isFavorite("question", question.id) ? " on" : "") + '" id="favQuestion"'
+			+ ' aria-label="收藏题目" aria-pressed="' + isFavorite("question", question.id) + '">' + icon("star") + '</button></div>'
 			+ '<p class="stem">' + esc(question.stem) + '</p>'
 			+ figure
-			+ '<div class="options">' + options + '</div><div id="feedback"></div></div>';
+			+ '<div class="options">' + options + '</div>'
+			+ '<div class="submit-row"><button class="btn primary" id="submitAnswer" disabled>' + icon("check") + '确认答案</button></div>'
+			+ '<div id="feedback"></div></div>';
 
 		app.querySelectorAll(".option").forEach(function (button) {
-			button.addEventListener("click", function () { answer(Number(button.getAttribute("data-index")), "player"); });
+			button.addEventListener("click", function () { selectOption(Number(button.getAttribute("data-index"))); });
+		});
+		document.getElementById("submitAnswer").addEventListener("click", function () {
+			if (state.quiz.pick !== null) answer(state.quiz.pick);
+		});
+		var favQuestion = document.getElementById("favQuestion");
+		favQuestion.addEventListener("click", function () {
+			var on = toggleFavoriteQuestion(question);
+			favQuestion.classList.toggle("on", on);
+			favQuestion.setAttribute("aria-pressed", String(on));
 		});
 		var askButton = document.getElementById("askQuestion");
 		if (askButton !== null) askButton.addEventListener("click", askQuestion);
 		if (quiz.mode === "versus") scheduleAI(question);
+	}
+
+	function selectOption(index) {
+		var quiz = state.quiz;
+		if (quiz === null || quiz.locked) return;
+		quiz.pick = index;
+		app.querySelectorAll(".option").forEach(function (button, at) {
+			button.classList.toggle("picked", at === index);
+			button.setAttribute("aria-pressed", String(at === index));
+		});
+		var submit = document.getElementById("submitAnswer");
+		if (submit !== null) submit.disabled = false;
 	}
 
 	/* ---------- 搜题：把题干交给对话里的数字逻辑技能 ---------- */
@@ -1222,9 +1345,16 @@
 		var question = currentQuestion();
 		app.querySelectorAll(".option").forEach(function (button, index) {
 			button.disabled = true;
+			button.classList.remove("picked");
 			if (index === question.answer) button.classList.add("correct");
 			if (index === chosen && !correct) button.classList.add("wrong");
 		});
+		var submit = document.getElementById("submitAnswer");
+		if (submit !== null) {
+			submit.disabled = true;
+			var row = submit.closest(".submit-row");
+			if (row !== null) row.hidden = true;
+		}
 	}
 
 	function showFeedback(correct, prefix, saved) {
@@ -1350,6 +1480,80 @@
 		});
 	}
 
+	/* ---------- 收藏 ---------- */
+
+	function renderFav() {
+		var list = loadFavorites();
+		if (list.length === 0) {
+			app.innerHTML = '<div class="panel empty"><p>还没有收藏。</p>'
+				+ '<button class="btn primary" id="favGoLearn">去学习</button></div>';
+			document.getElementById("favGoLearn").addEventListener("click", function () { setTab("learn"); });
+			return;
+		}
+
+		var chapters = list.filter(function (item) { return item.kind === "chapter"; });
+		var questions = list.filter(function (item) { return item.kind === "question"; });
+
+		var chapterHtml = chapters.length === 0 ? "" : '<div class="fav-group"><h3>章节</h3>'
+			+ chapters.map(function (item) {
+				return '<div class="fav-row"><button class="fav-open" data-fav-chapter="' + esc(item.id) + '">' + esc(item.title) + '</button>'
+					+ '<button class="iconbtn" data-fav-remove="chapter:' + esc(item.id) + '" title="取消收藏" aria-label="取消收藏章节">'
+					+ icon("trash") + '</button></div>';
+			}).join("") + '</div>';
+
+		var questionHtml = questions.length === 0 ? "" : '<div class="fav-group"><h3>题目</h3><div class="fav-list">'
+			+ questions.map(function (item) {
+				var image = item.image === undefined || item.image === null || item.image === ""
+					? ""
+					: '<img class="qfig" src="' + esc(item.image) + '" alt="' + esc(item.imageAlt || "题目配图") + '" loading="lazy">';
+				return '<div class="wrong-card"><p class="q">' + esc(item.stem) + '</p>' + image
+					+ '<div class="line">正确答案：<span class="right">' + esc(item.options[item.answer]) + '</span></div>'
+					+ '<div class="line">' + esc(item.explain) + '</div>'
+					+ '<div class="foot"><span class="count">' + (MODULES[item.module] || item.module) + '</span>'
+					+ '<div class="foot-actions"><button class="btn ghost" data-fav-redo="' + esc(item.id) + '">重做</button>'
+					+ '<button class="iconbtn" data-fav-remove="question:' + esc(item.id) + '" title="取消收藏" aria-label="取消收藏题目">'
+					+ icon("trash") + '</button></div></div></div>';
+			}).join("") + '</div></div>';
+
+		app.innerHTML = '<div class="fav-head"><h2>收藏夹 <span class="count">' + list.length + '</span>'
+			+ info("收藏只保存在本机浏览器。") + '</h2></div>' + chapterHtml + questionHtml;
+
+		app.querySelectorAll("[data-fav-chapter]").forEach(function (button) {
+			button.addEventListener("click", function () {
+				state.chapterId = button.getAttribute("data-fav-chapter");
+				state.search = "";
+				state.openSubs = {};
+				setTab("learn");
+			});
+		});
+		app.querySelectorAll("[data-fav-redo]").forEach(function (button) {
+			button.addEventListener("click", function () {
+				var id = button.getAttribute("data-fav-redo");
+				var item = loadFavorites().find(function (entry) { return entry.kind === "question" && entry.id === id; });
+				if (item === undefined) return;
+				state.quizChapter = "all";
+				state.quizMode = "solo";
+				state.quiz = null;
+				state.tab = "quiz";
+				startQuiz(1, [item]);
+				render();
+			});
+		});
+		app.querySelectorAll("[data-fav-remove]").forEach(function (button) {
+			button.addEventListener("click", function () {
+				var raw = button.getAttribute("data-fav-remove");
+				var cut = raw.indexOf(":");
+				var kind = raw.slice(0, cut);
+				var id = raw.slice(cut + 1);
+				saveFavorites(loadFavorites().filter(function (item) {
+					return !(item.kind === kind && item.id === id);
+				}));
+				renderFav();
+				updateBadge();
+			});
+		});
+	}
+
 	function stopTimers() {
 		clearTimeout(aiTimer);
 	}
@@ -1373,7 +1577,8 @@
 			var meta = TABS.find(function (item) { return item.id === button.getAttribute("data-tab"); });
 			if (meta === undefined) return;
 			var label = meta.label;
-			var extra = meta.id === "wrong" ? '<span class="badge" id="wrongBadge" hidden>0</span>' : "";
+			var badgeId = meta.id === "wrong" ? "wrongBadge" : meta.id === "fav" ? "favBadge" : "";
+			var extra = badgeId === "" ? "" : '<span class="badge" id="' + badgeId + '" hidden>0</span>';
 			button.innerHTML = icon(meta.icon) + '<span>' + label + '</span>' + extra;
 			button.setAttribute("aria-label", label);
 			button.addEventListener("click", function () { setTab(meta.id); });
@@ -1390,12 +1595,14 @@
 	document.addEventListener("keydown", function (event) {
 		if (state.tab !== "quiz" || state.quiz === null || state.quiz.done) return;
 		if (event.key >= "1" && event.key <= "4" && !state.quiz.locked) {
-			answer(Number(event.key) - 1);
+			selectOption(Number(event.key) - 1);
 			return;
 		}
 		if (event.key === "Enter") {
 			var next = document.getElementById("next");
-			if (next !== null) { event.preventDefault(); next.click(); }
+			if (next !== null) { event.preventDefault(); next.click(); return; }
+			var submit = document.getElementById("submitAnswer");
+			if (submit !== null && !submit.disabled) { event.preventDefault(); submit.click(); }
 		}
 	});
 
