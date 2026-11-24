@@ -17,15 +17,12 @@ const SKILL_ROOT = join(HERE, "..");
 const REF_DIR = join(SKILL_ROOT, "references");
 
 const CHAPTERS = [
-	{ id: "m1", module: "M1", file: "m1_number_code.md" },
-	{ id: "m2", module: "M2", file: "m2_boolean_algebra.md" },
-	{ id: "m3", module: "M3", file: "m3_combinational.md" },
-	{ id: "m4", module: "M4", file: "m4_sequential.md" },
-	{ id: "m5", module: "M5", file: "m5_memory.md" },
-	{ id: "m6", module: "M6", file: "m6_pld_fpga.md" },
-	{ id: "m7", module: "M7", file: "m7_controller.md" },
-	{ id: "m8", module: "M8", file: "m8_verilog.md" },
-	{ id: "glossary", module: "", file: "glossary.md" },
+	{ id: "c1", file: "textbook/ch1.md", modules: ["M1", "M2"], source: "《数字逻辑》（第七版）第一章 开关理论基础" },
+	{ id: "c2", file: "textbook/ch2.md", modules: ["M3"], source: "《数字逻辑》（第七版）第二章 组合逻辑" },
+	{ id: "c3", file: "textbook/ch3.md", modules: ["M4"], source: "《数字逻辑》（第七版）第三章 时序逻辑" },
+	{ id: "c4", file: "textbook/ch4.md", modules: ["M5"], source: "《数字逻辑》（第七版）第四章 存储逻辑" },
+	{ id: "c5", file: "textbook/ch5.md", modules: ["M6"], source: "《数字逻辑》（第七版）第五章 可编程逻辑" },
+	{ id: "glossary", file: "glossary.md", modules: [], source: "" },
 ];
 
 function escapeHtml(text) {
@@ -33,6 +30,10 @@ function escapeHtml(text) {
 		.replace(/&/g, "&amp;")
 		.replace(/</g, "&lt;")
 		.replace(/>/g, "&gt;");
+}
+
+function stripTags(html) {
+	return html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 }
 
 function inline(text) {
@@ -148,14 +149,16 @@ function parseChapter(config) {
 		.map((section) => ({ heading: section.heading, html: markdownToHtml(section.lines.join("\n")) }))
 		.filter((section) => section.html.trim() !== "");
 
-	const hookSection = cleaned.find((section) => section.heading.includes("钩子"));
+	const hookSection = cleaned.find((section) => section.heading.includes("钩子") || section.heading === "导语");
 	const hook = hookSection === undefined
-		? ""
-		: hookSection.html.replace(/<[^>]+>/g, "").trim();
+		? (cleaned[0] === undefined ? "" : stripTags(cleaned[0].html).slice(0, 60))
+		: stripTags(hookSection.html).slice(0, 60);
 
 	return {
 		id: config.id,
-		module: config.module,
+		module: config.modules.length > 0 ? config.modules[0] : "",
+		modules: config.modules,
+		source: config.source,
 		title,
 		hook,
 		sections: cleaned,
