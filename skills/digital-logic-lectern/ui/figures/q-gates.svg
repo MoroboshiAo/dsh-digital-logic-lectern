@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 150" role="img" aria-label="两个输入先经过与非门，再经过非门，输出为 F">
+	<g fill="#1c1f26" stroke="#58cc02" stroke-width="2.2">
+		<path d="M60 44h26a34 34 0 0 1 0 68H60z"/>
+		<circle cx="126" cy="78" r="6"/>
+		<path d="M168 54l42 24-42 24z"/>
+		<circle cx="216" cy="78" r="6"/>
+	</g>
+	<g fill="none" stroke="#8b93a1" stroke-width="2" stroke-linecap="round">
+		<path d="M26 60h34M26 96h34M132 78h32M222 78h34"/>
+	</g>
+	<g font-family="Segoe UI, Microsoft YaHei, sans-serif" fill="#9aa2b1" font-size="13">
+		<text x="8" y="64">A</text>
+		<text x="8" y="100">B</text>
+		<text x="262" y="82">F</text>
+	</g>
+</svg>

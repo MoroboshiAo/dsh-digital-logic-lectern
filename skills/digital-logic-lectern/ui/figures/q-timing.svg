@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 200" role="img" aria-label="某触发器的时钟、输入与输出波形，输出在时钟上升沿变化">
+	<g stroke="#2c313b" stroke-width="1" stroke-dasharray="4 5">
+		<path d="M70 32v140M180 32v140M290 32v140M400 32v140"/>
+	</g>
+	<g fill="none" stroke="#58cc02" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
+		<path d="M40 66h30v-24h80v24h80v-24h80v24h80v-24h50"/>
+		<path d="M40 126h70v-24h90v24h90v-24h70v24h70"/>
+		<path d="M40 176h110v-24h90v24h80v-24h80v24h30"/>
+	</g>
+	<g font-family="Segoe UI, Microsoft YaHei, sans-serif" fill="#9aa2b1" font-size="12" text-anchor="end">
+		<text x="34" y="54">CLK</text>
+		<text x="34" y="114">D</text>
+		<text x="34" y="164">Q</text>
+	</g>
+</svg>

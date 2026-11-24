@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 352" role="img" aria-label="十进制数字的 8421、2421、余三和格雷编码对照">
+	<rect x="20" y="16" width="520" height="320" rx="10" fill="none" stroke="#3a4250" stroke-width="1.6"/>
+	<g font-family="Segoe UI, Microsoft YaHei, sans-serif" text-anchor="middle">
+		<g fill="#58cc02" font-size="13" font-weight="600">
+			<text x="52" y="44">十进制</text>
+			<text x="148" y="44">8421 码</text>
+			<text x="252" y="44">2421 码</text>
+			<text x="356" y="44">余 3 码</text>
+			<text x="474" y="44">格雷码</text>
+		</g>
+		<g fill="#9aa2b1" font-size="13">
+			<text x="52" y="72">0</text><text x="148" y="72">0000</text><text x="252" y="72">0000</text><text x="356" y="72">0011</text><text x="474" y="72">0000</text>
+			<text x="52" y="98">1</text><text x="148" y="98">0001</text><text x="252" y="98">0001</text><text x="356" y="98">0100</text><text x="474" y="98">0001</text>
+			<text x="52" y="124">2</text><text x="148" y="124">0010</text><text x="252" y="124">0010</text><text x="356" y="124">0101</text><text x="474" y="124">0011</text>
+			<text x="52" y="150">3</text><text x="148" y="150">0011</text><text x="252" y="150">0011</text><text x="356" y="150">0110</text><text x="474" y="150">0010</text>
+			<text x="52" y="176">4</text><text x="148" y="176">0100</text><text x="252" y="176">0100</text><text x="356" y="176">0111</text><text x="474" y="176">0110</text>
+			<text x="52" y="202">5</text><text x="148" y="202">0101</text><text x="252" y="202">1011</text><text x="356" y="202">1000</text><text x="474" y="202">0111</text>
+			<text x="52" y="228">6</text><text x="148" y="228">0110</text><text x="252" y="228">1100</text><text x="356" y="228">1001</text><text x="474" y="228">0101</text>
+			<text x="52" y="254">7</text><text x="148" y="254">0111</text><text x="252" y="254">1101</text><text x="356" y="254">1010</text><text x="474" y="254">0100</text>
+			<text x="52" y="280">8</text><text x="148" y="280">1000</text><text x="252" y="280">1110</text><text x="356" y="280">1011</text><text x="474" y="280">1100</text>
+			<text x="52" y="306">9</text><text x="148" y="306">1001</text><text x="252" y="306">1111</text><text x="356" y="306">1100</text><text x="474" y="306">1101</text>
+		</g>
+	</g>
+	<g stroke="#2c313b" stroke-width="1">
+		<path d="M20 54h520M20 82h520M20 108h520M20 134h520M20 160h520M20 186h520M20 212h520M20 238h520M20 264h520M20 290h520"/>
+		<path d="M96 16v320M200 16v320M304 16v320M408 16v320"/>
+	</g>
+</svg>

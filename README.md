@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 Git 方式会克隆仓库再安装，需要本机有 git 与网络。仓库已公开，不需要凭据。三种写法等价：npm 包名、Git 地址、本地目录或 tgz。
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.5.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.6.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 复制到 `~/.dsh/skills/`。几种方式只选一种，重复安装会让同名技能互相遮蔽。安装后重启客户端。
@@ -95,7 +95,7 @@ skills/digital-logic-lectern/
 │   ├── dlquiz.js         生成题库并复核
 │   ├── dlbook.js         由 references 生成页面数据
 │   └── dlverify.js       调用 iverilog 跑仿真
-├── ui/                   三栏页面：index.html、book.js、questions.js、bupt-logo.png
+├── ui/                   三栏页面：index.html、book.js、questions.js 与 figures/ 插图
 └── examples/             计数器示例源码
 lib/index.js              插件入口：注册技能，提供网页静态路由
 lib/client.js             客户端入口：侧栏图标、主面板、插件行选项、斜杠命令
@@ -105,7 +105,11 @@ cordis.patch.yml          插件清单要求的补丁文件
 
 ## 题库
 
-80 题，覆盖八个模块。计算题由 `dlquiz.js` 随机生成，答案经 `dltool` 复核；概念题按教材习题范围与配套答案整理的考点手写，未逐题送教师审阅。数字逻辑的习题答案涉及大量图形与公式，本仓库不复刻原题图片，只保留可在终端复核的数值题与文字题。
+80 题，覆盖八个模块。计算题由 `dlquiz.js` 随机生成，答案经 `dltool` 复核；概念题按教材习题范围与配套答案整理的考点手写，未逐题送教师审阅。其中 4 道配图题附图作答，图在 `ui/figures/`。
+
+## 插图
+
+学习资料配 11 幅示意图，覆盖编码、门电路、卡诺图、数据选择器、触发器、时序、状态图、存储器、FPGA、ASM 图与 A/D 转换；题库另有 4 幅题目图。全部为仓库自绘 SVG，透明底、随主题适配深浅色，可缩放且随 MIT 许可分发，不复刻教材或配套答案中的原图。
 
 ## 限制
 
@@ -116,4 +120,4 @@ cordis.patch.yml          插件清单要求的补丁文件
 
 ## 许可
 
-MIT，作者刘柏铭（Liu Baiming）。《数字逻辑》（第七版，白中英、朱正东主编，科学出版社，2020 年）版权归出版社所有，本仓库只做术语与章节结构的对照。页面左上角北京邮电大学校徽归学校所有，仅作课程标识。
+MIT，作者刘柏铭（Liu Baiming）。《数字逻辑》（第七版，白中英、朱正东主编，科学出版社，2020 年）版权归出版社所有，本仓库只做术语与章节结构的对照。

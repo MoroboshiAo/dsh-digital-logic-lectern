@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300" role="img" aria-label="三状态时序机的状态转换图，使能信号为 1 时循环，为 0 时停在原状态">
+	<defs>
+		<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M0 0l10 5-10 5z" fill="#58cc02"/>
+		</marker>
+	</defs>
+	<g fill="none" stroke="#58cc02" stroke-width="2.2" marker-end="url(#arrow)">
+		<path d="M155 76h100"/>
+		<path d="M385 82q55 34 20 98"/>
+		<path d="M168 200q-62-34-24-96"/>
+		<path d="M95 48a24 24 0 1 1 44-8"/>
+	</g>
+	<g fill="#1c1f26" stroke="#58cc02" stroke-width="2.2">
+		<circle cx="112" cy="76" r="42"/>
+		<circle cx="352" cy="76" r="42"/>
+		<circle cx="230" cy="216" r="42"/>
+	</g>
+	<g fill="#e6e8ee" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="15" font-weight="600" text-anchor="middle">
+		<text x="112" y="82">S0</text>
+		<text x="352" y="82">S1</text>
+		<text x="230" y="222">S2</text>
+	</g>
+	<g fill="#9aa2b1" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="12" text-anchor="middle">
+		<text x="205" y="66">EN=1</text>
+		<text x="392" y="156">EN=1</text>
+		<text x="112" y="150">EN=1</text>
+		<text x="132" y="30">EN=0</text>
+		<text x="250" y="286">三个状态循环，模为 3</text>
+	</g>
+</svg>

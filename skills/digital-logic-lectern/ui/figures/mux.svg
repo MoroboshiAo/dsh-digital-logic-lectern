@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 280" role="img" aria-label="四选一数据选择器的输入、地址端与输出">
+	<g fill="#1c1f26" stroke="#58cc02" stroke-width="2.2" stroke-linejoin="round">
+		<path d="M150 46h226l-42 94 42 94H150z"/>
+	</g>
+	<g fill="none" stroke="#8b93a1" stroke-width="2" stroke-linecap="round">
+		<path d="M70 78h80M70 122h80M70 166h80M70 210h80"/>
+		<path d="M214 234v30M290 234v30"/>
+		<path d="M418 140h52"/>
+	</g>
+	<g font-family="Segoe UI, Microsoft YaHei, sans-serif" fill="#9aa2b1" font-size="13">
+		<text x="36" y="82">D0</text>
+		<text x="36" y="126">D1</text>
+		<text x="36" y="170">D2</text>
+		<text x="36" y="214">D3</text>
+		<text x="196" y="278">S1</text>
+		<text x="272" y="278">S0</text>
+		<text x="446" y="132">Y</text>
+	</g>
+	<g font-family="Segoe UI, Microsoft YaHei, sans-serif" text-anchor="middle">
+		<text x="264" y="132" fill="#e6e8ee" font-size="15" font-weight="600">四选一</text>
+		<text x="264" y="154" fill="#e6e8ee" font-size="15" font-weight="600">MUX</text>
+		<text x="250" y="258" fill="#9aa2b1" font-size="12">S1S0 选中一路送到 Y</text>
+	</g>
+</svg>

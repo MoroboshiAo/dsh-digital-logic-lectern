@@ -146,7 +146,8 @@
 		display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
 	}
 	.brand { display: flex; align-items: center; gap: 10px; }
-	.brand img { width: 34px; height: 34px; display: block; }
+	.brand .brandicon { width: 34px; height: 34px; display: block; color: var(--primary-dark); }
+	.brand .brandicon svg { width: 34px; height: 34px; }
 	h1 { font-size: 18px; margin: 0; font-weight: 700; letter-spacing: 0.2px; }
 
 	.themebtn {
@@ -241,6 +242,16 @@
 	}
 	.reader a { color: var(--link); text-decoration: none; border-bottom: 1px solid var(--link-line); }
 	.reader a:hover { border-bottom-color: var(--link); }
+	.reader figure { margin: 0 0 16px; }
+	.reader figure img {
+		display: block; width: 100%; height: auto;
+		border: 1px solid var(--line); border-radius: 12px; background: var(--card);
+	}
+	.reader figcaption { margin-top: 7px; color: var(--muted); font-size: 12.5px; line-height: 1.6; text-align: center; }
+	.qfig {
+		display: block; width: 100%; max-width: 420px; height: auto;
+		margin: 4px 0 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card);
+	}
 	.reader h2.flash, .reader h3.flash { animation: flash 1.6s ease; }
 
 	.table-wrap { overflow-x: auto; margin-bottom: 16px; }
@@ -424,7 +435,12 @@
 <div class="topbar-wrap">
 	<div class="header">
 		<div class="brand">
-			<img src="./bupt-logo.png" alt="北京邮电大学">
+			<span class="brandicon" role="img" aria-label="与门图标" title="与门图标">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M3 8.5h4M3 15.5h4M18 12h3"></path>
+					<path d="M7 5.5h4.5a6.5 6.5 0 0 1 0 13H7z"></path>
+				</svg>
+			</span>
 			<h1>数字逻辑辅助学习插件</h1>
 		</div>
 		<div class="tabs">
@@ -455,7 +471,7 @@
 	var app = document.getElementById("app");
 	var footer = document.getElementById("footer");
 	var STORAGE_KEY = "dl-wrong-book-v1";
-	var APP_VERSION = "0.6.5";
+	var APP_VERSION = "0.6.6";
 
 	var MODULES = {
 		M1: "数制与编码", M2: "逻辑代数", M3: "组合逻辑", M4: "时序逻辑",
@@ -1055,6 +1071,10 @@
 				+ '<div class="state" id="aistate">思考中</div><div class="state">AI <b>' + quiz.aiScore + '</b></div></div>'
 			: "";
 
+		var figure = question.image === undefined || question.image === null || question.image === ""
+			? ""
+			: '<img class="qfig" src="' + esc(question.image) + '" alt="' + esc(question.imageAlt || "题目配图") + '" loading="lazy">';
+
 		app.innerHTML = '<div class="quizbar">'
 			+ '<span class="chip active">' + (quiz.mode === "versus" ? "人机对战 · " + quiz.level.label : "单人闯关") + '</span>'
 			+ '<div class="stats"><div>' + icon("learn") + '<span>第 <b>' + (quiz.index + 1) + '</b> / ' + quiz.questions.length + '</span></div>'
@@ -1065,6 +1085,7 @@
 			+ '<div class="qhead"><span class="tag">' + (MODULES[question.module] || question.module) + '</span>'
 			+ '<span class="stars">' + stars + '</span></div>'
 			+ '<p class="stem">' + esc(question.stem) + '</p>'
+			+ figure
 			+ '<div class="options">' + options + '</div><div id="feedback"></div></div>';
 
 		app.querySelectorAll(".option").forEach(function (button) {

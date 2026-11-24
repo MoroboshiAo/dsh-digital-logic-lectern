@@ -95,6 +95,17 @@ function markdownToHtml(markdown) {
 			continue;
 		}
 
+		const image = line.trim().match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/);
+		if (image !== null) {
+			flushParagraph(buffer);
+			const alt = escapeHtml(image[1]);
+			const src = escapeHtml(image[2]).replace(/"/g, "&quot;");
+			const caption = alt === "" ? "" : `<figcaption>${alt}</figcaption>`;
+			out.push(`<figure><img src="${src}" alt="${alt}" loading="lazy">${caption}</figure>`);
+			index += 1;
+			continue;
+		}
+
 		const heading = line.match(/^(#{1,4})\s+(.*)$/);
 		if (heading !== null) {
 			flushParagraph(buffer);

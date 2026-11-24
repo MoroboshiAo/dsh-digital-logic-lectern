@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 210" role="img" aria-label="与门、或门、非门、与非门的符号与真值关系">
+	<g fill="none" stroke="#58cc02" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M46 52h34a48 48 0 0 1 0 96H46z"/>
+		<path d="M14 76h32M14 124h32M128 100h28"/>
+		<path d="M202 52q58 0 90 48-32 48-90 48 22-48 0-96z"/>
+		<path d="M170 76h34M170 124h34M292 100h26"/>
+		<path d="M356 60l54 40-54 40z"/>
+		<circle cx="422" cy="100" r="8"/>
+		<path d="M326 76h30M326 124h30M430 100h24"/>
+		<path d="M508 52h30a48 48 0 0 1 0 96h-30z"/>
+		<circle cx="596" cy="100" r="8"/>
+		<path d="M476 76h32M476 124h32M604 100h24"/>
+	</g>
+	<g fill="#8b93a1" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="13" text-anchor="middle">
+		<text x="80" y="192">与 F=AB</text>
+		<text x="246" y="192">或 F=A+B</text>
+		<text x="392" y="192">非 F=A′</text>
+		<text x="556" y="192">与非 F=(AB)′</text>
+		<text x="22" y="80">A</text>
+		<text x="22" y="128">B</text>
+		<text x="178" y="80">A</text>
+		<text x="178" y="128">B</text>
+		<text x="334" y="80">A</text>
+		<text x="484" y="80">A</text>
+		<text x="484" y="128">B</text>
+	</g>
+</svg>

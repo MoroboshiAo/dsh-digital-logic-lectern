@@ -70,11 +70,14 @@ assert.deepEqual(
 	routes.map((route) => route.path).sort(),
 	[
 		"/dsh-digital-logic-lectern/book.js",
-		"/dsh-digital-logic-lectern/bupt-logo.png",
+		"/dsh-digital-logic-lectern/figures/",
 		"/dsh-digital-logic-lectern/index.html",
 		"/dsh-digital-logic-lectern/questions.js",
 	]
 );
+assert.equal(routes.find((route) => route.path.endsWith("/figures/")).kind, "prefix", "figures 应按前缀匹配");
+assert.ok(existsSync(join(skill.resourceBase.path, "ui", "figures", "gates.svg")), "ui/figures 下应有插图");
+assert.ok(existsSync(join(skill.resourceBase.path, "ui", "figures", "q-kmap.svg")), "ui/figures 下应有题目配图");
 
 /* ---------- 客户端 ---------- */
 

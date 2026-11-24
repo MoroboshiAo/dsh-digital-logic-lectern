@@ -937,22 +937,76 @@ const CONCEPTS = [
 	},
 ];
 
-function conceptQuestions(random, used) {
-	if (used.length === 0) {
-		used.push(...random.shuffle(CONCEPTS.map((_, index) => index)));
+/* ---------- 图片题：配图放在 ui/figures/ 下 ---------- */
+
+const IMAGE_QUESTIONS = [
+	{
+		module: "M2", difficulty: 2,
+		stem: "输入 A、B 经图示门电路后，输出 F 的逻辑表达式是？",
+		correct: "AB",
+		wrong: ["A+B", "(AB)′", "A′B′"],
+		explain: "与非门先得到 (AB)′，再经非门取反，两次取反还原为 AB。",
+		image: "figures/q-gates.svg",
+		imageAlt: "A、B 先经过与非门，再经过非门，输出 F",
+	},
+	{
+		module: "M2", difficulty: 3,
+		stem: "图示三变量卡诺图在 m0、m1、m3、m7 处填 1，化简后的最简与或式是？",
+		correct: "A′B′ + BC",
+		wrong: ["A′B′ + AC", "A′C′ + BC", "A′B′ + B′C"],
+		explain: "m0 与 m1 相邻合并为 A′B′，m3 与 m7 相邻合并为 BC，共两个圈。",
+		image: "figures/q-kmap.svg",
+		imageAlt: "三变量卡诺图，最小项 0、1、3、7 处填 1",
+	},
+	{
+		module: "M4", difficulty: 2,
+		stem: "图示波形中，输出 Q 在什么时候跟随 D 更新？",
+		correct: "时钟上升沿",
+		wrong: ["时钟下降沿", "时钟高电平期间", "时钟低电平期间"],
+		explain: "边沿触发的 D 触发器只在 CLK 上升沿采样 D，其余时间保持原状态。",
+		image: "figures/q-timing.svg",
+		imageAlt: "CLK、D、Q 三条波形，Q 在时钟上升沿变化",
+	},
+	{
+		module: "M4", difficulty: 3,
+		stem: "图示 4 位二进制计数器初态为 0000，输入 20 个计数脉冲后，Q3Q2Q1Q0 是？",
+		correct: "0100",
+		wrong: ["1010", "0000", "1000"],
+		explain: "4 位计数器的模为 16，20 个脉冲后状态为 20 mod 16 = 4，即 0100。",
+		image: "figures/q-counter.svg",
+		imageAlt: "4 位二进制计数器，时钟与清零输入，输出 Q3 到 Q0",
+	},
+];
+
+/** 图片题固定占用的概念题槽位，保证默认 80 题里全部出现。 */
+const IMAGE_SLOTS = [1, 7, 15, 25];
+
+function conceptQuestions(random, state, slot) {
+	const imageIndex = IMAGE_SLOTS.indexOf(slot);
+	let item;
+	if (imageIndex !== -1) {
+		item = IMAGE_QUESTIONS[imageIndex];
+	} else {
+		if (state.pool.length === 0) {
+			state.pool = random.shuffle(CONCEPTS.map((_, index) => index));
+		}
+		item = CONCEPTS[state.pool.pop()];
 	}
-	const index = used.pop();
-	const item = CONCEPTS[index];
 	const { options, answer } = buildOptions(item.correct, item.wrong, random);
-	return {
+	const question = {
 		module: item.module,
-		type: "concept",
+		type: item.image === undefined ? "concept" : "figure",
 		difficulty: item.difficulty,
 		stem: item.stem,
 		options,
 		answer,
 		explain: item.explain,
 	};
+	if (item.image !== undefined) {
+		question.image = item.image;
+		question.imageAlt = item.imageAlt;
+	}
+	return question;
 }
 
 /* ---------- 组装 ---------- */
@@ -961,7 +1015,8 @@ function generateQuestions(count, seed) {
 	const random = makeRandom(seed);
 	const computed = [questionBase, questionTwosComplement, questionGray, questionBcd, questionHamming, questionHammingCheck, questionMinterms, questionKmap];
 	const questions = [];
-	const conceptPool = [];
+	const conceptState = { pool: [] };
+	let conceptSlot = 0;
 	const seenStems = new Set();
 
 	// 计算题与概念题交替出现，保证八个模块都有覆盖
@@ -970,8 +1025,9 @@ function generateQuestions(count, seed) {
 		guard += 1;
 		const index = questions.length;
 		if (index % 2 === 1) {
-			const candidate = conceptQuestions(random, conceptPool);
+			const candidate = conceptQuestions(random, conceptState, conceptSlot);
 			if (candidate && !seenStems.has(candidate.stem)) {
+				conceptSlot += 1;
 				seenStems.add(candidate.stem);
 				questions.push(candidate);
 			}
