@@ -1,4 +1,6 @@
-# dsh-digital-logic-lectern
+# 数字逻辑辅助学习插件
+
+npm 包名：`dsh-digital-logic-lectern`
 
 作者：刘柏铭（Liu Baiming）｜[English](README.en.md)
 
