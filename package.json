@@ -1,0 +1,32 @@
+{
+	"name": "dsh-digital-logic-lectern",
+	"version": "0.2.0",
+	"description": "数字逻辑课的讲解与练习插件：八模块讲解卡、确定性计算工具、iverilog 仿真、讲稿自检、带人机对战的答题网页。",
+	"type": "module",
+	"main": "lib/index.js",
+	"exports": {
+		".": "./lib/index.js",
+		"./cordis.patch.yml": "./cordis.patch.yml",
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"lib",
+		"skills",
+		"cordis.patch.yml",
+		"README.md",
+		"_selftest.mjs"
+	],
+	"engines": {
+		"node": ">=22"
+	},
+	"dsh": {
+		"manifestVersion": 1,
+		"bundle": {
+			"patch": "./cordis.patch.yml"
+		}
+	},
+	"peerDependencies": {
+		"@deepseek-ai/cordis": "~4.1.0"
+	},
+	"license": "MIT"
+}
