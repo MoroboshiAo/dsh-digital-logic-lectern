@@ -69,10 +69,10 @@ assert.equal(routes.length, 4, `应挂 4 个静态路由，实际 ${routes.lengt
 assert.deepEqual(
 	routes.map((route) => route.path).sort(),
 	[
-		"/plugins/digital-logic-lectern/book.js",
-		"/plugins/digital-logic-lectern/bupt-logo.png",
-		"/plugins/digital-logic-lectern/index.html",
-		"/plugins/digital-logic-lectern/questions.js",
+		"/dsh-digital-logic-lectern/book.js",
+		"/dsh-digital-logic-lectern/bupt-logo.png",
+		"/dsh-digital-logic-lectern/index.html",
+		"/dsh-digital-logic-lectern/questions.js",
 	]
 );
 
