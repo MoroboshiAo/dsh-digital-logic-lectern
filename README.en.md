@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 The Git route clones the repository before installing, so git and network access are required. The repository is public. The three routes are equivalent: npm name, Git URL, local directory or tgz.
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.6.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.7.tgz
 ```
 
 Copying `skills/digital-logic-lectern` into `~/.dsh/skills/` works too. Pick one route; installing twice makes the two copies of the same skill shadow each other. Restart the client afterwards.
