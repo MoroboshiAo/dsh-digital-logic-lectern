@@ -14,6 +14,12 @@
 
 ## 安装
 
+先拿到代码，仓库是私有的，需要先登录自己有权限的 GitHub 账号：
+
+```bash
+git clone https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
+```
+
 插件方式，在 DeepSeek Harness 的添加插件窗口里填这个目录的路径，或者填打好的 tgz：
 
 ```bash
