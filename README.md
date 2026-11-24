@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 Git 方式会克隆仓库再安装，需要本机有 git 与网络。仓库已公开，不需要凭据。三种写法等价：npm 包名、Git 地址、本地目录或 tgz。
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.7.2.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.7.3.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 复制到 `~/.dsh/skills/`。几种方式只选一种，重复安装会让同名技能互相遮蔽。安装后重启客户端。
@@ -55,7 +55,7 @@ start ui/index.html
 
 ## 页面
 
-右上角方形按钮循环切换跟随系统、浅色、深色，选择保存在本地。
+右上角方形按钮循环切换跟随系统、浅色、深色，选择保存在本地。顶部导航栏与左侧目录在滚动时保持固定；下滑一段后右下角出现圆形按钮，点击回到顶部。
 
 **学习。** 第一章到第七章，加 Verilog 附录与术语表。左侧目录可展开到小节（例如 1.1 → 1.1.1），搜索框同时搜标题与正文，术语表每一行都能跳到对应小节。页脚注明教材全名、主编、出版社、版次与版本号。
 

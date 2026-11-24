@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 The Git route clones the repository before installing, so git and network access are required. The repository is public. The three routes are equivalent: npm name, Git URL, local directory or tgz.
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.7.2.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.7.3.tgz
 ```
 
 Copying `skills/digital-logic-lectern` into `~/.dsh/skills/` works too. Pick one route; installing twice makes the two copies of the same skill shadow each other. Restart the client afterwards.
@@ -55,7 +55,7 @@ The repository already contains generated `ui/book.js` and `ui/questions.js`. Re
 
 ## The page
 
-The square button at the top right cycles follow-system, light, and dark; the choice is stored locally.
+The square button at the top right cycles follow-system, light, and dark; the choice is stored locally. The top bar and the left contents tree stay fixed while scrolling; after scrolling down, a round button at the bottom right returns to the top.
 
 **Study.** Chapters 1 to 7, plus a Verilog appendix and a glossary. The contents tree goes down to subsection level, the search box covers headings and body text, and every glossary row links to its subsection. The footer carries the textbook title, editors, publisher, edition, and the plugin version.
 

@@ -19,6 +19,7 @@
 <style>
 	:root {
 		color-scheme: light;
+		--topbar-h: 61px;
 		--bg: #f7f8fa;
 		--card: #ffffff;
 		--text: #1f2430;
@@ -126,6 +127,7 @@
 	body {
 		margin: 0;
 		min-height: 100vh;
+		padding-top: var(--topbar-h);
 		background: var(--bg);
 		color: var(--text);
 		font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
@@ -135,7 +137,7 @@
 	.shell { max-width: 1080px; margin: 0 auto; padding: 0 20px 40px; }
 
 	.topbar-wrap {
-		position: sticky; top: 0; z-index: 30;
+		position: fixed; top: 0; left: 0; right: 0; z-index: 30;
 		background: var(--topbar);
 		backdrop-filter: blur(8px);
 		border-bottom: 1px solid var(--line);
@@ -190,7 +192,7 @@
 
 	.panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
 
-	.toc { padding: 10px; position: sticky; top: 76px; max-height: calc(100vh - 96px); overflow: auto; }
+	.toc { padding: 10px; position: sticky; top: calc(var(--topbar-h) + 16px); max-height: calc(100vh - var(--topbar-h) - 32px); overflow: auto; }
 	.toc-chapter {
 		display: block; width: 100%; text-align: left; border: none; background: transparent;
 		color: var(--text); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
@@ -224,10 +226,10 @@
 	.reader h1 { font-size: 24px; margin: 0 0 20px; }
 	.reader h2 {
 		font-size: 18px; margin: 34px 0 12px; padding-top: 20px;
-		border-top: 1px solid var(--line); scroll-margin-top: 84px;
+		border-top: 1px solid var(--line); scroll-margin-top: calc(var(--topbar-h) + 20px);
 	}
 	.reader section:first-of-type h2 { border-top: none; padding-top: 0; margin-top: 0; }
-	.reader h3 { font-size: 15px; margin: 22px 0 8px; color: var(--heading); scroll-margin-top: 84px; }
+	.reader h3 { font-size: 15px; margin: 22px 0 8px; color: var(--heading); scroll-margin-top: calc(var(--topbar-h) + 20px); }
 	.reader .num { color: var(--muted); font-weight: 600; margin-right: 6px; font-variant-numeric: tabular-nums; }
 	.reader p { line-height: 1.9; margin: 0 0 12px; color: var(--body-text); }
 	.reader ul, .reader ol { margin: 0 0 14px; padding-left: 22px; line-height: 1.9; color: var(--body-text); }
@@ -455,6 +457,20 @@
 	}
 	.site-footer p { margin: 0 0 4px; }
 
+	.totop {
+		position: fixed; right: 24px; bottom: 24px; z-index: 40;
+		width: 46px; height: 46px; display: grid; place-items: center;
+		border: 1px solid var(--line); border-radius: 50%;
+		background: var(--card); color: var(--text); cursor: pointer;
+		box-shadow: 0 4px 14px var(--shadow-lg);
+		opacity: 0; visibility: hidden; transform: translateY(10px);
+		transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+	}
+	.totop.on { opacity: 1; visibility: visible; transform: none; }
+	.totop:hover { color: var(--primary-ink); border-color: var(--primary); }
+	.totop:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+	.totop svg { width: 20px; height: 20px; }
+
 	@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 	@keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 	@keyframes flash { 0% { background: var(--mark); } 100% { background: transparent; } }
@@ -469,6 +485,7 @@
 		.tabs { width: 100%; }
 		.tab { flex: 1; justify-content: center; padding: 8px 8px; }
 		.stats { gap: 12px; }
+		.totop { right: 16px; bottom: 16px; }
 	}
 </style>
 </head>
@@ -499,6 +516,8 @@
 	<footer class="site-footer" id="footer"></footer>
 </div>
 
+<button class="totop" id="toTop" type="button" aria-label="回到顶部"></button>
+
 <script src="./book.js"></script>
 <script src="./questions.js"></script>
 <script>
@@ -514,7 +533,7 @@
 	var footer = document.getElementById("footer");
 	var STORAGE_KEY = "dl-wrong-book-v1";
 	var FAV_KEY = "dl-favorites-v1";
-	var APP_VERSION = "0.7.2";
+	var APP_VERSION = "0.7.3";
 
 	var MODULES = {
 		M1: "数制与编码", M2: "逻辑代数", M3: "组合逻辑", M4: "时序逻辑",
@@ -548,7 +567,8 @@
 		sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/>',
 		moon: '<path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8z"/>',
 		ask: '<circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/>',
-		star: '<path d="m12 3.6 2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.6 9.7l5.8-.8z"/>'
+		star: '<path d="m12 3.6 2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.6 9.7l5.8-.8z"/>',
+		up: '<path d="M12 19V5"/><path d="m5.5 11.5 6.5-6.5 6.5 6.5"/>'
 	};
 
 	function icon(name) {
@@ -1605,6 +1625,36 @@
 			if (submit !== null && !submit.disabled) { event.preventDefault(); submit.click(); }
 		}
 	});
+
+	var toTop = document.getElementById("toTop");
+	var topbar = document.querySelector(".topbar-wrap");
+
+	function syncTopbarHeight() {
+		if (topbar === null) return;
+		document.documentElement.style.setProperty("--topbar-h", topbar.offsetHeight + "px");
+	}
+
+	function syncToTop() {
+		if (toTop === null) return;
+		toTop.classList.toggle("on", window.scrollY > 360);
+	}
+
+	if (toTop !== null) {
+		toTop.innerHTML = icon("up");
+		toTop.addEventListener("click", function () {
+			var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+			window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+		});
+	}
+	window.addEventListener("scroll", function () {
+		window.requestAnimationFrame(syncToTop);
+	}, { passive: true });
+	window.addEventListener("resize", syncTopbarHeight);
+	if (typeof ResizeObserver !== "undefined" && topbar !== null) {
+		new ResizeObserver(syncTopbarHeight).observe(topbar);
+	}
+	syncTopbarHeight();
+	syncToTop();
 
 	initTheme();
 	applyHostOptions();
