@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 Git 方式会克隆仓库再安装，需要本机有 git 与网络。仓库已公开，不需要凭据。三种写法等价：npm 包名、Git 地址、本地目录或 tgz。
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.7.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.7.0.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 复制到 `~/.dsh/skills/`。几种方式只选一种，重复安装会让同名技能互相遮蔽。安装后重启客户端。
@@ -69,6 +69,8 @@ start ui/index.html
 
 题目越难，AI 正确率越低、延迟越短。鼠标点选或按 1–4 作答，回车进入下一题。
 
+题干右上角的「搜题」把当前题目连选项交给对话里的 `digital-logic-lectern` 技能：在 DSH 应用内会切回当前会话并把 `/digital-logic-lectern` 与题干填进输入框，在浏览器里单独打开时改为复制题干。
+
 **错题本。** 答错自动收录，可重做、单条移除、整体清空。数据存在浏览器本地。
 
 ## 命令行工具
@@ -105,11 +107,11 @@ cordis.patch.yml          插件清单要求的补丁文件
 
 ## 题库
 
-80 题，覆盖八个模块。计算题由 `dlquiz.js` 随机生成，答案经 `dltool` 复核；概念题按教材习题范围与配套答案整理的考点手写，未逐题送教师审阅。其中 4 道配图题附图作答，图在 `ui/figures/`。
+80 题，覆盖八个模块。计算题由 `dlquiz.js` 随机生成，答案经 `dltool` 复核；概念题按教材习题范围与配套答案整理的考点手写，未逐题送教师审阅。其中 11 道配图题附图作答，图在 `ui/figures/`。
 
 ## 插图
 
-学习资料配 11 幅示意图，覆盖编码、门电路、卡诺图、数据选择器、触发器、时序、状态图、存储器、FPGA、ASM 图与 A/D 转换；题库另有 4 幅题目图。全部为仓库自绘 SVG，透明底、随主题适配深浅色，可缩放且随 MIT 许可分发，不复刻教材或配套答案中的原图。
+学习资料配 40 幅示意图，覆盖编码、门电路、布尔代数公式、卡诺图、设计流程、与非等价变换、数据选择器、译码器、加法器、锁存器与触发器、移位寄存器、计数器、状态图、存储器阵列、FLASH 结构、容量扩展、PLD/CPLD/FPGA、数据通路、微程序、控制器、采样量化、A/D 与 D/A 转换以及 Verilog 模块；题库另有 11 幅题目图。全部为仓库自绘 SVG，固定深色底板保证深浅色主题下文字都可读，构建时内联成 data URI，页面不依赖额外图片路由，不复刻教材或配套答案中的原图。
 
 ## 限制
 

@@ -330,6 +330,20 @@
 	.tag { font-size: 11px; padding: 4px 9px; border-radius: 7px; background: var(--tag-bg); color: var(--tag-text); font-weight: 600; }
 	.stars { color: var(--warn); font-size: 12px; letter-spacing: 2px; }
 	.stem { font-size: 19px; line-height: 1.75; margin: 0 0 20px; }
+	.ask {
+		margin-left: auto; display: inline-flex; align-items: center; gap: 6px;
+		padding: 6px 11px; border-radius: 9px; border: 1px solid var(--line);
+		background: var(--card); color: var(--muted); font: inherit; font-size: 12.5px;
+		cursor: pointer;
+	}
+	.ask:hover { border-color: var(--hover-line); color: var(--text); }
+	.ask svg { width: 14px; height: 14px; }
+	.toast {
+		position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+		padding: 10px 16px; border-radius: 10px; background: var(--text);
+		color: var(--bg); font-size: 13px; box-shadow: 0 8px 24px var(--shadow-lg);
+		pointer-events: none; z-index: 40;
+	}
 
 	.options { display: grid; gap: 10px; }
 	.option {
@@ -471,7 +485,7 @@
 	var app = document.getElementById("app");
 	var footer = document.getElementById("footer");
 	var STORAGE_KEY = "dl-wrong-book-v1";
-	var APP_VERSION = "0.6.7";
+	var APP_VERSION = "0.7.0";
 
 	var MODULES = {
 		M1: "数制与编码", M2: "逻辑代数", M3: "组合逻辑", M4: "时序逻辑",
@@ -503,7 +517,8 @@
 		save: '<path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h6V4M8 20v-6h8v6"/>',
 		trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M10 17h4M9 21h6"/>',
 		sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/>',
-		moon: '<path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8z"/>'
+		moon: '<path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8z"/>',
+		ask: '<circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/>'
 	};
 
 	function icon(name) {
@@ -1083,7 +1098,8 @@
 			+ aiPanel
 			+ '<div class="panel card">'
 			+ '<div class="qhead"><span class="tag">' + (MODULES[question.module] || question.module) + '</span>'
-			+ '<span class="stars">' + stars + '</span></div>'
+			+ '<span class="stars">' + stars + '</span>'
+			+ '<button type="button" class="ask" id="askQuestion">' + icon("ask") + '<span>搜题</span></button></div>'
 			+ '<p class="stem">' + esc(question.stem) + '</p>'
 			+ figure
 			+ '<div class="options">' + options + '</div><div id="feedback"></div></div>';
@@ -1091,7 +1107,56 @@
 		app.querySelectorAll(".option").forEach(function (button) {
 			button.addEventListener("click", function () { answer(Number(button.getAttribute("data-index")), "player"); });
 		});
+		var askButton = document.getElementById("askQuestion");
+		if (askButton !== null) askButton.addEventListener("click", askQuestion);
 		if (quiz.mode === "versus") scheduleAI(question);
+	}
+
+	/* ---------- 搜题：把题干交给对话里的数字逻辑技能 ---------- */
+
+	function showToast(text) {
+		var toast = document.createElement("div");
+		toast.className = "toast";
+		toast.textContent = text;
+		document.body.appendChild(toast);
+		setTimeout(function () { toast.remove(); }, 2400);
+	}
+
+	function copyPlain(text) {
+		var area = document.createElement("textarea");
+		area.value = text;
+		area.setAttribute("readonly", "");
+		area.style.position = "fixed";
+		area.style.opacity = "0";
+		document.body.appendChild(area);
+		area.select();
+		var ok = false;
+		try { ok = document.execCommand("copy"); } catch (error) { ok = false; }
+		area.remove();
+		return ok;
+	}
+
+	function askText(question) {
+		var parts = ["/digital-logic-lectern 请讲解这道题：", question.stem];
+		question.options.forEach(function (text, index) { parts.push("ABCD"[index] + "．" + text); });
+		if (question.imageAlt) parts.push("配图说明：" + question.imageAlt);
+		return parts.join("\n");
+	}
+
+	function askQuestion() {
+		var question = currentQuestion();
+		if (question === undefined) return;
+		var text = askText(question);
+		var host = null;
+		try { host = window.parent !== window ? window.parent : null; } catch (error) { host = null; }
+		if (host !== null && typeof host.__DLL_ASK__ === "function") {
+			try {
+				if (host.__DLL_ASK__(text)) return;
+			} catch (error) {
+				// 宿主拒绝时退回复制。
+			}
+		}
+		showToast(copyPlain(text) ? "题干已复制，粘贴到对话框即可" : "复制失败，请手动选中题干");
 	}
 
 	function scheduleAI(question) {

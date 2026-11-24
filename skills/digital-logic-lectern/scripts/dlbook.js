@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SKILL_ROOT = join(HERE, "..");
 const REF_DIR = join(SKILL_ROOT, "references");
+const UI_DIR = join(SKILL_ROOT, "ui");
 
 const SOURCE = {
 	title: "《数字逻辑》（第七版）",
@@ -46,6 +47,17 @@ function escapeHtml(text) {
 
 function stripTags(html) {
 	return html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+}
+
+/** 插图直接内联成 data URI，页面不再依赖静态路由，离线也能显示。 */
+function figureSource(relativePath) {
+	const file = join(UI_DIR, relativePath);
+	if (!existsSync(file)) {
+		console.warn(`插图缺失：${relativePath}`);
+		return relativePath;
+	}
+	const svg = readFileSync(file).toString("base64");
+	return `data:image/svg+xml;base64,${svg}`;
 }
 
 function inline(text) {
@@ -99,7 +111,7 @@ function markdownToHtml(markdown) {
 		if (image !== null) {
 			flushParagraph(buffer);
 			const alt = escapeHtml(image[1]);
-			const src = escapeHtml(image[2]).replace(/"/g, "&quot;");
+			const src = figureSource(image[2]);
 			const caption = alt === "" ? "" : `<figcaption>${alt}</figcaption>`;
 			out.push(`<figure><img src="${src}" alt="${alt}" loading="lazy">${caption}</figure>`);
 			index += 1;

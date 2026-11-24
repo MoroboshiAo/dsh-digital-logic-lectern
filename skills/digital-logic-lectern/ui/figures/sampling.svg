@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-label="模拟信号经采样和量化变成阶梯波形">
+<style>
+.s{fill:none;stroke:#58cc02;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.t{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px}
+.b{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;font-weight:600}
+.m{fill:#9aa2b1;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:12.5px}
+.g{fill:none;stroke:#3a4250;stroke-width:1.2}
+.d{fill:none;stroke:#3a4250;stroke-width:1.2;stroke-dasharray:5 5}
+.box{fill:#1b2029;stroke:#3a4250;stroke-width:1.5}
+.code{fill:#e6e8ee;font-family:"Consolas","Courier New",monospace;font-size:13px}
+</style>
+<rect width="100%" height="100%" fill="#141821"/>
+<text x="24" y="28" class="b">采样与量化</text>
+<line x1="60" y1="250" x2="590" y2="250" class="g"/>
+<line x1="60" y1="250" x2="60" y2="60" class="g"/>
+<line x1="60" y1="220" x2="590" y2="220" class="d"/>
+<line x1="60" y1="190" x2="590" y2="190" class="d"/>
+<line x1="60" y1="160" x2="590" y2="160" class="d"/>
+<line x1="60" y1="130" x2="590" y2="130" class="d"/>
+<line x1="60" y1="100" x2="590" y2="100" class="d"/>
+<path d="M60 200 C120 120 180 230 240 150 C300 80 360 210 420 120 C480 60 540 160 590 90" fill="none" stroke="#9aa2b1" stroke-width="1.6" stroke-dasharray="4 4"/>
+<path d="M60 220 H130 V190 H210 V160 H290 V190 H370 V130 H450 V160 H530 V100 H590" class="s"/>
+<circle cx="170" cy="190" r="5" fill="#58cc02"/>
+<circle cx="250" cy="160" r="5" fill="#58cc02"/>
+<circle cx="330" cy="190" r="5" fill="#58cc02"/>
+<circle cx="410" cy="130" r="5" fill="#58cc02"/>
+<circle cx="490" cy="160" r="5" fill="#58cc02"/>
+<circle cx="570" cy="100" r="5" fill="#58cc02"/>
+<text x="54" y="224" class="m" text-anchor="end">000</text>
+<text x="54" y="194" class="m" text-anchor="end">001</text>
+<text x="54" y="164" class="m" text-anchor="end">010</text>
+<text x="54" y="134" class="m" text-anchor="end">011</text>
+<text x="54" y="104" class="m" text-anchor="end">100</text>
+<text x="596" y="272" class="m">t</text>
+<text x="44" y="68" class="m">u</text>
+<text x="60" y="288" class="m">虚线：模拟输入</text>
+<text x="266" y="288" class="m">阶梯：量化值</text>
+<text x="452" y="288" class="m">圆点：采样时刻</text>
+</svg>

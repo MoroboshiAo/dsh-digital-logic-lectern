@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 280" role="img" aria-label="十六进制与十进制、十进制与二进制之间的换算步骤">
+<style>
+.s{fill:none;stroke:#58cc02;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.t{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px}
+.b{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;font-weight:600}
+.m{fill:#9aa2b1;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:12.5px}
+.g{fill:none;stroke:#3a4250;stroke-width:1.2}
+.d{fill:none;stroke:#3a4250;stroke-width:1.2;stroke-dasharray:5 5}
+.box{fill:#1b2029;stroke:#3a4250;stroke-width:1.5}
+.code{fill:#e6e8ee;font-family:"Consolas","Courier New",monospace;font-size:13px}
+</style>
+<rect width="100%" height="100%" fill="#141821"/>
+<text x="24" y="28" class="b">数制换算的两条路径</text>
+<text x="24" y="66" class="m">按权展开：十六进制 → 十进制</text>
+<text x="24" y="98" class="t">2AF(16) = 2×16² + 10×16 + 15</text>
+<text x="24" y="124" class="t">= 512 + 160 + 15</text>
+<text x="24" y="150" class="t">= 687</text>
+<line x1="320" y1="56" x2="320" y2="252" class="g"/>
+<text x="344" y="66" class="m">除基取余：十进制 → 二进制</text>
+<text x="344" y="98" class="t">687 ÷ 2 = 343 余 1</text>
+<text x="344" y="122" class="t">343 ÷ 2 = 171 余 1</text>
+<text x="344" y="146" class="t">171 ÷ 2 = 85 余 1</text>
+<text x="344" y="170" class="t">85 ÷ 2 = 42 余 1</text>
+<text x="344" y="202" class="t">余数自下而上读：1010101111₂</text>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 220" role="img" aria-label="四位右移寄存器初态 1011，串行输入 0">
+<style>
+.s{fill:none;stroke:#58cc02;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.t{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px}
+.b{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;font-weight:600}
+.m{fill:#9aa2b1;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:12.5px}
+.g{fill:none;stroke:#3a4250;stroke-width:1.2}
+.box{fill:#1b2029;stroke:#3a4250;stroke-width:1.5}
+.hl{fill:none;stroke:#58cc02;stroke-width:2;stroke-dasharray:6 4}
+</style>
+<rect width="100%" height="100%" fill="#141821"/>
+<text x="24" y="28" class="b">题图：右移寄存器</text>
+<rect x="90" y="70" width="70" height="55" rx="6" class="box"/><text x="125" y="103" class="m" text-anchor="middle">Q3</text><rect x="190" y="70" width="70" height="55" rx="6" class="box"/><text x="225" y="103" class="m" text-anchor="middle">Q2</text><rect x="290" y="70" width="70" height="55" rx="6" class="box"/><text x="325" y="103" class="m" text-anchor="middle">Q1</text><rect x="390" y="70" width="70" height="55" rx="6" class="box"/><text x="425" y="103" class="m" text-anchor="middle">Q0</text>
+<text x="125" y="155" class="b" text-anchor="middle">1</text><text x="225" y="155" class="b" text-anchor="middle">0</text><text x="325" y="155" class="b" text-anchor="middle">1</text><text x="425" y="155" class="b" text-anchor="middle">1</text>
+<text x="30" y="103" class="t">0</text><line x1="48" y1="98" x2="90" y2="98" class="s"/>
+<line x1="160" y1="98" x2="190" y2="98" class="s"/><path d="M190 98 l-6 -3 v6 z" fill="#58cc02"/><line x1="260" y1="98" x2="290" y2="98" class="s"/><path d="M290 98 l-6 -3 v6 z" fill="#58cc02"/><line x1="360" y1="98" x2="390" y2="98" class="s"/><path d="M390 98 l-6 -3 v6 z" fill="#58cc02"/>
+<text x="30" y="196" class="m">时钟到来后各位如何变化？</text>
+</svg>

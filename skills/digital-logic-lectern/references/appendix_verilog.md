@@ -7,6 +7,9 @@
 - 端口方向分 input、output、inout，位宽不写时按 1 位处理。
 - 例化模块时按名字连接比按位置连接可靠，改端口顺序不会接错。
 - 一个设计可以拆成多个模块，顶层只负责连线。
+
+![一个 Verilog 模块的结构](figures/verilog-module.svg)
+
 易错：output 在模块内部要声明为 wire 或 reg，漏写会在综合时报错。
 
 ## A.2 组合逻辑建模

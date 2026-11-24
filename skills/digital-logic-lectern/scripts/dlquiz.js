@@ -9,13 +9,24 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SKILL_ROOT = join(HERE, "..");
 const DLTOOL = join(HERE, "dltool.js");
+const UI_DIR = join(SKILL_ROOT, "ui");
+
+/** 题目配图内联成 data URI，页面不再依赖静态路由。 */
+function figureSource(relativePath) {
+	const file = join(UI_DIR, relativePath);
+	if (!existsSync(file)) {
+		console.warn(`配图缺失：${relativePath}`);
+		return relativePath;
+	}
+	return `data:image/svg+xml;base64,${readFileSync(file).toString("base64")}`;
+}
 
 /* ---------- 随机数：固定种子可复现 ---------- */
 
@@ -976,10 +987,73 @@ const IMAGE_QUESTIONS = [
 		image: "figures/q-counter.svg",
 		imageAlt: "4 位二进制计数器，时钟与清零输入，输出 Q3 到 Q0",
 	},
+	{
+		module: "M2", difficulty: 2,
+		stem: "图示全加器的输入为 A=1、B=1、Cin=0，输出 S 和 Cout 是？",
+		correct: "S=0，Cout=1",
+		wrong: ["S=1，Cout=0", "S=1，Cout=1", "S=0，Cout=0"],
+		explain: "S = 1⊕1⊕0 = 0，Cout = 1·1 + 0·(1⊕1) = 1。",
+		image: "figures/q-adder.svg",
+		imageAlt: "全加器输入 A 为 1、B 为 1、Cin 为 0",
+	},
+	{
+		module: "M2", difficulty: 2,
+		stem: "图示 3-8 译码器输入 A2A1A0=101，输出低电平有效，哪些输出为 0？",
+		correct: "只有 Y5 为 0",
+		wrong: ["只有 Y3 为 0", "只有 Y6 为 0", "Y0 到 Y7 全为 0"],
+		explain: "二进制 101 等于十进制 5，低电平有效时只有对应的 Y5 输出 0，其余为 1。",
+		image: "figures/q-decoder.svg",
+		imageAlt: "三线八线译码器输入为 101",
+	},
+	{
+		module: "M3", difficulty: 2,
+		stem: "图示门控 D 锁存器在 CP=1、D=0 时，输出 Q 是？",
+		correct: "Q=0",
+		wrong: ["Q=1", "保持原状态", "状态不定"],
+		explain: "CP=1 期间 D 锁存器透明，Q 跟随 D，因此 Q=0。",
+		image: "figures/q-latch.svg",
+		imageAlt: "门控 D 锁存器在 CP 为 1、D 为 0 时的工作状态",
+	},
+	{
+		module: "M3", difficulty: 2,
+		stem: "图示 4 位右移寄存器当前为 1011，串行输入 0，来一个时钟后 Q3Q2Q1Q0 是？",
+		correct: "0101",
+		wrong: ["1101", "1010", "0011"],
+		explain: "右移时每位送到低位，最高位接收串行输入 0，得到 0101。",
+		image: "figures/q-shift.svg",
+		imageAlt: "四位右移寄存器初态 1011，串行输入 0",
+	},
+	{
+		module: "M5", difficulty: 2,
+		stem: "图示器件与阵列可编程、或阵列固定，它属于哪一种 PLD？",
+		correct: "PAL",
+		wrong: ["PROM", "PLA", "GAL"],
+		explain: "PROM 的与阵列固定；PLA 两个阵列都可编程；PAL 与阵列可编程、或阵列固定；GAL 在 PAL 上增加了输出逻辑宏单元。",
+		image: "figures/q-pld.svg",
+		imageAlt: "一种可编程逻辑器件的与阵列和或阵列",
+	},
+	{
+		module: "M7", difficulty: 3,
+		stem: "图示 4 位 R-2R DAC 输入为 1000，满量程对应 Vref，输出 Vo 约为？",
+		correct: "Vref / 2",
+		wrong: ["Vref / 4", "Vref", "3Vref / 4"],
+		explain: "4 位共 16 个台阶，1000 对应 8 个台阶，因此 Vo 为满量程的一半。",
+		image: "figures/q-dac.svg",
+		imageAlt: "四位 R-2R 数模转换器输入为 1000",
+	},
+	{
+		module: "M7", difficulty: 3,
+		stem: "图示 3 位逐次逼近 ADC，Vref=5 V，输入 3.2 V，转换结果最接近？",
+		correct: "101",
+		wrong: ["100", "110", "011"],
+		explain: "量化级差为 5/8=0.625 V，3.2 V 约为 5.12 个级差，取整为 5，即 101。",
+		image: "figures/q-sar.svg",
+		imageAlt: "三位逐次逼近 ADC，参考电压 5 伏，输入 3.2 伏",
+	},
 ];
 
 /** 图片题固定占用的概念题槽位，保证默认 80 题里全部出现。 */
-const IMAGE_SLOTS = [1, 7, 15, 25];
+const IMAGE_SLOTS = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30];
 
 function conceptQuestions(random, state, slot) {
 	const imageIndex = IMAGE_SLOTS.indexOf(slot);
@@ -1003,7 +1077,7 @@ function conceptQuestions(random, state, slot) {
 		explain: item.explain,
 	};
 	if (item.image !== undefined) {
-		question.image = item.image;
+		question.image = figureSource(item.image);
 		question.imageAlt = item.imageAlt;
 	}
 	return question;

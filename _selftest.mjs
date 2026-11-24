@@ -70,12 +70,12 @@ assert.deepEqual(
 	routes.map((route) => route.path).sort(),
 	[
 		"/dsh-digital-logic-lectern/book.js",
-		"/dsh-digital-logic-lectern/figures/",
+		"/dsh-digital-logic-lectern/figures",
 		"/dsh-digital-logic-lectern/index.html",
 		"/dsh-digital-logic-lectern/questions.js",
 	]
 );
-assert.equal(routes.find((route) => route.path.endsWith("/figures/")).kind, "prefix", "figures 应按前缀匹配");
+assert.equal(routes.find((route) => route.path.endsWith("/figures")).kind, "prefix", "figures 应按前缀匹配");
 assert.ok(existsSync(join(skill.resourceBase.path, "ui", "figures", "gates.svg")), "ui/figures 下应有插图");
 assert.ok(existsSync(join(skill.resourceBase.path, "ui", "figures", "q-kmap.svg")), "ui/figures 下应有题目配图");
 
@@ -110,7 +110,21 @@ clientModule.apply({
 			return () => {};
 		},
 	},
+	effect(factory, label) {
+		assert.equal(typeof label, "string");
+		factory();
+		return () => {};
+	},
 	inject(names, callback) {
+		if (names.length === 1 && names[0] === "layout") {
+			callback({
+				get() {
+					return { selectPanel() {} };
+				},
+				layout: { selectPanel() {} },
+			});
+			return () => {};
+		}
 		assert.deepEqual(names, ["commandUi"]);
 		callback({
 			effect(factory) {
@@ -125,13 +139,20 @@ clientModule.apply({
 				};
 			},
 		});
+		return () => {};
 	},
 	get() {
 		return { selectPanel() {} };
 	},
+	sessions: {
+		list: { getSnapshot: () => ({ byId: {} }) },
+		scope() {
+			return undefined;
+		},
+	},
 });
 
-assert.deepEqual(clientModule.inject, ["slots", "commandUi"]);
+assert.deepEqual(clientModule.inject, ["slots", "commandUi", "sessions", "layout"]);
 assert.deepEqual(
 	slots.sort(),
 	["main", "plugins.bundle.config", "plugins.row.config", "sidebar.panellist"],

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 330" role="img" aria-label="组合逻辑设计的四个步骤">
+<style>
+.s{fill:none;stroke:#58cc02;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.t{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px}
+.b{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;font-weight:600}
+.m{fill:#9aa2b1;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:12.5px}
+.g{fill:none;stroke:#3a4250;stroke-width:1.2}
+.d{fill:none;stroke:#3a4250;stroke-width:1.2;stroke-dasharray:5 5}
+.box{fill:#1b2029;stroke:#3a4250;stroke-width:1.5}
+.code{fill:#e6e8ee;font-family:"Consolas","Courier New",monospace;font-size:13px}
+</style><defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#58cc02"/></marker></defs>
+<rect width="100%" height="100%" fill="#141821"/>
+<text x="24" y="28" class="b">组合逻辑设计流程</text>
+<rect x="90" y="48" width="330" height="44" rx="7" class="box"/>
+<text x="106" y="76" class="t">1　逻辑抽象：定输入输出与 0/1 含义</text>
+<rect x="90" y="116" width="330" height="44" rx="7" class="box"/>
+<text x="106" y="144" class="t">2　列真值表</text>
+<rect x="90" y="184" width="330" height="44" rx="7" class="box"/>
+<text x="106" y="212" class="t">3　卡诺图或代数化简</text>
+<rect x="90" y="252" width="330" height="44" rx="7" class="box"/>
+<text x="106" y="280" class="t">4　变换为可用门并画逻辑图</text>
+<line x1="255" y1="92" x2="255" y2="112" class="s" marker-end="url(#ar)"/>
+<line x1="255" y1="160" x2="255" y2="180" class="s" marker-end="url(#ar)"/>
+<line x1="255" y1="228" x2="255" y2="248" class="s" marker-end="url(#ar)"/>
+<text x="440" y="140" class="m">含任意项时先按 ×</text>
+<text x="440" y="160" class="m">填表再圈组</text>
+</svg>
