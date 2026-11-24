@@ -17,20 +17,20 @@ git clone https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 插件方式，在 DeepSeek Harness 的添加插件窗口里填本目录的路径，或填打好的 tgz：
 
 ```bash
-dsh plugin --profile <配置名> add file:/绝对路径/dsh-digital-logic-lectern-0.6.1.tgz
+dsh plugin --profile <配置名> add file:/绝对路径/dsh-digital-logic-lectern-0.6.2.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 整个拷进 `~/.dsh/skills/`。两种方式选一种，别同时放，同名技能会互相盖住。装完重启客户端。
 
-## 打开讲台
+## 打开插件页面
 
 应用内打开有三个入口：
 
-- 侧栏底部的「数字逻辑」图标，点开是整页讲台。
+- 侧栏底部的「数字逻辑」图标，点开是整页界面。
 - 输入框里发送 `/logic-lectern`。
 - 插件页找到本插件那一行，点「在应用内打开」。
 
-插件行里还有两个选项：默认难度（简单 / 普通 / 困难）与侧栏入口开关。选择存在本机；关掉侧栏图标后，命令和插件行仍然能打开讲台。默认难度只影响自测页开局时选中哪一档，开始后还能改。
+插件行里还有两个选项：默认难度（简单 / 普通 / 困难）与侧栏入口开关。选择存在本机；关掉侧栏图标后，命令和插件行仍然能打开页面。默认难度只影响自测页开局时选中哪一档，开始后还能改。
 
 客户端面板需要 DSH 0.2.1-rc.2 或更高。更低的版本只注册技能，不出现图标和命令，网页仍可用浏览器单独打开。
 
@@ -46,6 +46,8 @@ start ui/index.html
 仓库里已经带了生成好的 `ui/book.js` 与 `ui/questions.js`。改过 `references/` 再重跑这两条命令。`dlquiz --build` 会拿 `dltool` 把每道计算题的答案对一遍，对不上就报错，不写文件；想换一批题，加 `--seed 随便一个数字`。
 
 ## 网页
+
+右上角的方形按钮切换浅色、深色与跟随系统，选择记在本机。
 
 **学习**：第一至第七章，加 Verilog 附录与术语表。目录展开到小节，顶部搜索框按关键词过滤，术语表每行可跳到对应小节。
 

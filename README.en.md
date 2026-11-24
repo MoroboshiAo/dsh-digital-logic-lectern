@@ -17,7 +17,7 @@ git clone https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 Install as a plugin by pointing the Harness add-plugin dialog at this directory, or at the packed tgz:
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.1.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.2.tgz
 ```
 
 You can also copy `skills/digital-logic-lectern` into `~/.dsh/skills/`. Pick one route; installing both makes the two copies of the same skill shadow each other. Restart the client afterwards.
@@ -46,6 +46,8 @@ start ui/index.html
 The repository already contains generated `ui/book.js` and `ui/questions.js`. Re-run the two commands after editing `references/`. `dlquiz --build` checks every calculation question with `dltool` and refuses to write if an answer disagrees. Add `--seed <number>` for another batch.
 
 ## The page
+
+The square button at the top right cycles light, dark, and follow-system; the choice is stored locally.
 
 **Study.** Chapters 1 to 7, plus a Verilog appendix and a glossary. The contents tree goes down to subsection level; the search box filters by keyword; every glossary row links to its subsection.
 
