@@ -8,7 +8,15 @@
 
 ## 安装
 
-仓库是私有的，先确认自己的 GitHub 账号有权限。配套教材为《数字逻辑》（第七版），白中英、朱正东主编，科学出版社，2020 年。
+配套教材为《数字逻辑》（第七版），白中英、朱正东主编，科学出版社，2020 年。
+
+用 npm 安装：
+
+```bash
+npm install dsh-digital-logic-lectern
+```
+
+也可以从 GitHub 克隆后按本地目录安装：
 
 ```bash
 git clone https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
@@ -17,7 +25,7 @@ git clone https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 插件方式，在 DeepSeek Harness 的添加插件窗口里填本目录的路径，或填打好的 tgz：
 
 ```bash
-dsh plugin --profile <配置名> add file:/绝对路径/dsh-digital-logic-lectern-0.6.2.tgz
+dsh plugin --profile <配置名> add file:/绝对路径/dsh-digital-logic-lectern-0.6.3.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 整个拷进 `~/.dsh/skills/`。两种方式选一种，别同时放，同名技能会互相盖住。装完重启客户端。
@@ -93,6 +101,7 @@ skills/digital-logic-lectern/
 └── examples/             计数器和两份示例讲稿
 lib/index.js              插件入口：注册技能，挂载 ui/ 的静态路由
 lib/client.js             客户端入口：侧栏图标、主页面板、插件行选项、斜杠命令
+locale/                   插件列表里的中英文名称与简介
 cordis.patch.yml          插件清单要的补丁文件
 ```
 

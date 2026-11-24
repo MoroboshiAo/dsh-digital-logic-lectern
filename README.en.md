@@ -8,7 +8,15 @@ The plugin adds one skill and one web page. The skill writes a lecture: name a t
 
 ## Install
 
-The repository is private. Make sure your GitHub account has access. The course textbook is *Digital Logic* (7th edition), Bai Zhongying and Zhu Zhengdong (eds.), Science Press, 2020.
+The course textbook is *Digital Logic* (7th edition), Bai Zhongying and Zhu Zhengdong (eds.), Science Press, 2020.
+
+Install from npm:
+
+```bash
+npm install dsh-digital-logic-lectern
+```
+
+Or clone from GitHub and install the local directory:
 
 ```bash
 git clone https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
@@ -17,7 +25,7 @@ git clone https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 Install as a plugin by pointing the Harness add-plugin dialog at this directory, or at the packed tgz:
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.2.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.3.tgz
 ```
 
 You can also copy `skills/digital-logic-lectern` into `~/.dsh/skills/`. Pick one route; installing both makes the two copies of the same skill shadow each other. Restart the client afterwards.
@@ -93,6 +101,7 @@ skills/digital-logic-lectern/
 └── examples/             a counter and two sample lectures
 lib/index.js              plugin entry: register the skill, serve ui/ over static routes
 lib/client.js             client entry: sidebar icon, main panel, plugin-row options, slash command
+locale/                   Chinese and English title and summary for the plugin list
 cordis.patch.yml          patch file required by the plugin manifest
 ```
 
