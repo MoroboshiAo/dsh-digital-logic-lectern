@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>数字逻辑讲台</title>
+<meta name="author" content="刘柏铭（Liu Baiming）">
+<meta name="description" content="数字逻辑课程讲义、章节自测与人机对战、错题本。">
 <style>
 	:root {
 		--bg: #f7f8fa;
@@ -349,6 +351,12 @@
 		M5: "存储器", M6: "可编程器件", M7: "数字系统", M8: "Verilog HDL"
 	};
 
+	var AI_LEVELS = [
+		{ id: 1, label: "简单", accuracy: 0.58, base: 3300, spread: 2200, points: 60 },
+		{ id: 2, label: "普通", accuracy: 0.8, base: 2500, spread: 1700, points: 100 },
+		{ id: 3, label: "困难", accuracy: 0.93, base: 1700, spread: 1100, points: 150 }
+	];
+
 	var ICONS = {
 		learn: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20"/>',
 		quiz: '<path d="M13 2 4.5 13.5H11l-1 8.5 9-12h-6.5z"/>',
@@ -385,6 +393,7 @@
 		chapterId: CHAPTERS.length > 0 ? CHAPTERS[0].id : "",
 		quizChapter: "all",
 		quizMode: "solo",
+		quizLevel: 2,
 		quiz: null,
 		search: "",
 		openSubs: {}
@@ -516,6 +525,7 @@
 					+ "-" + String(date.getDate()).padStart(2, "0") + "。");
 			}
 		}
+		parts.push("作者：刘柏铭（Liu Baiming）。");
 		footer.innerHTML = parts.map(function (line) { return "<p>" + line + "</p>"; }).join("");
 	}
 
@@ -782,10 +792,18 @@
 			+ '<h2>开始自测</h2>'
 			+ '<div class="field"><label>章节' + info("题目按教材章节归档，选「全部章节」会混出各章题目。") + '</label>'
 			+ '<div class="chips">' + chips + '</div></div>'
-			+ '<div class="field"><label>玩法' + info("单人闯关按答对计分，连对加分；人机对战由 AI 同时抢答，抢到并答对得 100 分。") + '</label><div class="chips">'
+			+ '<div class="field"><label>玩法' + info("单人闯关按答对计分，连对加分；人机对战由 AI 同时抢答，难度越高它答得越快、越准、得分越多。") + '</label><div class="chips">'
 			+ '<button class="chip' + (state.quizMode === "solo" ? " active" : "") + '" data-mode="solo">' + icon("play") + ' 单人闯关</button>'
 			+ '<button class="chip' + (state.quizMode === "versus" ? " active" : "") + '" data-mode="versus">' + icon("ai") + ' 人机对战</button>'
 			+ '</div></div>'
+			+ (state.quizMode === "versus"
+				? '<div class="field"><label>难度' + info("难度决定 AI 的抢答延迟、正确率与每题得分。") + '</label><div class="chips">'
+					+ AI_LEVELS.map(function (level) {
+						return '<button class="chip' + (level.id === state.quizLevel ? " active" : "") + '" data-level="' + level.id + '">'
+							+ level.label + '</button>';
+					}).join("")
+					+ '</div></div>'
+				: '')
 			+ '<div class="field"><label>题数' + info("从选中章节的题库随机抽取，计算题答案在生成时已由脚本复核。") + '</label><div class="chips">'
 			+ [5, 10, 20].map(function (count) {
 				var disabled = pool.length < count ? " disabled" : "";
@@ -807,6 +825,12 @@
 				renderQuizTab();
 			});
 		});
+		app.querySelectorAll("[data-level]").forEach(function (button) {
+			button.addEventListener("click", function () {
+				state.quizLevel = Number(button.getAttribute("data-level"));
+				renderQuizTab();
+			});
+		});
 		app.querySelectorAll("[data-count]").forEach(function (button) {
 			button.addEventListener("click", function () {
 				if (button.disabled) return;
@@ -824,6 +848,7 @@
 		var questions = customItems !== undefined ? pool.slice() : shuffle(pool).slice(0, count);
 		state.quiz = {
 			mode: state.quizMode,
+			level: AI_LEVELS.find(function (item) { return item.id === state.quizLevel; }) || AI_LEVELS[1],
 			questions: questions,
 			index: 0,
 			score: 0,
@@ -861,7 +886,7 @@
 			: "";
 
 		app.innerHTML = '<div class="quizbar">'
-			+ '<span class="chip active">' + (quiz.mode === "versus" ? "人机对战" : "单人闯关") + '</span>'
+			+ '<span class="chip active">' + (quiz.mode === "versus" ? "人机对战 · " + quiz.level.label : "单人闯关") + '</span>'
 			+ '<div class="stats"><div>' + icon("learn") + '<span>第 <b>' + (quiz.index + 1) + '</b> / ' + quiz.questions.length + '</span></div>'
 			+ '<div class="score">' + icon("trophy") + '<span>得分 <b id="score">' + quiz.score + '</b></span></div>'
 			+ '<div>' + icon("flame") + '<span>连对 <b>' + quiz.streak + '</b></span></div></div></div>'
@@ -880,7 +905,8 @@
 
 	function scheduleAI(question) {
 		clearTimeout(aiTimer);
-		var delay = 1700 + Math.random() * 2400 - question.difficulty * 260;
+		var level = state.quiz.level || AI_LEVELS[1];
+		var delay = Math.max(900, level.base + Math.random() * level.spread - question.difficulty * 160);
 		var startedAt = Date.now();
 		var interval = setInterval(function () {
 			var bar = document.getElementById("aibar");
@@ -891,13 +917,13 @@
 			clearInterval(interval);
 			var quiz = state.quiz;
 			if (quiz === null || quiz.locked) return;
-			var accuracy = 0.82 - question.difficulty * 0.07;
+			var accuracy = Math.min(0.97, level.accuracy - question.difficulty * 0.04);
 			var correct = Math.random() < accuracy;
 			var label = document.getElementById("aistate");
 			if (label !== null) label.textContent = correct ? "已抢答" : "答错了";
 			var chosen = correct ? question.answer : (question.answer + 1 + Math.floor(Math.random() * 3)) % 4;
 			reveal(chosen, correct);
-			if (correct) quiz.aiScore += 100;
+			if (correct) quiz.aiScore += level.points;
 			quiz.locked = true;
 			showFeedback(correct, "AI 抢先答" + (correct ? "对了" : "错了") + "，这题归它。", false);
 		}, delay);
@@ -995,7 +1021,7 @@
 		app.innerHTML = '<div class="panel card"><div class="result-score">' + quiz.score + '</div>'
 			+ '<div class="result-sub">答对 ' + right + ' / ' + answered + '，正确率 ' + accuracy + '%，最长连对 ' + quiz.best
 			+ '，用时 ' + seconds + ' 秒'
-			+ (quiz.mode === "versus" ? '；AI 得分 ' + quiz.aiScore : '') + '</div>'
+			+ (quiz.mode === "versus" ? '；AI（' + quiz.level.label + '）得分 ' + quiz.aiScore : '') + '</div>'
 			+ review
 			+ '<div class="actions"><button class="btn" id="backSetup">' + icon("back") + '换章节</button>'
 			+ '<button class="btn primary" id="again">' + icon("refresh") + '再测一次</button></div></div>';
@@ -1074,6 +1100,18 @@
 
 	/* ---------- 启动 ---------- */
 
+	/** 读取插件行里设定的默认难度；独立打开页面时读不到就用普通。 */
+	function applyHostOptions() {
+		try {
+			var raw = localStorage.getItem("dll-options");
+			var options = raw === null ? null : JSON.parse(raw);
+			if (options === null || typeof options.level !== "number") return;
+			if (AI_LEVELS.some(function (item) { return item.id === options.level; })) {
+				state.quizLevel = options.level;
+			}
+		} catch (error) { /* 忽略损坏的配置 */ }
+	}
+
 	function renderTabs() {
 		document.querySelectorAll(".tab").forEach(function (button) {
 			var meta = TABS.find(function (item) { return item.id === button.getAttribute("data-tab"); });
@@ -1105,6 +1143,7 @@
 		}
 	});
 
+	applyHostOptions();
 	renderTabs();
 	updateBadge();
 	render();

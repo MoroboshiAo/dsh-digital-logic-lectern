@@ -1,11 +1,13 @@
 {
 	"name": "dsh-digital-logic-lectern",
-	"version": "0.5.0",
-	"description": "数字逻辑课的讲解与练习插件：按《数字逻辑》（第七版，白中英、朱正东主编，科学出版社，2020 年）目录自编的七章讲义与术语表、全文搜索、章节自测、错题本、确定性计算工具、iverilog 仿真。",
+	"version": "0.6.0",
+	"description": "数字逻辑课的讲解与练习插件：按《数字逻辑》（第七版，白中英、朱正东主编，科学出版社，2020 年）目录自编的七章讲义与术语表、全文搜索、章节自测（含人机对战难度）、错题本、确定性计算工具、iverilog 仿真；讲台网页可在 DSH 应用内直接打开。",
+	"author": "刘柏铭（Liu Baiming）",
 	"type": "module",
 	"main": "lib/index.js",
 	"exports": {
 		".": "./lib/index.js",
+		"./client": "./lib/client.js",
 		"./cordis.patch.yml": "./cordis.patch.yml",
 		"./package.json": "./package.json"
 	},
@@ -14,19 +16,55 @@
 		"skills",
 		"cordis.patch.yml",
 		"README.md",
+		"README.en.md",
 		"_selftest.mjs"
 	],
 	"engines": {
-		"node": ">=22"
+		"node": ">=22",
+		"dsh": ">=0.2.1-rc.2 <0.4.0-0"
 	},
 	"dsh": {
 		"manifestVersion": 1,
 		"bundle": {
 			"patch": "./cordis.patch.yml"
+		},
+		"client": {
+			"inject": [
+				"@deepseek-ai/dsh-client-ui-commands",
+				"@deepseek-ai/dsh-client-ui-plugin-manager",
+				"@deepseek-ai/dsh-client-ui-renderer"
+			],
+			"platform": "web"
 		}
 	},
 	"peerDependencies": {
-		"@deepseek-ai/cordis": "~4.1.0"
+		"@deepseek-ai/cordis": "~4.1.0",
+		"@deepseek-ai/dsh-client-ui-commands": "^0.1.7-rc.1 || ^0.2.0-rc.1 || ^0.3.0-0",
+		"@deepseek-ai/dsh-client-ui-plugin-manager": "^0.1.7-rc.1 || ^0.2.0-rc.1 || ^0.3.0-0",
+		"@deepseek-ai/dsh-client-ui-renderer": "^0.1.7-rc.1 || ^0.2.0-rc.1 || ^0.3.0-0",
+		"react": "^18.2.0"
 	},
+	"peerDependenciesMeta": {
+		"@deepseek-ai/dsh-client-ui-commands": {
+			"optional": true
+		},
+		"@deepseek-ai/dsh-client-ui-plugin-manager": {
+			"optional": true
+		},
+		"@deepseek-ai/dsh-client-ui-renderer": {
+			"optional": true
+		},
+		"react": {
+			"optional": true
+		}
+	},
+	"keywords": [
+		"deepseek-harness",
+		"dsh",
+		"dsh-plugin",
+		"digital-logic",
+		"数字逻辑",
+		"bupt"
+	],
 	"license": "MIT"
 }
