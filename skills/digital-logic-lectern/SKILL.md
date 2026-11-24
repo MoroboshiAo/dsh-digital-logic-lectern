@@ -56,6 +56,7 @@ node <SKILL_ROOT>/scripts/dltool.js hamming --data 1011
 node <SKILL_ROOT>/scripts/dltool.js hamming --check 0110111
 node <SKILL_ROOT>/scripts/dlquiz.js --build
 node <SKILL_ROOT>/scripts/dlquiz.js --check
+node <SKILL_ROOT>/scripts/dlbook.js --build
 ```
 
 规则：
@@ -109,21 +110,24 @@ node <SKILL_ROOT>/scripts/dlverify.js <设计.v> <testbench.v>
 
 演示时的三条纪律：不念工具输出的全部内容，只念关键行；让对方先猜再揭晓；每步结束停三秒等反应。
 
-## 5 答题游戏与图形界面
+## 5 图形界面：学、测、错题
 
-`ui/index.html` 是纯静态页面，双击就能开，不联网、不需要服务器。题库由 `scripts/dlquiz.js` 生成，计算类题目的答案在生成时逐题调用 `dltool` 复核，对不上就不生成。
+`ui/index.html` 是纯静态页面，双击就能开，不联网、不需要服务器。分三块：
+
+- **学习**：左边章节列表，右边是该章讲义。讲义由 `references` 生成，页面上已注明是自编讲义、不是教材原文。底部有「测这一章」。
+- **自测**：先选章节，再选单人闯关或人机对战，然后按题数开始。答错自动进错题本。
+- **错题本**：存在浏览器 localStorage 里，可以重做、单条移除、整体清空。
 
 ```bash
-node scripts/dlquiz.js --build      # 生成 40 题到 ui/questions.js
+node scripts/dlbook.js --build      # 讲义 → ui/book.js
+node scripts/dlquiz.js --build      # 40 题 → ui/questions.js，生成时复核计算题
 node scripts/dlquiz.js --check      # 只复核，不写文件
 start ui/index.html                 # Windows 打开
 ```
 
-三种玩法：闯关 10 题、和 AI 抢答、60 秒限时。作答支持鼠标和键盘 1~4，回车进下一题。
+课堂上这样用：让学生先翻开一章读两分钟，点「测这一章」做五题；错的进错题本，当场挑一道讲；最后跑一次人机对战，说明 AI 也是按同一套规则算的，不是背答案。
 
-课堂上这样用：先让学生自己打一局，错题自动收进回顾；挑一道错得最多的题，回到六件套讲一遍；最后跑一次人机对战，说明 AI 也是按同一套规则算的，不是背答案。
-
-出题纪律：只从 `ui/questions.js` 取题，不许临场编题；题目里的数字必须能通过 `dlquiz.js --check`。
+出题纪律：只从 `ui/questions.js` 取题，不许临场编题；题目里的数字必须能通过 `dlquiz.js --check`。讲义只讲 `references` 里有的内容，不许拿教材原文冒充实拍。
 
 ## 6 门控
 

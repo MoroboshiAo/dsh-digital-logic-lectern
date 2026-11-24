@@ -1,7 +1,7 @@
 {
 	"name": "dsh-digital-logic-lectern",
-	"version": "0.2.0",
-	"description": "数字逻辑课的讲解与练习插件：八模块讲解卡、确定性计算工具、iverilog 仿真、讲稿自检、带人机对战的答题网页。",
+	"version": "0.3.0",
+	"description": "数字逻辑课的讲解与练习插件：八模块自编讲义、章节自测、错题本、确定性计算工具、iverilog 仿真、讲稿自检。",
 	"type": "module",
 	"main": "lib/index.js",
 	"exports": {
