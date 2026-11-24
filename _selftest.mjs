@@ -152,7 +152,7 @@ clientModule.apply({
 	},
 });
 
-assert.deepEqual(clientModule.inject, ["slots", "commandUi", "sessions", "layout"]);
+assert.deepEqual(clientModule.inject, ["slots", "commandUi", "sessions"]);
 assert.deepEqual(
 	slots.sort(),
 	["main", "plugins.bundle.config", "plugins.row.config", "sidebar.panellist"],

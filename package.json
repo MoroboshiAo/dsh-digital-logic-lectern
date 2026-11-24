@@ -1,6 +1,6 @@
 {
 	"name": "dsh-digital-logic-lectern",
-	"version": "0.7.0",
+	"version": "0.7.1",
 	"description": "数字逻辑辅助学习插件：按《数字逻辑》（第七版，白中英、朱正东主编，科学出版社，2020 年）目录自编的七章学习资料与术语表（含 40 幅示意图）、全文搜索、80 题章节自测（含 11 道配图题与人机对战难度）、搜题跳转、错题本、确定性计算工具、iverilog 仿真；插件网页可在 DSH 应用内直接打开。",
 	"author": "刘柏铭（Liu Baiming）",
 	"repository": {
