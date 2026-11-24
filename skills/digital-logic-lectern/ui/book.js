@@ -1,6 +1,6 @@
 // 由 scripts/dlbook.js 从 references 生成。这是自编讲义，不是教材原文。
 window.DL_BOOK = {
-	"generatedAt": "2026-11-24T17:20:38.586Z",
+	"generatedAt": "2026-11-24T18:13:23.204Z",
 	"source": {
 		"title": "《数字逻辑》（第七版）",
 		"editors": "白中英、朱正东 主编",

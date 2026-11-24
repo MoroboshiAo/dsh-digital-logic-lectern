@@ -1,63 +1,63 @@
-# dsh-digital-logic-lectern
+# 数字逻辑辅助学习插件
+
+npm package: `dsh-digital-logic-lectern`
 
 Author: Liu Baiming（刘柏铭）｜[中文](README.md)
 
-A lecture and practice plugin for a Digital Logic course, built for DeepSeek Harness. It follows the table of contents of *Digital Logic* (7th edition), edited by Bai Zhongying and Zhu Zhengdong, Science Press, 2020. The web pages are written against that outline; they are not a copy of the textbook.
+A study and practice plugin for the Digital Logic course, built for DeepSeek Harness. It follows the table of contents of *Digital Logic* (7th edition), edited by Bai Zhongying and Zhu Zhengdong, Science Press, 2020. The notes are written against that outline; they are not a copy of the textbook.
 
-The plugin adds one skill and one web page. The skill writes a lecture: name a topic and it returns six parts — conclusion, board notes, derivation, counterexample, simulation, questions. The page is for practice: study a chapter, take a quiz on it, and wrong answers land in a review list. The page can open inside the DSH app.
+The plugin ships one skill and one web page. The skill explains concepts, walks through derivations, checks numeric results with a command-line tool, and draws practice questions from the course bank. The page holds the notes, chapter quizzes, human-vs-AI matches, and a wrong-answer list. The page can open inside the DSH app.
 
 ## Install
 
-The course textbook is *Digital Logic* (7th edition), Bai Zhongying and Zhu Zhengdong (eds.), Science Press, 2020.
-
-Install from npm:
+From npm:
 
 ```bash
 npm install dsh-digital-logic-lectern
 ```
 
-Or clone from GitHub and install the local directory:
+Or enter the package name `dsh-digital-logic-lectern` in the Harness add-plugin dialog. A Git URL also works:
 
-```bash
-git clone https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
+```
+https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 ```
 
-Install as a plugin by pointing the Harness add-plugin dialog at this directory, or at the packed tgz:
+The Git route clones the repository before installing, so git and network access are required. The repository is public. The three routes are equivalent: npm name, Git URL, local directory or tgz.
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.3.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.4.tgz
 ```
 
-You can also copy `skills/digital-logic-lectern` into `~/.dsh/skills/`. Pick one route; installing both makes the two copies of the same skill shadow each other. Restart the client afterwards.
+Copying `skills/digital-logic-lectern` into `~/.dsh/skills/` works too. Pick one route; installing twice makes the two copies of the same skill shadow each other. Restart the client afterwards.
 
 ## Open the page
 
-There are three entry points inside the app:
+Three entry points inside the app:
 
 - The 「数字逻辑」 icon at the bottom of the sidebar opens the page full screen.
 - Send `/logic-lectern` from the input box.
 - Find the plugin row on the Plugins page and press 「在应用内打开」.
 
-The plugin row also has two options: a default difficulty (easy / normal / hard) and a sidebar-entry switch. Both are stored locally. If you turn the sidebar icon off, the command and the plugin row still open the page. The default difficulty only decides which level is preselected when a quiz starts; you can still change it there.
+The plugin row also has a default difficulty (easy / normal / hard) and a sidebar-entry switch, both stored locally. If the sidebar icon is off, the command and the plugin row still open the page. The default difficulty only preselects a level when a quiz starts.
 
-The client panel requires DSH 0.2.1-rc.2 or newer. Older hosts register the skill only. The page still works when opened directly in a browser.
+The client panel requires DSH 0.2.1-rc.2 or newer. Older hosts register the skill only; the page still works when opened directly in a browser.
 
 To open it in a browser, generate the page data first:
 
 ```bash
 cd skills/digital-logic-lectern
-node scripts/dlbook.js --build      # lectures -> page data
-node scripts/dlquiz.js --build      # generate 40 questions and verify answers
+node scripts/dlbook.js --build      # notes -> page data
+node scripts/dlquiz.js --build      # generate 80 questions and verify answers
 start ui/index.html
 ```
 
-The repository already contains generated `ui/book.js` and `ui/questions.js`. Re-run the two commands after editing `references/`. `dlquiz --build` checks every calculation question with `dltool` and refuses to write if an answer disagrees. Add `--seed <number>` for another batch.
+The repository already contains generated `ui/book.js` and `ui/questions.js`. Re-run both commands after editing `references/`. `dlquiz --build` checks every calculation question with `dltool` and refuses to write if an answer disagrees. Use `--seed <number>` for another batch or `--count <number>` for a different size.
 
 ## The page
 
-The square button at the top right cycles light, dark, and follow-system; the choice is stored locally.
+The square button at the top right cycles follow-system, light, and dark; the choice is stored locally.
 
-**Study.** Chapters 1 to 7, plus a Verilog appendix and a glossary. The contents tree goes down to subsection level; the search box filters by keyword; every glossary row links to its subsection.
+**Study.** Chapters 1 to 7, plus a Verilog appendix and a glossary. The contents tree goes down to subsection level, the search box covers headings and body text, and every glossary row links to its subsection. The footer carries the textbook title, editors, publisher, edition, and the plugin version.
 
 **Quiz.** Pick a chapter, a mode, and a question count. Human-vs-AI mode adds a difficulty level:
 
@@ -79,15 +79,14 @@ Harder questions lower the AI's accuracy and shorten its delay a little further.
 | `node scripts/dlquiz.js` | Generate questions and verify calculation answers with `dltool` |
 | `node scripts/dlbook.js` | Turn `references/` into page data |
 | `node scripts/dlverify.js` | Run simulations through iverilog |
-| `node scripts/dlcheck.js` | Check lecture structure, length, and numeric sourcing |
 
-Bit patterns in a lecture come from these outputs, not from mental arithmetic.
+Bit patterns and numeric results come from these outputs, not from mental arithmetic.
 
 ## Layout
 
 ```
 skills/digital-logic-lectern/
-├── SKILL.md              skill body: six-part template, tool rules, demo scripts, limits
+├── SKILL.md              skill: study-card structure, tool rules, module index, limits
 ├── references/           eight module cards, seven chapters, glossary, textbook map
 │   ├── textbook/         ch1 to ch7, following textbook sections and subsections
 │   └── appendix_verilog.md   Verilog appendix, not in the textbook
@@ -95,24 +94,26 @@ skills/digital-logic-lectern/
 │   ├── dltool.js         bases, codes, truth tables, Karnaugh maps, Hamming codes
 │   ├── dlquiz.js         generate questions and verify them
 │   ├── dlbook.js         build page data from references
-│   ├── dlverify.js       run iverilog simulations
-│   └── dlcheck.js        check lecture structure, length, sourcing
+│   └── dlverify.js       run iverilog simulations
 ├── ui/                   three-tab page: index.html, book.js, questions.js, bupt-logo.png
-└── examples/             a counter and two sample lectures
+└── examples/             counter example source
 lib/index.js              plugin entry: register the skill, serve ui/ over static routes
 lib/client.js             client entry: sidebar icon, main panel, plugin-row options, slash command
 locale/                   Chinese and English title and summary for the plugin list
 cordis.patch.yml          patch file required by the plugin manifest
 ```
 
+## Question bank
+
+80 questions across the eight modules. Calculation questions are generated by `dlquiz.js` and every answer is checked against `dltool`; concept questions are written from the topics covered by the textbook exercises and the companion answer set, and have not been reviewed question by question by an instructor. Exercise answers in this course rely heavily on figures and formulas, so the repository keeps the numeric and text questions that can be verified in a terminal rather than reproducing the original figures.
+
 ## Limits
 
-- The lectures follow the outline of *Digital Logic* (7th edition, Bai Zhongying and Zhu Zhengdong, Science Press, 2020). They are not the publisher's text. Section numbers were checked against the slide deck that ships with that edition; the mapping is in `references/textbook_map.md`. Section 5.5 of the textbook covers VHDL, while this course uses Verilog; lectures point out the difference.
+- The notes follow the outline of *Digital Logic* (7th edition, Bai Zhongying and Zhu Zhengdong, Science Press, 2020). They are not the publisher's text. Section numbers were checked against the slide deck that ships with that edition; the mapping is in `references/textbook_map.md`. Section 5.5 of the textbook covers VHDL, while this course uses Verilog; the notes point out the difference.
 - The in-app page is an iframe over the same static page, so the review list and options live in the host page's local storage. Clearing site data or switching browsers loses them.
-- Simulation requires iverilog. Without it the tool fails loudly and lectures mark results as unverified.
-- The bank has 40 questions. Calculation questions are generated and verified by script; concept questions are hand-written and have not been reviewed by the instructor.
+- Simulation requires iverilog. Without it `dlverify.js` fails loudly and prints install instructions; simulation results then have to be marked unverified.
 - Coverage is limited to the eight course modules. Analog circuits and lab-bench procedures are out of scope.
 
 ## License
 
-MIT, by Liu Baiming（刘柏铭）. The textbook *Digital Logic* (7th edition, Bai Zhongying and Zhu Zhengdong, Science Press, 2020) remains under its publisher's copyright; this repository only maps terminology and teaching structure. The BUPT emblem in the page header belongs to the university and is used as a course mark only.
+MIT, by Liu Baiming（刘柏铭）. The textbook *Digital Logic* (7th edition, Bai Zhongying and Zhu Zhengdong, Science Press, 2020) remains under its publisher's copyright; this repository only maps terminology and chapter structure. The BUPT emblem in the page header belongs to the university and is used as a course mark only.

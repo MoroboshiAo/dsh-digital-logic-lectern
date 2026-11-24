@@ -3,7 +3,7 @@
  * dlquiz —— 从确定性计算生成答题题库，供 ui/index.html 使用（零依赖）
  *
  * 用法：
- *   node dlquiz.js --build            生成 ui/questions.js（默认 40 题）
+ *   node dlquiz.js --build            生成 ui/questions.js（默认 80 题）
  *   node dlquiz.js --build --count 20
  *   node dlquiz.js --check            用 dltool 逐题复核计算类答案
  */
@@ -354,6 +354,31 @@ function questionHamming(random) {
 	};
 }
 
+function questionHammingCheck(random) {
+	const data = random.int(0, 15);
+	const bits = bitsOf(data, 4);
+	const [d1, d2, d3, d4] = bits.split("").map(Number);
+	const p1 = d1 ^ d2 ^ d4;
+	const p2 = d1 ^ d3 ^ d4;
+	const p4 = d2 ^ d3 ^ d4;
+	const code = `${p1}${p2}${d1}${p4}${d2}${d3}${d4}`;
+	const position = random.int(1, 7);
+	const index = position - 1;
+	const received = `${code.slice(0, index)}${code[index] === "1" ? "0" : "1"}${code.slice(index + 1)}`;
+	const others = [1, 2, 3, 4, 5, 6, 7].filter((item) => item !== position);
+	const { options, answer } = buildOptions(String(position), others.map(String), random);
+	return {
+		module: "M1",
+		type: "hamming",
+		difficulty: 3,
+		stem: `接收到的 7 位海明码是 ${received}（偶校验，(7,4) 码），按综合症判断，第几位出错？`,
+		options,
+		answer,
+		explain: `对 p1、p2、p4 三组分别求偶校验，综合症 S4S2S1 的十进制值就是出错位号 ${position}；把该位取反即可纠正。`,
+		verify: { args: ["hamming", "--check", received], field: "position" },
+	};
+}
+
 /* ---------- 概念类题目 ---------- */
 
 const CONCEPTS = [
@@ -497,6 +522,419 @@ const CONCEPTS = [
 		wrong: ["时序逻辑，每个时钟沿更新", "初始化赋值，只执行一次", "模块端口声明"],
 		explain: "assign 是连续赋值，等价于一根线加一个门，没有时钟概念。",
 	},
+	{
+		module: "M1", difficulty: 1,
+		stem: "十六进制 2F 换成十进制是多少？",
+		correct: "47",
+		wrong: ["45", "51", "2F"],
+		explain: "2×16+15=47。十六进制中 F 代表 15。",
+	},
+	{
+		module: "M1", difficulty: 2,
+		stem: "八进制数 573.7 的十六进制写法是？",
+		correct: "(17B.E)₁₆",
+		wrong: ["(17C.7)₁₆", "(17B.7)₁₆", "(17C.E)₁₆"],
+		explain: "先化成十进制 379.875，整数部分 379=0x17B，小数 0.875=0xE。",
+	},
+	{
+		module: "M1", difficulty: 1,
+		stem: "8421BCD 码 1001 0110 表示十进制几？",
+		correct: "96",
+		wrong: ["69", "156", "10010110"],
+		explain: "每四位一组：1001 是 9，0110 是 6，按高低位拼成 96。",
+	},
+	{
+		module: "M1", difficulty: 2,
+		stem: "余 3 码 0101 表示十进制数字几？",
+		correct: "2",
+		wrong: ["5", "8", "12"],
+		explain: "余 3 码等于 8421 码加 3：0101 按 8421 读是 5，减 3 得 2。",
+	},
+	{
+		module: "M1", difficulty: 2,
+		stem: "数据 1011 采用奇校验，校验位应取什么？",
+		correct: "0",
+		wrong: ["1", "无法确定", "与偶校验相同"],
+		explain: "1011 里已有三个 1，是奇数；校验位取 0 后 1 的个数仍为奇数。",
+	},
+	{
+		module: "M1", difficulty: 1,
+		stem: "8 位补码 11111111 表示十进制几？",
+		correct: "−1",
+		wrong: ["−0", "255", "−127"],
+		explain: "补码全 1 按位取反加一得 1，符号为负，所以是 −1。",
+	},
+	{
+		module: "M1", difficulty: 2,
+		stem: "十进制 −5 的 8 位反码是哪一个？",
+		correct: "11111010",
+		wrong: ["11111011", "10000101", "00000101"],
+		explain: "先写 +5 的 00000101，逐位取反得反码 11111010；再加一才是补码。",
+	},
+	{
+		module: "M1", difficulty: 2,
+		stem: "2421 码 1111 表示十进制数字几？",
+		correct: "9",
+		wrong: ["15", "6", "7"],
+		explain: "2421 码按 2、4、2、1 加权：2+4+2+1=9。",
+	},
+	{
+		module: "M1", difficulty: 3,
+		stem: "格雷码 0101 对应的二进制数是什么？",
+		correct: "0110",
+		wrong: ["0100", "1100", "1010"],
+		explain: "最高位照抄得 0，其后每位等于上一位二进制结果与本位格雷码异或，得 0110。",
+	},
+	{
+		module: "M1", difficulty: 2,
+		stem: "8 位补码能表示的整数范围是？",
+		correct: "−128 到 127",
+		wrong: ["−127 到 127", "0 到 255", "−128 到 128"],
+		explain: "n 位补码范围是 −2ⁿ⁻¹ 到 2ⁿ⁻¹−1；负数比正数多一个。",
+	},
+	{
+		module: "M2", difficulty: 2,
+		stem: "逻辑函数 F=A+A′B 化简后等于？",
+		correct: "A+B",
+		wrong: ["A", "B", "AB"],
+		explain: "A+A′B=(A+A′)(A+B)=A+B，用的是吸收律和分配律。",
+	},
+	{
+		module: "M2", difficulty: 2,
+		stem: "三变量 A、B、C 的最小项 m5 对应哪组输入？",
+		correct: "101",
+		wrong: ["011", "110", "010"],
+		explain: "5 的二进制是 101，按 A B C 顺序读，即 A=1、B=0、C=1。",
+	},
+	{
+		module: "M2", difficulty: 2,
+		stem: "卡诺图中四个相邻的 1 圈在一起，能消去几个变量？",
+		correct: "2 个",
+		wrong: ["1 个", "3 个", "4 个"],
+		explain: "2 个相邻消 1 个变量，4 个消 2 个，8 个消 3 个。",
+	},
+	{
+		module: "M2", difficulty: 1,
+		stem: "三变量卡诺图一共有多少个格子？",
+		correct: "8 个",
+		wrong: ["4 个", "6 个", "16 个"],
+		explain: "n 变量卡诺图有 2ⁿ 格，三变量是 8 格。",
+	},
+	{
+		module: "M2", difficulty: 3,
+		stem: "F=AB+C 的反函数 F′ 是？",
+		correct: "(A′+B′)·C′",
+		wrong: ["A′B′+C′", "(A+B)·C", "A′B′C′"],
+		explain: "对整个式子用德摩根定律：先变或为与，再逐项取反，得 (A′+B′)·C′。",
+	},
+	{
+		module: "M2", difficulty: 3,
+		stem: "F=AB+C 的对偶式是？",
+		correct: "(A+B)·C",
+		wrong: ["A′B′+C′", "AB+C", "(A+B)+C"],
+		explain: "对偶式把与换成或、或换成与，0 和 1 互换，变量保持不变。",
+	},
+	{
+		module: "M2", difficulty: 2,
+		stem: "关于最小项，下面哪个说法正确？",
+		correct: "任意两个不同最小项之积恒为 0",
+		wrong: ["任意两个最小项之和恒为 1", "最小项之间互为反函数", "最小项的变量可以重复"],
+		explain: "每个最小项只在一种输入组合下为 1，所以不同最小项不可能同时为 1。",
+	},
+	{
+		module: "M2", difficulty: 3,
+		stem: "卡诺图化简时，无关项的取值原则是？",
+		correct: "按需取 0 或 1，能让圈更大就用",
+		wrong: ["一律取 0", "一律取 1", "必须成对出现才能用"],
+		explain: "无关项对应不会出现的输入，取 0 或 1 都不影响功能；化简时只为合并服务。",
+	},
+	{
+		module: "M2", difficulty: 2,
+		stem: "判断两个逻辑函数是否相等，最可靠的方法是？",
+		correct: "列出真值表逐行比较",
+		wrong: ["看表达式长得是否一样", "看变量个数是否相同", "看卡诺图圈数是否相同"],
+		explain: "表达式形式可以不同而功能相同；真值表相同才是函数相等的定义。",
+	},
+	{
+		module: "M3", difficulty: 1,
+		stem: "半加器的进位输出 C 等于？",
+		correct: "AB",
+		wrong: ["A+B", "A⊕B", "AB′"],
+		explain: "只有 A、B 同时为 1 才进位，所以 C=AB；本位和是 A⊕B。",
+	},
+	{
+		module: "M3", difficulty: 2,
+		stem: "全加器的本位和 S 等于？",
+		correct: "A⊕B⊕Cin",
+		wrong: ["A+B+Cin", "AB+Cin", "A⊕B"],
+		explain: "三个输入中 1 的个数为奇数时本位为 1，即三次异或。",
+	},
+	{
+		module: "M3", difficulty: 2,
+		stem: "八选一数据选择器需要几根地址线？",
+		correct: "3 根",
+		wrong: ["2 根", "4 根", "8 根"],
+		explain: "8=2³，3 根地址线正好选中 8 路数据中的一路。",
+	},
+	{
+		module: "M3", difficulty: 1,
+		stem: "8 线−3 线编码器的输出端有几根？",
+		correct: "3 根",
+		wrong: ["8 根", "2 根", "4 根"],
+		explain: "8 个输入用 3 位二进制编号即可区分，所以输出 3 根。",
+	},
+	{
+		module: "M3", difficulty: 3,
+		stem: "组合逻辑中消除静态冒险的常用方法是？",
+		correct: "增加冗余项，把相邻的圈搭接起来",
+		wrong: ["提高时钟频率", "把所有门换成与非门", "减少输入变量个数"],
+		explain: "冒险来自不同路径的延迟差；补一个冗余项可让两条路径互相覆盖。",
+	},
+	{
+		module: "M3", difficulty: 2,
+		stem: "74LS138 译码器有几个输出端？",
+		correct: "8 个",
+		wrong: ["3 个", "4 个", "16 个"],
+		explain: "138 是 3 线−8 线译码器，3 根地址输入对应 8 个低有效输出。",
+	},
+	{
+		module: "M3", difficulty: 3,
+		stem: "用数据选择器实现任意组合函数，依据是什么？",
+		correct: "把真值表的输出值接到对应数据端",
+		wrong: ["内部有触发器可以存储结果", "地址端可以编程", "输出端能自动化简"],
+		explain: "地址端接变量，数据端接 0 或 1，选择器就按真值表逐行输出。",
+	},
+	{
+		module: "M3", difficulty: 3,
+		stem: "把 3 线−8 线译码器改作数据分配器，数据应从哪个引脚输入？",
+		correct: "使能端",
+		wrong: ["地址端", "输出端", "电源端"],
+		explain: "地址端选通道，把数据加到使能端，被选中的那一路输出就随数据变化。",
+	},
+	{
+		module: "M4", difficulty: 2,
+		stem: "D 触发器的特性方程是？",
+		correct: "Q*=D",
+		wrong: ["Q*=JQ′+K′Q", "Q*=T⊕Q", "Q*=D′"],
+		explain: "D 触发器在时钟沿把输入端 D 的值送到输出，次态等于 D。",
+	},
+	{
+		module: "M4", difficulty: 2,
+		stem: "JK 触发器在 J=K=1 时，次态会怎样？",
+		correct: "翻转",
+		wrong: ["保持", "置 0", "置 1"],
+		explain: "J=K=1 是计数状态，每个时钟沿输出取反。",
+	},
+	{
+		module: "M4", difficulty: 2,
+		stem: "同步计数器与异步计数器的主要区别是？",
+		correct: "各级触发器是否由同一个时钟同时触发",
+		wrong: ["模值大小不同", "能否可逆计数", "有没有进位输出"],
+		explain: "同步计数器所有触发器共用时钟；异步计数器把前级输出当时钟，逐级翻转。",
+	},
+	{
+		module: "M4", difficulty: 1,
+		stem: "4 位二进制计数器的模是多少？",
+		correct: "16",
+		wrong: ["8", "15", "10"],
+		explain: "4 位可表示 0000 到 1111 共 16 个状态，计满 16 个脉冲回绕。",
+	},
+	{
+		module: "M4", difficulty: 2,
+		stem: "4 位串入串出移位寄存器，把 4 位数据全部移入需要几个时钟？",
+		correct: "4 个",
+		wrong: ["1 个", "3 个", "8 个"],
+		explain: "每个时钟移入一位，4 位就要 4 个时钟；再移出同样需要 4 个。",
+	},
+	{
+		module: "M4", difficulty: 2,
+		stem: "时序逻辑电路的输出取决于什么？",
+		correct: "当前输入和电路原来的状态",
+		wrong: ["只取决于当前输入", "只取决于原来的状态", "只取决于时钟频率"],
+		explain: "时序逻辑有记忆，输出由输入与现态共同决定，这也是它有别于组合逻辑的地方。",
+	},
+	{
+		module: "M4", difficulty: 3,
+		stem: "主从 JK 触发器在 CP=1 期间输出会怎样？",
+		correct: "保持不变，到 CP 下降沿才更新",
+		wrong: ["随 J、K 立即变化", "每半个周期翻转一次", "进入不定状态"],
+		explain: "CP=1 时主触发器接收、从触发器封锁；下降沿从触发器才接收主触发器的结果。",
+	},
+	{
+		module: "M4", difficulty: 3,
+		stem: "设计同步时序电路时，第一步通常做什么？",
+		correct: "根据功能要求画出原始状态图或状态表",
+		wrong: ["先画电路图", "先列出全部真值表", "先选定触发器型号"],
+		explain: "先把功能变成状态与转移关系，再谈状态化简、编码和触发器选型。",
+	},
+	{
+		module: "M5", difficulty: 2,
+		stem: "DRAM 需要定期刷新的原因是？",
+		correct: "靠电容存电荷，电荷会泄漏",
+		wrong: ["读写速度太快", "存储容量太小", "掉电后数据会丢失"],
+		explain: "DRAM 单元是一个电容加一个管子，电荷会漏掉，所以必须周期性刷新。",
+	},
+	{
+		module: "M5", difficulty: 2,
+		stem: "SRAM 的存储单元本质上是什么？",
+		correct: "双稳态触发器",
+		wrong: ["一个电容", "一根熔丝", "一个浮栅管"],
+		explain: "SRAM 用六个管子构成双稳态，只要供电就保持，不需要刷新。",
+	},
+	{
+		module: "M5", difficulty: 2,
+		stem: "1K×8 的存储器需要几根地址线？",
+		correct: "10 根",
+		wrong: ["8 根", "11 根", "16 根"],
+		explain: "1K=2¹⁰，地址线 10 根；8 是数据位宽，不参与地址。",
+	},
+	{
+		module: "M5", difficulty: 2,
+		stem: "用 1K×4 的芯片组成 1K×8 的存储器，需要几片？",
+		correct: "2 片",
+		wrong: ["4 片", "8 片", "1 片"],
+		explain: "字数不变、位宽翻倍，属于位扩展，两片并排共用地址即可。",
+	},
+	{
+		module: "M5", difficulty: 1,
+		stem: "ROM 在掉电后数据会怎样？",
+		correct: "保持不变",
+		wrong: ["全部丢失", "变成全 1", "需要重新刷新"],
+		explain: "ROM 是非易失性存储器，断电后内容仍在；RAM 才需要持续供电。",
+	},
+	{
+		module: "M5", difficulty: 2,
+		stem: "存储器地址译码器的作用是？",
+		correct: "根据高位地址选中对应的芯片或存储单元",
+		wrong: ["放大地址信号", "保存写入的数据", "产生读写时钟"],
+		explain: "地址译码把地址空间划分开，避免多片存储器同时被选中。",
+	},
+	{
+		module: "M6", difficulty: 3,
+		stem: "4 输入 LUT 需要多少位配置数据？",
+		correct: "16 位",
+		wrong: ["4 位", "8 位", "32 位"],
+		explain: "4 个输入有 16 种组合，每种组合对应一位输出值，所以是 16 位。",
+	},
+	{
+		module: "M6", difficulty: 3,
+		stem: "PAL 器件的阵列结构是？",
+		correct: "与阵列可编程，或阵列固定",
+		wrong: ["与、或阵列都可编程", "与阵列固定，或阵列可编程", "两个阵列都固定"],
+		explain: "PAL 用可编程与阵列产生乘积项，或阵列出厂已连好；PLA 才是两者都可编程。",
+	},
+	{
+		module: "M6", difficulty: 2,
+		stem: "基于 SRAM 工艺的 FPGA 掉电后配置会怎样？",
+		correct: "丢失，上电需要重新加载",
+		wrong: ["保留，随时可用", "变成只读", "自动恢复出厂设置"],
+		explain: "SRAM 掉电即失，比特流通常存在外部 Flash，上电时再装入 FPGA。",
+	},
+	{
+		module: "M6", difficulty: 3,
+		stem: "CPLD 的基本结构通常由什么组成？",
+		correct: "可编程与或阵列加宏单元",
+		wrong: ["LUT 加触发器", "只有分立门电路", "微程序控制存储器"],
+		explain: "CPLD 沿用 PAL 的与或阵列，再配宏单元和互连，适合组合逻辑与简单时序。",
+	},
+	{
+		module: "M6", difficulty: 3,
+		stem: "GAL 器件的输出逻辑宏单元主要作用是什么？",
+		correct: "配置输出极性、寄存器和三态方式",
+		wrong: ["放大输出电流", "存储用户程序", "产生系统时钟"],
+		explain: "宏单元让同一器件可以按需配成组合输出、寄存输出或双向口。",
+	},
+	{
+		module: "M7", difficulty: 3,
+		stem: "ASM 图中的状态框表示什么？",
+		correct: "一个时钟周期内保持的状态及该状态的输出",
+		wrong: ["一个组合逻辑门", "一条微指令", "一个输入变量"],
+		explain: "状态框对应现态，框内写输出；框之间用判断框按条件分支。",
+	},
+	{
+		module: "M7", difficulty: 2,
+		stem: "微程序控制器的控制信号来自哪里？",
+		correct: "控制存储器中的微指令",
+		wrong: ["用户程序的内存", "组合逻辑门的直接输出", "数据总线"],
+		explain: "每条微指令的各个字段直接控制门电路，属于硬件的一部分。",
+	},
+	{
+		module: "M7", difficulty: 2,
+		stem: "硬布线控制器的主要特点是？",
+		correct: "速度快，但修改控制逻辑困难",
+		wrong: ["速度慢，但容易修改", "速度与微程序控制器完全相同", "不需要时钟信号"],
+		explain: "控制信号由组合逻辑直接产生，路径短所以快；要改功能就得改电路。",
+	},
+	{
+		module: "M7", difficulty: 2,
+		stem: "数据通路主要完成什么任务？",
+		correct: "在各部件之间传送数据并完成运算",
+		wrong: ["产生全部控制信号", "存储微程序", "对指令地址进行译码"],
+		explain: "数据通路管数据怎么走、在哪算；控制信号由控制器给出。",
+	},
+	{
+		module: "M7", difficulty: 3,
+		stem: "微指令中的下地址字段作用是什么？",
+		correct: "指出下一条微指令的地址",
+		wrong: ["指出操作数地址", "指出主存地址", "指出 I/O 端口号"],
+		explain: "微程序按微指令顺序执行，下地址字段决定下一步跳到哪里。",
+	},
+	{
+		module: "M8", difficulty: 2,
+		stem: "Verilog 中 reg 与 wire 的主要区别是？",
+		correct: "reg 可在 always 中赋值并保持，wire 需要连续赋值",
+		wrong: ["reg 一定综合成寄存器", "wire 能存多位而 reg 只能存一位", "两者完全等价"],
+		explain: "reg 只是过程赋值的目标，是否综合成触发器取决于写法；wire 表示连线般的连续驱动。",
+	},
+	{
+		module: "M8", difficulty: 2,
+		stem: "描述组合逻辑的 always 块里应使用哪种赋值？",
+		correct: "阻塞赋值 =",
+		wrong: ["非阻塞赋值 <=", "两种混用", "只能用 assign"],
+		explain: "组合逻辑要求按书写顺序立即得到结果，阻塞赋值符合这一语义。",
+	},
+	{
+		module: "M8", difficulty: 2,
+		stem: "always @(*) 的敏感列表等价于什么？",
+		correct: "块内读取到的所有信号",
+		wrong: ["只有时钟信号", "只有输出信号", "工程里的全部信号"],
+		explain: "@(*) 由工具自动补全敏感列表，避免漏写信号导致仿真与综合不一致。",
+	},
+	{
+		module: "M8", difficulty: 2,
+		stem: "位拼接 {2'b10, 2'b01} 的结果是？",
+		correct: "4'b1001",
+		wrong: ["4'b1010", "2'b11", "4'b0101"],
+		explain: "拼接按书写顺序左高右低，10 在前、01 在后，得到 1001。",
+	},
+	{
+		module: "M8", difficulty: 2,
+		stem: "testbench 中产生周期性时钟的常见写法是？",
+		correct: "initial 置初值，再用 always #5 clk=~clk",
+		wrong: ["assign clk=~clk", "initial clk=~clk 单独一行", "always @(clk) clk=~clk"],
+		explain: "always 加延时反复取反才能持续翻转；assign 自引用和敏感列表写法都不成立。",
+	},
+	{
+		module: "M8", difficulty: 3,
+		stem: "阻塞赋值的特点是？",
+		correct: "按书写顺序立即执行并更新",
+		wrong: ["所有语句并行更新", "延迟到时间步结束才更新", "只能用于时序逻辑"],
+		explain: "阻塞赋值像普通程序语句，前一句的结果立刻影响后一句。",
+	},
+	{
+		module: "M8", difficulty: 3,
+		stem: "`timescale 1ns/1ps 的含义是？",
+		correct: "时间单位 1ns，时间精度 1ps",
+		wrong: ["时钟周期 1ns，频率 1ps", "延时 1ns，误差 1ps", "单位 1ps，精度 1ns"],
+		explain: "斜杠前是单位，斜杠后是精度；精度不能大于单位。",
+	},
+	{
+		module: "M8", difficulty: 2,
+		stem: "Verilog 中 parameter 的作用是？",
+		correct: "定义模块内常量，实例化时可覆盖",
+		wrong: ["定义可变的寄存器", "定义模块端口", "产生时钟信号"],
+		explain: "parameter 常用来写位宽和延时，让同一模块在不同实例中取不同值。",
+	},
 ];
 
 function conceptQuestions(random, used) {
@@ -521,9 +959,10 @@ function conceptQuestions(random, used) {
 
 function generateQuestions(count, seed) {
 	const random = makeRandom(seed);
-	const computed = [questionBase, questionTwosComplement, questionGray, questionBcd, questionHamming, questionMinterms, questionKmap];
+	const computed = [questionBase, questionTwosComplement, questionGray, questionBcd, questionHamming, questionHammingCheck, questionMinterms, questionKmap];
 	const questions = [];
 	const conceptPool = [];
+	const seenStems = new Set();
 
 	// 计算题与概念题交替出现，保证八个模块都有覆盖
 	let guard = 0;
@@ -531,12 +970,19 @@ function generateQuestions(count, seed) {
 		guard += 1;
 		const index = questions.length;
 		if (index % 2 === 1) {
-			questions.push(conceptQuestions(random, conceptPool));
+			const candidate = conceptQuestions(random, conceptPool);
+			if (candidate && !seenStems.has(candidate.stem)) {
+				seenStems.add(candidate.stem);
+				questions.push(candidate);
+			}
 			continue;
 		}
 		const generator = computed[(index / 2) % computed.length];
 		const candidate = generator(random);
-		if (candidate.options.length === 4) questions.push(candidate);
+		if (candidate.options.length === 4 && !seenStems.has(candidate.stem)) {
+			seenStems.add(candidate.stem);
+			questions.push(candidate);
+		}
 	}
 	return questions.map((question, index) => ({ id: `q${index + 1}`, ...question }));
 }
@@ -586,7 +1032,7 @@ function main() {
 	}
 
 	const seed = Number(flags.get("seed") ?? 20261125);
-	const count = Number(flags.get("count") ?? 40);
+	const count = Number(flags.get("count") ?? 80);
 	const questions = generateQuestions(count, seed);
 
 	if (flags.get("check") === true) {

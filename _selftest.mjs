@@ -59,7 +59,7 @@ assert.ok(skill.description.length > 20, "description 不能为空或过短");
 assert.ok(skill.whenToUse.length > 10, "whenToUse 应存在");
 assert.equal(skill.source, "dsh-digital-logic-lectern");
 assert.ok(!skill.content.startsWith("---"), "正文不应包含 frontmatter");
-assert.ok(skill.content.includes("六件套"), "正文应是 SKILL.md 的主体");
+assert.ok(skill.content.includes("学习卡"), "正文应是 SKILL.md 的主体");
 assert.equal(skill.resourceBase.kind, "directory");
 assert.ok(existsSync(join(skill.resourceBase.path, "scripts", "dltool.js")), "resourceBase 下应有 scripts/dltool.js");
 assert.ok(existsSync(join(skill.resourceBase.path, "references", "m1_number_code.md")), "references 应完整");
