@@ -171,7 +171,7 @@ function parseChapter(config) {
 			const parsed = splitNumber(sub.heading);
 			section.subs.push({
 				number: parsed.number,
-				heading: sub.heading,
+				heading: parsed.title,
 				anchor: parsed.number === "" ? `sec-${config.id}-${section.subs.length}` : `sec-${parsed.number}`,
 				html,
 			});
@@ -185,6 +185,7 @@ function parseChapter(config) {
 		const html = markdownToHtml(section.lines.join("\n"));
 		const parsed = splitNumber(section.heading);
 		section.number = parsed.number;
+		section.heading = parsed.title;
 		section.anchor = parsed.number === "" ? `sec-${config.id}-${sections.length}` : `sec-${parsed.number}`;
 		section.html = html;
 		if (section.number !== "" || html.trim() !== "" || section.subs.length > 0) sections.push(section);

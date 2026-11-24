@@ -17,7 +17,7 @@ git clone https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 插件方式，在 DeepSeek Harness 的添加插件窗口里填本目录的路径，或填打好的 tgz：
 
 ```bash
-dsh plugin --profile <配置名> add file:/绝对路径/dsh-digital-logic-lectern-0.6.0.tgz
+dsh plugin --profile <配置名> add file:/绝对路径/dsh-digital-logic-lectern-0.6.1.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 整个拷进 `~/.dsh/skills/`。两种方式选一种，别同时放，同名技能会互相盖住。装完重启客户端。
