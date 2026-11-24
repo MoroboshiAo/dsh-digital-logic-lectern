@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>数字逻辑辅助学习插件</title>
 <meta name="author" content="刘柏铭（Liu Baiming）">
-<meta name="description" content="数字逻辑课程讲义、章节自测与人机对战、错题本。">
+<meta name="description" content="数字逻辑课程学习资料、章节自测与人机对战、错题本。">
 <script>
 (function () {
 	try {
@@ -455,7 +455,7 @@
 	var app = document.getElementById("app");
 	var footer = document.getElementById("footer");
 	var STORAGE_KEY = "dl-wrong-book-v1";
-	var APP_VERSION = "0.6.4";
+	var APP_VERSION = "0.6.5";
 
 	var MODULES = {
 		M1: "数制与编码", M2: "逻辑代数", M3: "组合逻辑", M4: "时序逻辑",
@@ -686,7 +686,7 @@
 				+ esc(SOURCE.publisher) + "，" + esc(SOURCE.year) + " 年。");
 			parts.push(esc(SOURCE.note));
 		} else {
-			parts.push("讲义为自编内容，不是教材原文。");
+			parts.push("学习资料为自编内容，不是教材原文。");
 		}
 		if (BOOK && BOOK.generatedAt) {
 			var date = new Date(BOOK.generatedAt);
@@ -745,14 +745,14 @@
 
 	function renderLearn() {
 		if (CHAPTERS.length === 0) {
-			app.innerHTML = '<div class="panel empty"><p>讲义数据还没生成。' + info("在技能目录运行 node scripts/dlbook.js --build，然后刷新页面。") + '</p>'
+			app.innerHTML = '<div class="panel empty"><p>学习资料还没生成。' + info("在技能目录运行 node scripts/dlbook.js --build，然后刷新页面。") + '</p>'
 				+ '<button class="btn primary" id="reloadLearn">' + icon("refresh") + '重新加载</button></div>';
 			document.getElementById("reloadLearn").addEventListener("click", function () { window.location.reload(); });
 			return;
 		}
 
 		app.innerHTML = '<div class="learn"><div class="searchbar">' + icon("search")
-			+ '<input id="searchInput" type="search" autocomplete="off" placeholder="搜索章节、术语或正文" value="' + esc(state.search) + '" aria-label="搜索讲义">'
+			+ '<input id="searchInput" type="search" autocomplete="off" placeholder="搜索章节、术语或正文" value="' + esc(state.search) + '" aria-label="搜索学习资料">'
 			+ '</div><div id="learnMain"></div></div>';
 
 		var input = document.getElementById("searchInput");

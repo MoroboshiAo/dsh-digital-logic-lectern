@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 The Git route clones the repository before installing, so git and network access are required. The repository is public. The three routes are equivalent: npm name, Git URL, local directory or tgz.
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.4.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.5.tgz
 ```
 
 Copying `skills/digital-logic-lectern` into `~/.dsh/skills/` works too. Pick one route; installing twice makes the two copies of the same skill shadow each other. Restart the client afterwards.
@@ -109,7 +109,7 @@ cordis.patch.yml          patch file required by the plugin manifest
 
 ## Limits
 
-- The notes follow the outline of *Digital Logic* (7th edition, Bai Zhongying and Zhu Zhengdong, Science Press, 2020). They are not the publisher's text. Section numbers were checked against the slide deck that ships with that edition; the mapping is in `references/textbook_map.md`. Section 5.5 of the textbook covers VHDL, while this course uses Verilog; the notes point out the difference.
+- The notes follow the outline of *Digital Logic* (7th edition, Bai Zhongying and Zhu Zhengdong, Science Press, 2020). They are not the publisher's text. Section numbers were checked against the companion course materials that ship with that edition; the mapping is in `references/textbook_map.md`. Section 5.5 of the textbook covers VHDL, while this course uses Verilog; the notes point out the difference.
 - The in-app page is an iframe over the same static page, so the review list and options live in the host page's local storage. Clearing site data or switching browsers loses them.
 - Simulation requires iverilog. Without it `dlverify.js` fails loudly and prints install instructions; simulation results then have to be marked unverified.
 - Coverage is limited to the eight course modules. Analog circuits and lab-bench procedures are out of scope.

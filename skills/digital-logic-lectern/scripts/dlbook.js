@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * dlbook —— 把 references 里的讲义转成网页可用的数据（零依赖）
+ * dlbook —— 把 references 里的学习资料转成网页可用的数据（零依赖）
  *
- * 说明：这里转的是本仓库自编的讲义，不是出版社教材原文。
+ * 说明：这里转的是本仓库自编的学习资料，不是出版社教材原文。
  * 结构：章 → 节（##）→ 小节（###），小节编号即锚点，例如 #sec-2.5.1。
  *
  * 用法：node dlbook.js --build
@@ -22,7 +22,7 @@ const SOURCE = {
 	editors: "白中英、朱正东 主编",
 	publisher: "科学出版社",
 	year: "2020",
-	note: "讲义按该教材目录自编，不是教材原文。",
+	note: "学习资料按该教材目录自编，不是教材原文。",
 };
 
 const CHAPTERS = [
@@ -224,13 +224,13 @@ function parseChapter(config) {
 function main() {
 	const chapters = CHAPTERS.map(parseChapter).filter((chapter) => chapter !== null);
 	if (chapters.length === 0) {
-		console.error("错误：references 里没有可用的讲义文件");
+		console.error("错误：references 里没有可用的学习资料文件");
 		process.exit(1);
 	}
 
 	const outPath = join(SKILL_ROOT, "ui", "book.js");
 	mkdirSync(dirname(outPath), { recursive: true });
-	const payload = "// 由 scripts/dlbook.js 从 references 生成。这是自编讲义，不是教材原文。\n"
+	const payload = "// 由 scripts/dlbook.js 从 references 生成。这是自编学习资料，不是教材原文。\n"
 		+ `window.DL_BOOK = ${JSON.stringify({ generatedAt: new Date().toISOString(), source: SOURCE, chapters }, null, "\t")};\n`;
 	writeFileSync(outPath, payload, "utf8");
 	console.log(`已生成 ${chapters.length} 章，写入 ${outPath}`);

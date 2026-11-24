@@ -6,7 +6,7 @@ npm 包名：`dsh-digital-logic-lectern`
 
 面向《数字逻辑》（第七版，白中英、朱正东主编，科学出版社，2020 年）的学习与练习插件，用于 DeepSeek Harness。插件提供一套课程知识库、一份 80 题的题库和一个网页界面；知识库按该教材目录自编，不是教材原文。
 
-插件包含一个技能和一个网页。技能负责解释概念、分步推导、核对计算结果、按教材范围出练习；网页负责看讲义、做章节自测、人机对战、收错题。网页可以在 DSH 应用内直接打开。
+插件包含一个技能和一个网页。技能负责解释概念、分步推导、核对计算结果、按教材范围出练习；网页负责看学习资料、做章节自测、人机对战、收错题。网页可以在 DSH 应用内直接打开。
 
 ## 安装
 
@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 Git 方式会克隆仓库再安装，需要本机有 git 与网络。仓库已公开，不需要凭据。三种写法等价：npm 包名、Git 地址、本地目录或 tgz。
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.4.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.6.5.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 复制到 `~/.dsh/skills/`。几种方式只选一种，重复安装会让同名技能互相遮蔽。安装后重启客户端。
@@ -46,7 +46,7 @@ dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern
 
 ```bash
 cd skills/digital-logic-lectern
-node scripts/dlbook.js --build      # 讲义 → 页面数据
+node scripts/dlbook.js --build      # 学习资料 → 页面数据
 node scripts/dlquiz.js --build      # 生成 80 题并复核计算题
 start ui/index.html
 ```
@@ -87,7 +87,7 @@ start ui/index.html
 ```
 skills/digital-logic-lectern/
 ├── SKILL.md              技能定义：学习卡结构、工具规则、模块索引、红线
-├── references/           八个模块卡、七章讲义、术语表、教材对照表
+├── references/           八个模块卡、七章学习资料、术语表、教材对照表
 │   ├── textbook/         ch1 到 ch7，按教材章节与小节编排
 │   └── appendix_verilog.md   Verilog 附录，教材外补充
 ├── scripts/
@@ -109,7 +109,7 @@ cordis.patch.yml          插件清单要求的补丁文件
 
 ## 限制
 
-- 讲义按《数字逻辑》（第七版）目录自编，不是出版社原文。章节号已按该版配套课件核对，对照表在 `references/textbook_map.md`。教材 5.5 节用 VHDL，本课程用 Verilog，讲义会指出差异。
+- 学习资料按《数字逻辑》（第七版）目录自编，不是出版社原文。章节号已按该版配套课件核对，对照表在 `references/textbook_map.md`。教材 5.5 节用 VHDL，本课程用 Verilog，学习资料会指出差异。
 - 网页是宿主面板里的 iframe，错题与选项存在宿主页面的 localStorage；清除站点数据或换浏览器会丢失。
 - Verilog 仿真需要本机安装 iverilog。没装时 `dlverify.js` 会直接报错并给出安装指引，不会伪造结果；此时任何仿真结论只能标「未验证」。
 - 范围限于八个课程模块，模拟电路与实验台操作不在内。

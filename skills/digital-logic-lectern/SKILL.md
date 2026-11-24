@@ -92,18 +92,18 @@ node <SKILL_ROOT>/scripts/dlverify.js <设计.v> <testbench.v>
 
 `ui/index.html` 是纯静态页面，双击就能开，不联网、不需要服务器。分三块：
 
-- **学习**：左边是教材目录，第一章到第七章加附录与术语表，每章可展开到节和小节（例如 1.1 → 1.1.1）。右边是该章讲义。顶部搜索框同时搜标题和正文，点结果跳到对应小节。讲义按《数字逻辑》（第七版）的目录自编，页脚注明书名、主编、出版社、版次，正文不是教材原文。术语表每一行都能跳到对应小节。底部有「自测本章」。
+- **学习**：左边是教材目录，第一章到第七章加附录与术语表，每章可展开到节和小节（例如 1.1 → 1.1.1）。右边是该章学习资料。顶部搜索框同时搜标题和正文，点结果跳到对应小节。学习资料按《数字逻辑》（第七版）的目录自编，页脚注明书名、主编、出版社、版次，正文不是教材原文。术语表每一行都能跳到对应小节。底部有「自测本章」。
 - **自测**：先选章节，再选单人闯关或人机对战，然后按题数开始。答错自动进错题本。
 - **错题本**：存在浏览器 localStorage 里，可以重做、单条移除、整体清空。
 
 ```bash
-node scripts/dlbook.js --build      # 讲义 → ui/book.js
+node scripts/dlbook.js --build      # 学习资料 → ui/book.js
 node scripts/dlquiz.js --build      # 题库 → ui/questions.js，生成时复核计算题
 node scripts/dlquiz.js --check      # 只复核，不写文件
 start ui/index.html                 # Windows 打开
 ```
 
-出题纪律：只从 `ui/questions.js` 取题，不许临场编题；题目里的数字必须能通过 `dlquiz.js --check`。讲义只讲 `references` 里有的内容，不许拿教材原文冒充实拍。
+出题纪律：只从 `ui/questions.js` 取题，不许临场编题；题目里的数字必须能通过 `dlquiz.js --check`。学习资料只讲 `references` 里有的内容，不许拿教材原文冒充原创。
 
 ## 5 红线
 
