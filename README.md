@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 Git 方式会克隆仓库再安装，需要本机有 git 与网络。仓库已公开，不需要凭据。三种写法等价：npm 包名、Git 地址、本地目录或 tgz。
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.12.0.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.12.1.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 复制到 `~/.dsh/skills/`。几种方式只选一种，重复安装会让同名技能互相遮蔽。安装后重启客户端。

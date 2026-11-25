@@ -620,7 +620,7 @@
 	var footer = document.getElementById("footer");
 	var STORAGE_KEY = "dl-wrong-book-v1";
 	var FAV_KEY = "dl-favorites-v1";
-	var APP_VERSION = "0.12.0";
+	var APP_VERSION = "0.12.1";
 
 	var MODULES = {
 		M1: "数制与编码", M2: "逻辑代数", M3: "组合逻辑", M4: "时序逻辑",
@@ -1235,7 +1235,8 @@
 
 	/** 收藏页跳转：按条目自带信息切章、展开小节并定位。 */
 	function jumpFav(entry) {
-		var chapterId = entry.chapterId || chapterOfAnchor(entry.anchor) || CHAPTERS[0].id;
+		var chapterId = entry.chapterId || (entry.kind === "chapter" ? entry.id : "")
+			|| chapterOfAnchor(entry.anchor) || CHAPTERS[0].id;
 		var chapter = CHAPTERS.find(function (item) { return item.id === chapterId; });
 		state.chapterId = chapterId;
 		state.search = "";
