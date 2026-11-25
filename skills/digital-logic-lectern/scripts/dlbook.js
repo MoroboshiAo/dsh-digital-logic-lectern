@@ -76,11 +76,12 @@ function tableCell(text) {
 	return inline(cell);
 }
 
-/** 行级 Markdown 转 HTML：标题、列表、表格、代码块、段落。 */
-function markdownToHtml(markdown) {
+/** 行级 Markdown 转 HTML：标题、列表、表格、代码块、段落。anchor 用于给配图编 id。 */
+function markdownToHtml(markdown, anchor) {
 	const lines = markdown.split(/\r?\n/);
 	const out = [];
 	let index = 0;
+	let figures = 0;
 
 	const flushParagraph = (buffer) => {
 		if (buffer.length === 0) return;
@@ -113,7 +114,10 @@ function markdownToHtml(markdown) {
 			const alt = escapeHtml(image[1]);
 			const src = figureSource(image[2]);
 			const caption = alt === "" ? "" : `<figcaption>${alt}</figcaption>`;
-			out.push(`<figure><img src="${src}" alt="${alt}" loading="lazy">${caption}</figure>`);
+			figures += 1;
+			const figId = `fig-${anchor === undefined || anchor === "" ? "page" : anchor}-${figures}`;
+			out.push(`<figure id="${figId}" data-fig="${figId}" data-sec="${anchor === undefined ? "" : anchor}" data-caption="${alt}">`
+				+ `<img src="${src}" alt="${alt}" loading="lazy">${caption}</figure>`);
 			index += 1;
 			continue;
 		}
@@ -189,13 +193,14 @@ function parseChapter(config) {
 
 	const closeSub = () => {
 		if (section === null || sub === null) return;
-		const html = markdownToHtml(sub.lines.join("\n"));
+		const parsed = splitNumber(sub.heading);
+		const anchor = parsed.number === "" ? `sec-${config.id}-${section.subs.length}` : `sec-${parsed.number}`;
+		const html = markdownToHtml(sub.lines.join("\n"), anchor);
 		if (html.trim() !== "") {
-			const parsed = splitNumber(sub.heading);
 			section.subs.push({
 				number: parsed.number,
 				heading: parsed.title,
-				anchor: parsed.number === "" ? `sec-${config.id}-${section.subs.length}` : `sec-${parsed.number}`,
+				anchor,
 				html,
 			});
 		}
@@ -205,11 +210,12 @@ function parseChapter(config) {
 	const closeSection = () => {
 		closeSub();
 		if (section === null) return;
-		const html = markdownToHtml(section.lines.join("\n"));
 		const parsed = splitNumber(section.heading);
+		const anchor = parsed.number === "" ? `sec-${config.id}-${sections.length}` : `sec-${parsed.number}`;
+		const html = markdownToHtml(section.lines.join("\n"), anchor);
 		section.number = parsed.number;
 		section.heading = parsed.title;
-		section.anchor = parsed.number === "" ? `sec-${config.id}-${sections.length}` : `sec-${parsed.number}`;
+		section.anchor = anchor;
 		section.html = html;
 		if (section.number !== "" || html.trim() !== "" || section.subs.length > 0) sections.push(section);
 		section = null;

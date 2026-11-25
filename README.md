@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 Git 方式会克隆仓库再安装，需要本机有 git 与网络。仓库已公开，不需要凭据。三种写法等价：npm 包名、Git 地址、本地目录或 tgz。
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.11.0.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.12.0.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 复制到 `~/.dsh/skills/`。几种方式只选一种，重复安装会让同名技能互相遮蔽。安装后重启客户端。
@@ -71,7 +71,7 @@ start ui/index.html
 
 题干右上角的「搜题」把当前题目连选项交给对话里的 `digital-logic-lectern` 技能：在 DSH 应用内会切回当前会话并把 `/digital-logic-lectern` 与题干填进输入框，在浏览器里单独打开时改为复制题干。
 
-**收藏。** 题干右上角的星标收藏题目，章节标题右侧的星标收藏本章。收藏页分章节与题目两组，可跳到章节、重做题目或取消收藏。
+**收藏。** 章节标题、小节标题、每幅配图与术语表每一行都有星标，题干右上角的星标收藏题目。收藏页按章节、小节、配图、术语、题目分组，可跳到对应位置、重做题目或取消收藏。
 
 **错题本。** 答错自动收录，可重做、单条移除、整体清空。收藏与错题都只存在浏览器本地。
 

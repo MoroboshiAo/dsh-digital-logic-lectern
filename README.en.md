@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 The Git route clones the repository before installing, so git and network access are required. The repository is public. The three routes are equivalent: npm name, Git URL, local directory or tgz.
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.11.0.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.12.0.tgz
 ```
 
 Copying `skills/digital-logic-lectern` into `~/.dsh/skills/` works too. Pick one route; installing twice makes the two copies of the same skill shadow each other. Restart the client afterwards.
@@ -71,7 +71,7 @@ Harder questions lower the AI's accuracy and shorten its delay a little further.
 
 The "搜题" (Ask) button at the top right of a question hands the stem and options to the `digital-logic-lectern` skill in the conversation: inside the DSH app it switches back to the current session and drops `/digital-logic-lectern` plus the question into the input box; when the page is opened in a plain browser it copies the text instead.
 
-**Favorites.** The star at the top right of a question saves it; the star beside a chapter title saves the chapter. The favorites tab lists chapters and questions separately and can jump to a chapter, redo a question, or remove an entry.
+**Favorites.** Stars sit on chapter titles, subsection headings, every figure, and every glossary row; the star at the top right of a question saves the question. The favorites tab groups entries by chapter, subsection, figure, term, and question, and can jump to the item, redo a question, or remove an entry.
 
 **Review.** Wrong answers are collected automatically and can be redone. Favorites and wrong answers stay in the browser's local storage.
 

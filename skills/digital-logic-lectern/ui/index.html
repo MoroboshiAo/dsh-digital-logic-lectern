@@ -381,6 +381,19 @@
 	.fav svg { width: 16px; height: 16px; }
 	.fav.on { color: var(--warn); border-color: var(--warn); background: var(--soft); }
 	.fav.on svg { fill: currentColor; }
+	.fav.inl { display: inline-grid; vertical-align: middle; width: 24px; height: 24px; border-radius: 7px; margin-left: 6px; }
+	.fav.inl svg { width: 14px; height: 14px; }
+	.reader h3 { display: flex; align-items: center; gap: 6px; }
+	.reader h3 .num { margin-right: 0; }
+	.reader h3 .fav { margin-left: auto; width: 26px; height: 26px; border-radius: 7px; }
+	.reader h3 .fav svg { width: 14px; height: 14px; }
+	.reader figure { position: relative; }
+	.fig-fav {
+		position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
+		background: rgba(20, 24, 33, 0.72); border-color: rgba(255, 255, 255, 0.24); color: #e6e8ee;
+	}
+	.fig-fav.on { background: rgba(255, 200, 0, 0.18); border-color: var(--warn); color: var(--warn); }
+	.fav-row .sub { color: var(--muted); font-size: 12px; }
 
 	.feedback { margin-top: 18px; padding: 16px; border-radius: 12px; border: 2px solid var(--line); background: var(--soft-bg); font-size: 14px; line-height: 1.8; animation: rise 0.2s ease; }
 	.feedback.ok { border-color: var(--ok-border); background: var(--ok-bg); }
@@ -430,6 +443,8 @@
 	.fav-group h3 { font-size: 13px; color: var(--muted); font-weight: 600; margin: 0 0 10px; }
 	.fav-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; }
 	.fav-open { flex: 1; text-align: left; border: none; background: transparent; color: var(--text); font: inherit; font-size: 14px; cursor: pointer; padding: 0; }
+	.fav-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+	.fav-main .fav-open { flex: 0 0 auto; }
 	.fav-open:hover { color: var(--link); }
 	.fav-list { display: grid; gap: 10px; }
 	.fav-list .qfig { max-width: 380px; }
@@ -605,7 +620,7 @@
 	var footer = document.getElementById("footer");
 	var STORAGE_KEY = "dl-wrong-book-v1";
 	var FAV_KEY = "dl-favorites-v1";
-	var APP_VERSION = "0.11.0";
+	var APP_VERSION = "0.12.0";
 
 	var MODULES = {
 		M1: "数制与编码", M2: "逻辑代数", M3: "组合逻辑", M4: "时序逻辑",
@@ -1030,7 +1045,7 @@
 			parts.push('<h2 id="' + section.anchor + '">' + headingHtml(section) + '</h2>');
 			if (section.html) parts.push(section.html);
 			section.subs.forEach(function (sub) {
-				parts.push('<h3 id="' + sub.anchor + '">' + headingHtml(sub) + '</h3>' + sub.html);
+				parts.push(subHeading(sub, section) + sub.html);
 			});
 			parts.push('</section>');
 			return parts.join("");
@@ -1053,6 +1068,74 @@
 
 		renderToc();
 
+		var article = main.querySelector(".reader");
+		article.querySelectorAll("figure[data-fig]").forEach(function (figure) {
+			var figId = figure.getAttribute("data-fig");
+			var on = isFavorite("figure", figId);
+			var button = document.createElement("button");
+			button.type = "button";
+			button.className = "fav fig-fav" + (on ? " on" : "");
+			button.setAttribute("data-fav-fig", figId);
+			button.setAttribute("data-title", figure.getAttribute("data-caption") || "配图");
+			button.setAttribute("data-anchor", figure.getAttribute("data-sec") || "");
+			button.setAttribute("aria-label", "收藏配图");
+			button.setAttribute("aria-pressed", String(on));
+			button.innerHTML = icon("star");
+			figure.appendChild(button);
+		});
+		if (chapter.id === "glossary") {
+			article.querySelectorAll("table tbody tr").forEach(function (row) {
+				var cell = row.children[0];
+				if (cell === undefined) return;
+				var name = cell.textContent.trim();
+				if (name === "") return;
+				var termId = "term-" + name;
+				var on = isFavorite("term", termId);
+				var link = row.querySelector("a.jump");
+				var button = document.createElement("button");
+				button.type = "button";
+				button.className = "fav inl" + (on ? " on" : "");
+				button.setAttribute("data-fav-term", termId);
+				button.setAttribute("data-title", name);
+				button.setAttribute("data-desc", row.children[1] === undefined ? "" : row.children[1].textContent.trim());
+				button.setAttribute("data-anchor", link === null ? "" : link.getAttribute("href").slice(1));
+				button.setAttribute("aria-label", "收藏术语");
+				button.setAttribute("aria-pressed", String(on));
+				button.innerHTML = icon("star");
+				cell.appendChild(button);
+			});
+		}
+		article.addEventListener("click", function (event) {
+			var button = event.target.closest(".fav");
+			if (button === null) return;
+			var entry = null;
+			if (button.hasAttribute("data-fav-sub")) {
+				var subAnchor = button.getAttribute("data-fav-sub");
+				entry = {
+					kind: "section", id: subAnchor, title: button.getAttribute("data-title"),
+					chapterId: chapter.id, anchor: subAnchor, parent: button.getAttribute("data-parent")
+				};
+			} else if (button.hasAttribute("data-fav-fig")) {
+				entry = {
+					kind: "figure", id: button.getAttribute("data-fav-fig"), title: button.getAttribute("data-title"),
+					chapterId: chapter.id, anchor: button.getAttribute("data-fav-fig"),
+					section: button.getAttribute("data-anchor")
+				};
+			} else if (button.hasAttribute("data-fav-term")) {
+				var termAnchor = button.getAttribute("data-anchor");
+				entry = {
+					kind: "term", id: button.getAttribute("data-fav-term"), title: button.getAttribute("data-title"),
+					desc: button.getAttribute("data-desc"), chapterId: chapterOfAnchor(termAnchor) || chapter.id,
+					anchor: termAnchor
+				};
+			} else {
+				return;
+			}
+			entry.at = Date.now();
+			var on = toggleFavorite(entry);
+			button.classList.toggle("on", on);
+			button.setAttribute("aria-pressed", String(on));
+		});
 		var favChapter = document.getElementById("favChapter");
 		favChapter.addEventListener("click", function () {
 			var on = toggleFavoriteChapter(chapter);
@@ -1072,6 +1155,16 @@
 	function headingHtml(node) {
 		if (!node.number) return esc(node.heading);
 		return '<span class="num">' + esc(node.number) + '</span>' + esc(node.heading);
+	}
+
+	/** 小节标题带收藏星标，点击只收藏这一小节。 */
+	function subHeading(sub, section) {
+		var on = isFavorite("section", sub.anchor);
+		var title = (sub.number ? sub.number + " " : "") + sub.heading;
+		return '<h3 id="' + sub.anchor + '">' + headingHtml(sub)
+			+ '<button type="button" class="fav' + (on ? " on" : "") + '" data-fav-sub="' + sub.anchor + '"'
+			+ ' data-title="' + esc(title) + '" data-parent="' + section.anchor + '"'
+			+ ' aria-label="收藏本节" aria-pressed="' + on + '">' + icon("star") + '</button></h3>';
 	}
 
 	function renderToc() {
@@ -1128,6 +1221,37 @@
 			return item.anchor === anchor || item.subs.some(function (sub) { return sub.anchor === anchor; });
 		});
 		if (section !== undefined) state.openSubs[chapter.id + "|" + section.anchor] = true;
+	}
+
+	/** 锚点所属的章号；找不到返回空串。 */
+	function chapterOfAnchor(anchor) {
+		var owner = CHAPTERS.find(function (chapter) {
+			return chapter.sections.some(function (section) {
+				return section.anchor === anchor || section.subs.some(function (sub) { return sub.anchor === anchor; });
+			});
+		});
+		return owner === undefined ? "" : owner.id;
+	}
+
+	/** 收藏页跳转：按条目自带信息切章、展开小节并定位。 */
+	function jumpFav(entry) {
+		var chapterId = entry.chapterId || chapterOfAnchor(entry.anchor) || CHAPTERS[0].id;
+		var chapter = CHAPTERS.find(function (item) { return item.id === chapterId; });
+		state.chapterId = chapterId;
+		state.search = "";
+		state.openSubs = {};
+		if (chapter !== undefined) {
+			var section = chapter.sections.find(function (item) {
+				var hit = function (target) {
+					return target === entry.anchor || target === entry.section;
+				};
+				return hit(item.anchor) || item.subs.some(function (sub) { return hit(sub.anchor); });
+			});
+			if (section !== undefined) state.openSubs[chapterId + "|" + section.anchor] = true;
+		}
+		state.tab = "learn";
+		render();
+		scrollToAnchor(entry.anchor, true);
 	}
 
 	/** 跳到任意锚点；若目标不在当前章，先切章再滚。 */
@@ -1595,14 +1719,36 @@
 		}
 
 		var chapters = list.filter(function (item) { return item.kind === "chapter"; });
+		var sections = list.filter(function (item) { return item.kind === "section"; });
+		var figures = list.filter(function (item) { return item.kind === "figure"; });
+		var terms = list.filter(function (item) { return item.kind === "term"; });
 		var questions = list.filter(function (item) { return item.kind === "question"; });
 
-		var chapterHtml = chapters.length === 0 ? "" : '<div class="fav-group"><h3>章节</h3>'
-			+ chapters.map(function (item) {
-				return '<div class="fav-row"><button class="fav-open" data-fav-chapter="' + esc(item.id) + '">' + esc(item.title) + '</button>'
-					+ '<button class="iconbtn" data-fav-remove="chapter:' + esc(item.id) + '" title="取消收藏" aria-label="取消收藏章节">'
-					+ icon("trash") + '</button></div>';
-			}).join("") + '</div>';
+		var row = function (item, sub) {
+			var key = esc(item.kind + ":" + item.id);
+			return '<div class="fav-row"><div class="fav-main">'
+				+ '<button class="fav-open" data-fav-open="' + key + '">' + esc(item.title) + '</button>'
+				+ (sub ? '<span class="sub">' + esc(sub) + '</span>' : "")
+				+ '</div><button class="iconbtn" data-fav-remove="' + key + '" title="取消收藏" aria-label="取消收藏">'
+				+ icon("trash") + '</button></div>';
+		};
+
+		var group = function (title, items, decorate) {
+			if (items.length === 0) return "";
+			return '<div class="fav-group"><h3>' + title + '</h3>'
+				+ items.map(function (item) {
+					return row(item, decorate === undefined ? "" : decorate(item));
+				}).join("") + '</div>';
+		};
+
+		var sectionLabel = function (item) {
+			return item.section === undefined || item.section === "" ? "" : item.section.replace("sec-", "");
+		};
+
+		var chapterHtml = group("章节", chapters);
+		var sectionHtml = group("小节", sections);
+		var figureHtml = group("配图", figures, sectionLabel);
+		var termHtml = group("术语", terms, function (item) { return item.desc || ""; });
 
 		var questionHtml = questions.length === 0 ? "" : '<div class="fav-group"><h3>题目</h3><div class="fav-list">'
 			+ questions.map(function (item) {
@@ -1619,14 +1765,17 @@
 			}).join("") + '</div></div>';
 
 		app.innerHTML = '<div class="fav-head"><h2>收藏夹 <span class="count">' + list.length + '</span>'
-			+ info("收藏只保存在本机浏览器。") + '</h2></div>' + chapterHtml + questionHtml;
+			+ info("收藏只保存在本机浏览器。") + '</h2></div>'
+			+ chapterHtml + sectionHtml + figureHtml + termHtml + questionHtml;
 
-		app.querySelectorAll("[data-fav-chapter]").forEach(function (button) {
+		app.querySelectorAll("[data-fav-open]").forEach(function (button) {
 			button.addEventListener("click", function () {
-				state.chapterId = button.getAttribute("data-fav-chapter");
-				state.search = "";
-				state.openSubs = {};
-				setTab("learn");
+				var raw = button.getAttribute("data-fav-open");
+				var cut = raw.indexOf(":");
+				var kind = raw.slice(0, cut);
+				var id = raw.slice(cut + 1);
+				var entry = loadFavorites().find(function (item) { return item.kind === kind && item.id === id; });
+				if (entry !== undefined) jumpFav(entry);
 			});
 		});
 		app.querySelectorAll("[data-fav-redo]").forEach(function (button) {
