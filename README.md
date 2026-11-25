@@ -6,7 +6,7 @@ npm 包名：`dsh-digital-logic-lectern`
 
 面向《数字逻辑》（第七版，白中英、朱正东主编，科学出版社，2020 年）的学习与练习插件，用于 DeepSeek Harness。插件提供一套课程知识库、一份 80 题的题库和一个网页界面；知识库按该教材目录自编，不是教材原文。
 
-插件包含一个技能和一个网页。技能负责解释概念、分步推导、核对计算结果、按教材范围出练习；网页负责看学习资料、做章节自测、人机对战、收错题。网页可以在 DSH 应用内直接打开。
+插件包含一个技能和一个网页。技能负责解释概念、分步推导、核对计算结果、按教材范围出练习；网页负责看学习资料、做章节自测、人机对战、收错题与收藏、动手做波形与卡诺图练习。网页可以在 DSH 应用内直接打开。
 
 ## 安装
 
@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 Git 方式会克隆仓库再安装，需要本机有 git 与网络。仓库已公开，不需要凭据。三种写法等价：npm 包名、Git 地址、本地目录或 tgz。
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.7.3.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.8.0.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 复制到 `~/.dsh/skills/`。几种方式只选一种，重复安装会让同名技能互相遮蔽。安装后重启客户端。
@@ -75,6 +75,8 @@ start ui/index.html
 
 **错题本。** 答错自动收录，可重做、单条移除、整体清空。收藏与错题都只存在浏览器本地。
 
+**实验室。** 波形实验室提供 D 触发器、JK 触发器与 4 位计数器，可拨输入、点「上升沿」或自动走时钟，CLK、输入与输出的时序波形随状态更新。卡诺图消消乐共 8 关，点选 1 格后圈成合法规格的长方形（含首尾相接的环绕圈法），圈错会提示，全部覆盖后按最少组数给星。
+
 ## 命令行工具
 
 | 命令 | 用途 |
@@ -99,7 +101,7 @@ skills/digital-logic-lectern/
 │   ├── dlquiz.js         生成题库并复核
 │   ├── dlbook.js         由 references 生成页面数据
 │   └── dlverify.js       调用 iverilog 跑仿真
-├── ui/                   三栏页面：index.html、book.js、questions.js 与 figures/ 插图
+├── ui/                   单页应用：index.html、book.js、questions.js 与 figures/ 插图
 └── examples/             计数器示例源码
 lib/index.js              插件入口：注册技能，提供网页静态路由
 lib/client.js             客户端入口：侧栏图标、主面板、插件行选项、斜杠命令

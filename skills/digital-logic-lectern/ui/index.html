@@ -471,6 +471,59 @@
 	.totop:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 	.totop svg { width: 20px; height: 20px; }
 
+	.lab-sub {
+		display: flex; gap: 4px; background: var(--soft); padding: 4px;
+		border-radius: 12px; width: fit-content; margin-bottom: 18px;
+	}
+	.lab-sub button {
+		border: none; background: transparent; color: var(--muted); font: inherit; font-size: 14px;
+		padding: 8px 18px; border-radius: 9px; cursor: pointer;
+		display: inline-flex; align-items: center; gap: 7px;
+	}
+	.lab-sub button:hover { color: var(--text); }
+	.lab-sub button.active { background: var(--card); color: var(--text); box-shadow: 0 1px 3px var(--shadow); font-weight: 600; }
+	.lab-sub svg { width: 16px; height: 16px; }
+
+	.lab-card { padding: 20px 22px 22px; }
+	.lab-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
+	.lab-bar .chips { flex: 1 1 300px; }
+	.lab-status { margin-left: auto; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+	.lab-inputs { margin-bottom: 14px; }
+
+	.wave-wrap {
+		border: 1px solid var(--line); border-radius: 10px; background: var(--soft-bg);
+		padding: 8px 6px; overflow-x: auto;
+	}
+	.wave-wrap svg { display: block; min-width: 600px; width: 100%; height: auto; }
+
+	.kmap-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+	.kmap-head h2 { margin: 0; font-size: 18px; display: flex; align-items: center; gap: 6px; }
+	.kmap-level { margin-left: auto; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+	.kmap-grid { display: grid; grid-template-columns: 44px repeat(4, 56px); gap: 6px; width: fit-content; }
+	.kmap-axis { display: grid; place-items: center; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+	.kmap-cell {
+		position: relative; width: 56px; height: 56px; padding: 0;
+		border: 1px solid var(--line); border-radius: 8px; background: var(--card);
+		color: var(--text); font: inherit; font-size: 15px; font-variant-numeric: tabular-nums;
+		display: grid; place-items: center; cursor: pointer;
+	}
+	.kmap-cell[data-one="0"] { color: var(--info-text); background: var(--soft-bg); cursor: default; }
+	.kmap-cell.sel { border-color: var(--blue); background: var(--chip-active); color: var(--link); font-weight: 700; box-shadow: inset 0 0 0 2px var(--blue); }
+	.kmap-cell.covered { background: var(--ok-bg); border-color: var(--ok-border); color: var(--primary-ink); }
+	.kmap-cell .tag { position: absolute; top: 2px; right: 5px; font-size: 10px; color: var(--primary-ink); }
+	.kmap-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+	.kmap-foot { margin-top: 10px; min-height: 20px; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+	.kmap-foot.bad { color: var(--bad); }
+	.stars { display: inline-flex; gap: 2px; color: var(--warn); }
+	.stars svg { width: 16px; height: 16px; fill: currentColor; }
+	.stars svg.off { fill: none; opacity: 0.45; }
+
+	@media (max-width: 460px) {
+		.kmap-grid { grid-template-columns: 34px repeat(4, 46px); gap: 5px; }
+		.kmap-cell { width: 46px; height: 46px; font-size: 14px; }
+		.lab-card { padding: 16px 14px 18px; }
+	}
+
 	@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 	@keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 	@keyframes flash { 0% { background: var(--mark); } 100% { background: transparent; } }
@@ -506,6 +559,7 @@
 			<button class="tab" data-tab="quiz"></button>
 			<button class="tab" data-tab="wrong"></button>
 			<button class="tab" data-tab="fav"></button>
+			<button class="tab" data-tab="lab"></button>
 		</div>
 		<button class="themebtn" id="themeToggle" type="button"></button>
 	</div>
@@ -533,7 +587,7 @@
 	var footer = document.getElementById("footer");
 	var STORAGE_KEY = "dl-wrong-book-v1";
 	var FAV_KEY = "dl-favorites-v1";
-	var APP_VERSION = "0.7.3";
+	var APP_VERSION = "0.8.0";
 
 	var MODULES = {
 		M1: "数制与编码", M2: "逻辑代数", M3: "组合逻辑", M4: "时序逻辑",
@@ -568,7 +622,9 @@
 		moon: '<path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8z"/>',
 		ask: '<circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/>',
 		star: '<path d="m12 3.6 2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.6 9.7l5.8-.8z"/>',
-		up: '<path d="M12 19V5"/><path d="m5.5 11.5 6.5-6.5 6.5 6.5"/>'
+		up: '<path d="M12 19V5"/><path d="m5.5 11.5 6.5-6.5 6.5 6.5"/>',
+		lab: '<path d="M9 3h6"/><path d="M10 3v5.6L5.4 17a3 3 0 0 0 2.7 4.5h7.8a3 3 0 0 0 2.7-4.5L14 8.6V3"/><path d="M7.4 14h9.2"/>',
+		grid: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'
 	};
 
 	function icon(name) {
@@ -637,7 +693,8 @@
 		{ id: "learn", label: "学习", icon: "learn" },
 		{ id: "quiz", label: "自测", icon: "quiz" },
 		{ id: "wrong", label: "错题本", icon: "wrong" },
-		{ id: "fav", label: "收藏", icon: "star" }
+		{ id: "fav", label: "收藏", icon: "star" },
+		{ id: "lab", label: "实验室", icon: "lab" }
 	];
 
 	var state = {
@@ -649,10 +706,14 @@
 		quizCount: 10,
 		quiz: null,
 		search: "",
-		openSubs: {}
+		openSubs: {},
+		lab: "wave",
+		wave: { scene: "d", d: 1, j: 1, k: 0, clr: 0, cycles: [], auto: false },
+		kmap: { level: 0, selected: [], groups: [], msg: "", bad: false }
 	};
 
 	var aiTimer = null;
+	var waveTimer = null;
 
 	/* ---------- 错题本存储 ---------- */
 
@@ -810,9 +871,11 @@
 		});
 		updateBadge();
 		renderFooter();
+		if (state.tab !== "lab") stopWave();
 		if (state.tab === "learn") renderLearn();
 		else if (state.tab === "quiz") renderQuizTab();
 		else if (state.tab === "fav") renderFav();
+		else if (state.tab === "lab") renderLab();
 		else renderWrong();
 	}
 
@@ -1574,8 +1637,455 @@
 		});
 	}
 
+	/* ---------- 实验室 ---------- */
+
+	var WAVE_SCENES = [
+		{ id: "d", label: "D 触发器" },
+		{ id: "jk", label: "JK 触发器" },
+		{ id: "cnt", label: "4 位计数器" }
+	];
+
+	var WAVE_INPUTS = {
+		d: [{ key: "d", label: "D" }],
+		jk: [{ key: "j", label: "J" }, { key: "k", label: "K" }],
+		cnt: [{ key: "clr", label: "CLR" }]
+	};
+
+	var KMAP_ORDER = [0, 1, 3, 2];
+
+	var KMAP_LEVELS = [
+		{ groups: [[[0, 0], [0, 1], [1, 0], [1, 1]]] },
+		{ groups: [[[0, 0], [0, 1]], [[2, 2], [2, 3]]] },
+		{ groups: [[[0, 0], [0, 3], [1, 0], [1, 3]], [[3, 1], [3, 2]]] },
+		{ groups: [[[0, 0], [0, 1], [1, 0], [1, 1]], [[0, 3], [1, 3], [2, 3], [3, 3]]] },
+		{ groups: [[[1, 1], [1, 2]], [[2, 1], [2, 2]], [[0, 0], [0, 3]]] },
+		{ groups: [[[0, 0], [0, 1], [0, 2], [0, 3]], [[3, 0], [3, 1]], [[2, 2], [2, 3]]] },
+		{ groups: [[[0, 0], [0, 1], [1, 0], [1, 1]], [[0, 2], [0, 3], [1, 2], [1, 3]], [[2, 0], [2, 1], [2, 2], [2, 3]]] },
+		{ groups: [[[0, 0], [1, 0], [2, 0], [3, 0]], [[0, 3], [1, 3], [2, 3], [3, 3]], [[1, 1], [1, 2]], [[2, 1], [2, 2]]] }
+	];
+
+	function renderLab() {
+		var body = state.lab === "kmap" ? "kmap" : "wave";
+		app.innerHTML = '<div class="lab-sub">'
+			+ '<button type="button" data-lab="wave"' + (body === "wave" ? ' class="active"' : "") + '>' + icon("lab") + '波形实验室</button>'
+			+ '<button type="button" data-lab="kmap"' + (body === "kmap" ? ' class="active"' : "") + '>' + icon("grid") + '卡诺图消消乐</button>'
+			+ '</div><div id="labBody"></div>';
+		app.querySelectorAll("[data-lab]").forEach(function (button) {
+			button.addEventListener("click", function () {
+				var target = button.getAttribute("data-lab");
+				if (target === body) return;
+				stopWave();
+				state.lab = target;
+				renderLab();
+			});
+		});
+		if (body === "kmap") renderKmap();
+		else renderWave();
+	}
+
+	/* ---------- 波形实验室 ---------- */
+
+	function waveCurrent(wave) {
+		if (wave.cycles.length === 0) return wave.scene === "cnt" ? { n: 0 } : { q: 0 };
+		return wave.cycles[wave.cycles.length - 1].after;
+	}
+
+	function waveAfter(wave, current) {
+		if (wave.scene === "d") return { q: wave.d };
+		if (wave.scene === "jk") {
+			if (wave.j && wave.k) return { q: current.q ? 0 : 1 };
+			if (wave.j) return { q: 1 };
+			if (wave.k) return { q: 0 };
+			return { q: current.q };
+		}
+		return { n: wave.clr ? 0 : (current.n + 1) % 16 };
+	}
+
+	function waveStep() {
+		var wave = state.wave;
+		var current = waveCurrent(wave);
+		wave.cycles.push({
+			before: current,
+			after: waveAfter(wave, current),
+			inputs: { d: wave.d, j: wave.j, k: wave.k, clr: wave.clr }
+		});
+		if (wave.cycles.length > 24) wave.cycles.splice(0, wave.cycles.length - 24);
+	}
+
+	function stopWave() {
+		if (waveTimer !== null) {
+			clearInterval(waveTimer);
+			waveTimer = null;
+		}
+		state.wave.auto = false;
+	}
+
+	function waveLanes(wave) {
+		var bit = function (index) {
+			return function (cycle, high) {
+				var n = high ? cycle.after.n : cycle.before.n;
+				return (n >> index) & 1;
+			};
+		};
+		if (wave.scene === "d") {
+			return [
+				{ label: "D", kind: "in", value: function (cycle) { return cycle.inputs.d; } },
+				{ label: "CLK", kind: "clk", value: function (cycle, high) { return high; } },
+				{ label: "Q", kind: "out", value: function (cycle, high) { return high ? cycle.after.q : cycle.before.q; } },
+				{ label: "Q\u0305", kind: "out", value: function (cycle, high) { return high ? (cycle.after.q ? 0 : 1) : (cycle.before.q ? 0 : 1); } }
+			];
+		}
+		if (wave.scene === "jk") {
+			return [
+				{ label: "J", kind: "in", value: function (cycle) { return cycle.inputs.j; } },
+				{ label: "K", kind: "in", value: function (cycle) { return cycle.inputs.k; } },
+				{ label: "CLK", kind: "clk", value: function (cycle, high) { return high; } },
+				{ label: "Q", kind: "out", value: function (cycle, high) { return high ? cycle.after.q : cycle.before.q; } }
+			];
+		}
+		return [
+			{ label: "CLR", kind: "in", value: function (cycle) { return cycle.inputs.clr; } },
+			{ label: "CLK", kind: "clk", value: function (cycle, high) { return high; } },
+			{ label: "Q3", kind: "out", value: bit(3) },
+			{ label: "Q2", kind: "out", value: bit(2) },
+			{ label: "Q1", kind: "out", value: bit(1) },
+			{ label: "Q0", kind: "out", value: bit(0) }
+		];
+	}
+
+	function waveSvg(wave) {
+		var lanes = waveLanes(wave);
+		var visible = wave.cycles.slice(-10);
+		var span = Math.max(visible.length, 6);
+		var labelWidth = 54;
+		var slotWidth = 24;
+		var laneHeight = 32;
+		var width = labelWidth + span * slotWidth * 2 + 10;
+		var height = lanes.length * laneHeight + 16;
+		var parts = [];
+		var colors = { in: "var(--gold)", clk: "var(--blue)", out: "var(--primary)" };
+		var index;
+		for (index = 0; index <= span; index++) {
+			var gx = labelWidth + index * slotWidth * 2;
+			parts.push('<line x1="' + gx + '" y1="6" x2="' + gx + '" y2="' + (height - 6) + '" stroke="var(--line)" opacity="0.7"/>');
+		}
+		lanes.forEach(function (lane, laneIndex) {
+			var top = 8 + laneIndex * laneHeight;
+			var high = top + 6;
+			var low = top + 22;
+			parts.push('<text x="6" y="' + (top + 19) + '" font-size="11" fill="var(--muted)">' + lane.label + '</text>');
+			if (visible.length === 0) {
+				parts.push('<line x1="' + labelWidth + '" y1="' + low + '" x2="' + (width - 10) + '" y2="' + low
+					+ '" stroke="var(--muted)" stroke-dasharray="3 4" opacity="0.45"/>');
+				return;
+			}
+			var path = "";
+			var x = labelWidth;
+			visible.forEach(function (cycle) {
+				var slot;
+				for (slot = 0; slot < 2; slot++) {
+					var y = lane.value(cycle, slot) ? high : low;
+					if (path === "") path = "M" + x + " " + y;
+					else path += "V" + y;
+					x += slotWidth;
+					path += "H" + x;
+				}
+			});
+			parts.push('<path d="' + path + '" fill="none" stroke="' + colors[lane.kind] + '" stroke-width="2" stroke-linejoin="round"/>');
+		});
+		return '<svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="时序波形">' + parts.join("") + '</svg>';
+	}
+
+	function waveStatus(wave) {
+		var current = waveCurrent(wave);
+		if (wave.scene === "cnt") {
+			var bits = "";
+			for (var i = 3; i >= 0; i--) bits += String((current.n >> i) & 1);
+			return "Q3Q2Q1Q0 = " + bits + " · 十进制 " + current.n;
+		}
+		return "Q = " + current.q + " · Q̄ = " + (current.q ? 0 : 1);
+	}
+
+	function renderWave() {
+		var body = document.getElementById("labBody");
+		if (body === null) return;
+		var wave = state.wave;
+		var sceneChips = WAVE_SCENES.map(function (scene) {
+			return '<button type="button" class="chip' + (scene.id === wave.scene ? " active" : "") + '" data-wave-scene="' + scene.id + '">' + scene.label + '</button>';
+		}).join("");
+		var inputChips = WAVE_INPUTS[wave.scene].map(function (item) {
+			var value = wave[item.key];
+			return '<button type="button" class="chip' + (value ? " active" : "") + '" data-wave-input="' + item.key
+				+ '" aria-pressed="' + (value ? "true" : "false") + '">' + item.label + " = " + value + '</button>';
+		}).join("");
+
+		body.innerHTML = '<section class="panel lab-card">'
+			+ '<div class="lab-bar"><div class="chips">' + sceneChips + '</div>'
+			+ '<span class="lab-status">' + waveStatus(wave) + '</span></div>'
+			+ '<div class="chips lab-inputs">' + inputChips + '</div>'
+			+ '<div class="lab-bar">'
+			+ '<button type="button" class="btn primary" id="waveStep">上升沿</button>'
+			+ '<button type="button" class="btn" id="waveAuto">' + icon(wave.auto ? "clock" : "play") + (wave.auto ? "暂停" : "自动") + '</button>'
+			+ '<button type="button" class="btn" id="waveReset">' + icon("refresh") + '清空</button></div>'
+			+ '<div class="wave-wrap">' + waveSvg(wave) + '</div>'
+			+ '</section>';
+
+		body.querySelectorAll("[data-wave-scene]").forEach(function (button) {
+			button.addEventListener("click", function () {
+				stopWave();
+				wave.scene = button.getAttribute("data-wave-scene");
+				wave.cycles = [];
+				renderWave();
+			});
+		});
+		body.querySelectorAll("[data-wave-input]").forEach(function (button) {
+			button.addEventListener("click", function () {
+				var key = button.getAttribute("data-wave-input");
+				wave[key] = wave[key] ? 0 : 1;
+				renderWave();
+			});
+		});
+		document.getElementById("waveStep").addEventListener("click", function () {
+			waveStep();
+			renderWave();
+		});
+		document.getElementById("waveAuto").addEventListener("click", function () {
+			if (wave.auto) {
+				stopWave();
+				renderWave();
+				return;
+			}
+			wave.auto = true;
+			waveTimer = setInterval(function () {
+				if (state.tab !== "lab" || state.lab !== "wave") {
+					stopWave();
+					return;
+				}
+				waveStep();
+				renderWave();
+			}, 900);
+			renderWave();
+		});
+		document.getElementById("waveReset").addEventListener("click", function () {
+			stopWave();
+			wave.cycles = [];
+			renderWave();
+		});
+	}
+
+	/* ---------- 卡诺图消消乐 ---------- */
+
+	function kmapMinterm(row, col) {
+		return KMAP_ORDER[row] * 4 + KMAP_ORDER[col];
+	}
+
+	function kmapOnes(level) {
+		var mask = 0;
+		level.groups.forEach(function (group) {
+			group.forEach(function (cell) {
+				mask |= 1 << kmapMinterm(cell[0], cell[1]);
+			});
+		});
+		return mask;
+	}
+
+	function kmapRuns() {
+		var runs = [];
+		[1, 2, 4].forEach(function (length) {
+			for (var start = 0; start < 4; start++) {
+				var run = [];
+				for (var i = 0; i < length; i++) run.push((start + i) % 4);
+				runs.push(run);
+			}
+		});
+		return runs;
+	}
+
+	function kmapCyclicRun(values) {
+		if (values.length === 1 || values.length === 4) return true;
+		var sorted = values.slice().sort(function (a, b) { return a - b; });
+		var breaks = 0;
+		for (var i = 0; i < sorted.length; i++) {
+			var next = sorted[(i + 1) % sorted.length];
+			if ((next - sorted[i] + 4) % 4 !== 1) breaks++;
+		}
+		return breaks === 1;
+	}
+
+	function kmapMinimum(ones) {
+		if (ones === 0) return 0;
+		var runs = kmapRuns();
+		var candidates = [];
+		runs.forEach(function (rows) {
+			runs.forEach(function (cols) {
+				var mask = 0;
+				rows.forEach(function (row) {
+					cols.forEach(function (col) { mask |= 1 << kmapMinterm(row, col); });
+				});
+				if ((mask & ones) === mask) candidates.push(mask);
+			});
+		});
+		var memo = {};
+		function solve(mask) {
+			if (mask === 0) return 0;
+			if (memo[mask] !== undefined) return memo[mask];
+			var first = mask & -mask;
+			var best = 99;
+			candidates.forEach(function (group) {
+				if ((group & first) === 0) return;
+				if ((group & mask) !== group) return;
+				var rest = solve(mask ^ group) + 1;
+				if (rest < best) best = rest;
+			});
+			memo[mask] = best;
+			return best;
+		}
+		return solve(ones);
+	}
+
+	function kmapCheck(kmapState, ones) {
+		var cells = kmapState.selected;
+		if (cells.length === 0) return "先点选格子";
+		if ([1, 2, 4, 8, 16].indexOf(cells.length) === -1) return "每组只能是 1、2、4、8、16 格";
+		var rows = [];
+		var cols = [];
+		for (var i = 0; i < cells.length; i++) {
+			var pair = cells[i].split(",");
+			var row = Number(pair[0]);
+			var col = Number(pair[1]);
+			if ((ones & (1 << kmapMinterm(row, col))) === 0) return "0 不能圈进来";
+			if (rows.indexOf(row) === -1) rows.push(row);
+			if (cols.indexOf(col) === -1) cols.push(col);
+		}
+		if (rows.length * cols.length !== cells.length) return "要圈成长方形";
+		if (!kmapCyclicRun(rows) || !kmapCyclicRun(cols)) return "要圈成长方形";
+		return "";
+	}
+
+	function kmapPad(value) {
+		return (value < 2 ? "0" : "1") + (value % 2);
+	}
+
+	function renderKmap() {
+		var body = document.getElementById("labBody");
+		if (body === null) return;
+		var kmapState = state.kmap;
+		var level = KMAP_LEVELS[kmapState.level];
+		var ones = kmapOnes(level);
+		var covered = 0;
+		kmapState.groups.forEach(function (group) {
+			group.forEach(function (cell) {
+				covered |= 1 << kmapMinterm(cell[0], cell[1]);
+			});
+		});
+		var total = 0;
+		var left = 0;
+		var m;
+		for (m = 0; m < 16; m++) {
+			if ((ones >> m) & 1) {
+				total++;
+				if (((covered >> m) & 1) === 0) left++;
+			}
+		}
+		var done = total > 0 && left === 0;
+		var tagOf = {};
+		kmapState.groups.forEach(function (group, index) {
+			group.forEach(function (cell) { tagOf[cell[0] + "," + cell[1]] = index + 1; });
+		});
+
+		var head = '<div class="kmap-axis"></div>';
+		KMAP_ORDER.forEach(function (value) { head += '<div class="kmap-axis">' + kmapPad(value) + '</div>'; });
+
+		var cells = "";
+		for (var row = 0; row < 4; row++) {
+			cells += '<div class="kmap-axis">' + kmapPad(KMAP_ORDER[row]) + '</div>';
+			for (var col = 0; col < 4; col++) {
+				var key = row + "," + col;
+				var minterm = kmapMinterm(row, col);
+				var one = (ones >> minterm) & 1;
+				var coveredOne = (covered >> minterm) & 1;
+				var classes = "kmap-cell";
+				if (kmapState.selected.indexOf(key) !== -1) classes += " sel";
+				if (coveredOne) classes += " covered";
+				cells += '<button type="button" class="' + classes + '" data-kmap-cell="' + key + '" data-one="' + one + '">'
+					+ (one ? "1" : "0") + (tagOf[key] ? '<span class="tag">' + tagOf[key] + '</span>' : "") + '</button>';
+			}
+		}
+
+		var foot = "";
+		if (done) {
+			var minimum = kmapMinimum(ones);
+			var stars = kmapState.groups.length <= minimum ? 3 : (kmapState.groups.length <= minimum + 1 ? 2 : 1);
+			var starHtml = "";
+			for (var s = 0; s < 3; s++) {
+				starHtml += s < stars ? icon("star") : '<svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="m12 3.6 2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.6 9.7l5.8-.8z"/></svg>';
+			}
+			foot = '<span>全部圈完，最少 ' + minimum + ' 组</span><span class="stars" aria-label="' + stars + ' 星">' + starHtml + '</span>';
+		} else if (kmapState.msg !== "") {
+			foot = '<span>' + esc(kmapState.msg) + '</span>';
+		}
+
+		body.innerHTML = '<section class="panel lab-card">'
+			+ '<div class="kmap-head"><h2>卡诺图消消乐' + info("行与列的首尾相接：上下相邻、左右相邻、跨过边界的 1 都能圈成一组。每组只能是长方形，格数为 1、2、4、8、16。") + '</h2>'
+			+ '<span class="kmap-level">第 ' + (kmapState.level + 1) + ' / ' + KMAP_LEVELS.length + ' 关 · 还剩 ' + left + ' 格</span></div>'
+			+ '<div class="kmap-grid">' + head + cells + '</div>'
+			+ '<div class="kmap-actions">'
+			+ '<button type="button" class="btn primary" id="kmapCommit"' + (done || kmapState.selected.length === 0 ? " disabled" : "") + '>' + icon("check") + '圈定</button>'
+			+ '<button type="button" class="btn" id="kmapClearSel"' + (kmapState.selected.length === 0 ? " disabled" : "") + '>重选</button>'
+			+ '<button type="button" class="btn" id="kmapNext">' + icon("refresh") + (done ? "下一关" : "换一题") + '</button></div>'
+			+ '<div class="kmap-foot' + (kmapState.bad ? " bad" : "") + '">' + foot + '</div>'
+			+ '</section>';
+
+		body.querySelectorAll("[data-kmap-cell]").forEach(function (button) {
+			button.addEventListener("click", function () {
+				if (button.getAttribute("data-one") === "0") return;
+				if (button.classList.contains("covered")) return;
+				var key = button.getAttribute("data-kmap-cell");
+				var at = kmapState.selected.indexOf(key);
+				if (at === -1) kmapState.selected.push(key);
+				else kmapState.selected.splice(at, 1);
+				kmapState.msg = "";
+				kmapState.bad = false;
+				renderKmap();
+			});
+		});
+		document.getElementById("kmapCommit").addEventListener("click", function () {
+			var error = kmapCheck(kmapState, ones);
+			if (error !== "") {
+				kmapState.msg = error;
+				kmapState.bad = true;
+				renderKmap();
+				return;
+			}
+			var group = kmapState.selected.map(function (key) {
+				var pair = key.split(",");
+				return [Number(pair[0]), Number(pair[1])];
+			});
+			kmapState.groups.push(group);
+			kmapState.selected = [];
+			kmapState.msg = "圈定 " + group.length + " 格";
+			kmapState.bad = false;
+			renderKmap();
+		});
+		document.getElementById("kmapClearSel").addEventListener("click", function () {
+			kmapState.selected = [];
+			kmapState.msg = "";
+			kmapState.bad = false;
+			renderKmap();
+		});
+		document.getElementById("kmapNext").addEventListener("click", function () {
+			kmapState.level = (kmapState.level + 1) % KMAP_LEVELS.length;
+			kmapState.selected = [];
+			kmapState.groups = [];
+			kmapState.msg = "";
+			kmapState.bad = false;
+			renderKmap();
+		});
+	}
+
 	function stopTimers() {
 		clearTimeout(aiTimer);
+		stopWave();
 	}
 
 	/* ---------- 启动 ---------- */
