@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 Git 方式会克隆仓库再安装，需要本机有 git 与网络。仓库已公开，不需要凭据。三种写法等价：npm 包名、Git 地址、本地目录或 tgz。
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.8.0.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.9.0.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 复制到 `~/.dsh/skills/`。几种方式只选一种，重复安装会让同名技能互相遮蔽。安装后重启客户端。
@@ -75,7 +75,7 @@ start ui/index.html
 
 **错题本。** 答错自动收录，可重做、单条移除、整体清空。收藏与错题都只存在浏览器本地。
 
-**实验室。** 波形实验室提供 D 触发器、JK 触发器与 4 位计数器，可拨输入、点「上升沿」或自动走时钟，CLK、输入与输出的时序波形随状态更新。卡诺图消消乐共 8 关，点选 1 格后圈成合法规格的长方形（含首尾相接的环绕圈法），圈错会提示，全部覆盖后按最少组数给星。
+**实验室。** 波形实验室提供 D 触发器、JK 触发器与 4 位计数器，可拨输入、点「上升沿」或自动走时钟，CLK、输入与输出的时序波形随状态更新。卡诺图消消乐共 8 关，点选 1 格后圈成合法规格的长方形（含首尾相接的环绕圈法），圈错会提示，全部覆盖后按最少组数给星。门电路拼装共 6 关，从门芯片里放置与、或、非、与非、或非、异或门，先点输出端再点输入端接线，输出与目标真值表一致即通关；最后一关只允许使用与非门。
 
 ## 命令行工具
 

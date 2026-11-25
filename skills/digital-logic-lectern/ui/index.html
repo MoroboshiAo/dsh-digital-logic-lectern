@@ -473,7 +473,7 @@
 
 	.lab-sub {
 		display: flex; gap: 4px; background: var(--soft); padding: 4px;
-		border-radius: 12px; width: fit-content; margin-bottom: 18px;
+		border-radius: 12px; width: fit-content; max-width: 100%; flex-wrap: wrap; margin-bottom: 18px;
 	}
 	.lab-sub button {
 		border: none; background: transparent; color: var(--muted); font: inherit; font-size: 14px;
@@ -495,6 +495,20 @@
 		padding: 8px 6px; overflow-x: auto;
 	}
 	.wave-wrap svg { display: block; min-width: 600px; width: 100%; height: auto; }
+
+	.circuit-wrap { border: 1px solid var(--line); border-radius: 10px; background: var(--soft-bg); padding: 6px; overflow-x: auto; }
+	.circuit-wrap svg { display: block; min-width: 660px; width: 100%; height: auto; }
+	.circuit-gate { fill: var(--card); stroke: var(--line); stroke-width: 1.5; }
+	.circuit-src { fill: var(--soft); stroke: var(--line); stroke-width: 1.5; }
+	.circuit-lamp { fill: var(--soft); stroke: var(--line); stroke-width: 1.5; }
+	.circuit-lamp.on { fill: var(--primary-soft); stroke: var(--primary); }
+	.circuit-label { font-size: 13px; fill: var(--text); font-weight: 600; }
+	.circuit-pin { fill: var(--card); stroke: var(--muted); stroke-width: 1.5; }
+	.circuit-pin.live { fill: var(--primary); stroke: var(--primary-dark); }
+	.circuit-pin.pending { stroke: var(--blue); stroke-width: 3; }
+	.circuit-wire { fill: none; stroke: var(--blue); stroke-width: 2; }
+	.circuit-x { fill: var(--muted); font-size: 13px; cursor: pointer; }
+	.circuit-x:hover { fill: var(--bad); }
 
 	.kmap-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 	.kmap-head h2 { margin: 0; font-size: 18px; display: flex; align-items: center; gap: 6px; }
@@ -587,7 +601,7 @@
 	var footer = document.getElementById("footer");
 	var STORAGE_KEY = "dl-wrong-book-v1";
 	var FAV_KEY = "dl-favorites-v1";
-	var APP_VERSION = "0.8.0";
+	var APP_VERSION = "0.9.0";
 
 	var MODULES = {
 		M1: "数制与编码", M2: "逻辑代数", M3: "组合逻辑", M4: "时序逻辑",
@@ -624,7 +638,8 @@
 		star: '<path d="m12 3.6 2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.6 9.7l5.8-.8z"/>',
 		up: '<path d="M12 19V5"/><path d="m5.5 11.5 6.5-6.5 6.5 6.5"/>',
 		lab: '<path d="M9 3h6"/><path d="M10 3v5.6L5.4 17a3 3 0 0 0 2.7 4.5h7.8a3 3 0 0 0 2.7-4.5L14 8.6V3"/><path d="M7.4 14h9.2"/>',
-		grid: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'
+		grid: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+		target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>'
 	};
 
 	function icon(name) {
@@ -709,7 +724,8 @@
 		openSubs: {},
 		lab: "wave",
 		wave: { scene: "d", d: 1, j: 1, k: 0, clr: 0, cycles: [], auto: false },
-		kmap: { level: 0, selected: [], groups: [], msg: "", bad: false }
+		kmap: { level: 0, selected: [], groups: [], msg: "", bad: false },
+		circuit: { level: 0, nextId: 1, gates: [], wires: {}, pending: null }
 	};
 
 	var aiTimer = null;
@@ -1665,10 +1681,11 @@
 	];
 
 	function renderLab() {
-		var body = state.lab === "kmap" ? "kmap" : "wave";
+		var body = state.lab === "kmap" || state.lab === "circuit" ? state.lab : "wave";
 		app.innerHTML = '<div class="lab-sub">'
 			+ '<button type="button" data-lab="wave"' + (body === "wave" ? ' class="active"' : "") + '>' + icon("lab") + '波形实验室</button>'
 			+ '<button type="button" data-lab="kmap"' + (body === "kmap" ? ' class="active"' : "") + '>' + icon("grid") + '卡诺图消消乐</button>'
+			+ '<button type="button" data-lab="circuit"' + (body === "circuit" ? ' class="active"' : "") + '>' + icon("target") + '门电路拼装</button>'
 			+ '</div><div id="labBody"></div>';
 		app.querySelectorAll("[data-lab]").forEach(function (button) {
 			button.addEventListener("click", function () {
@@ -1680,6 +1697,7 @@
 			});
 		});
 		if (body === "kmap") renderKmap();
+		else if (body === "circuit") renderCircuit();
 		else renderWave();
 	}
 
@@ -2080,6 +2098,236 @@
 			kmapState.msg = "";
 			kmapState.bad = false;
 			renderKmap();
+		});
+	}
+
+	/* ---------- 门电路拼装 ---------- */
+
+	var GATE_META = {
+		and: { label: "与门", inputs: 2 },
+		or: { label: "或门", inputs: 2 },
+		not: { label: "非门", inputs: 1 },
+		nand: { label: "与非门", inputs: 2 },
+		nor: { label: "或非门", inputs: 2 },
+		xor: { label: "异或门", inputs: 2 }
+	};
+
+	var GATE_LEVELS = [
+		{ target: "Y = A·B", want: [0, 0, 0, 1], min: 1 },
+		{ target: "Y = A+B", want: [0, 1, 1, 1], min: 1 },
+		{ target: "Y = ¬(A·B)", want: [1, 1, 1, 0], min: 1 },
+		{ target: "Y = A⊕B", want: [0, 1, 1, 0], min: 1 },
+		{ target: "Y = A⊙B", want: [1, 0, 0, 1], min: 1 },
+		{ target: "Y = A⊕B，只用与非门", want: [0, 1, 1, 0], min: 4, allow: ["nand"] }
+	];
+
+	function gatePosition(index) {
+		return { x: 210 + (index % 2) * 176, y: 16 + Math.floor(index / 2) * 92 };
+	}
+
+	function circuitPin(attr, value, cx, cy, extra) {
+		var label = attr === "src"
+			? (value === "A" || value === "B" ? value + " 输出" : "门 " + value.slice(1) + " 输出")
+			: (value === "Y" ? "输出 Y" : "门 " + value.split(":")[0] + " 输入 " + (Number(value.split(":")[1]) + 1));
+		return '<g data-' + attr + '="' + value + '" role="button" aria-label="' + label + '">'
+			+ '<circle cx="' + cx + '" cy="' + cy + '" r="11" fill="transparent"/>'
+			+ '<circle class="circuit-pin' + (extra ? " " + extra : "") + '" cx="' + cx + '" cy="' + cy + '" r="5"/>'
+			+ '</g>';
+	}
+
+	function circuitFindGate(lab, id) {
+		for (var i = 0; i < lab.gates.length; i++) {
+			if (lab.gates[i].id === id) return lab.gates[i];
+		}
+		return null;
+	}
+
+	function circuitEval(lab, source, a, b, seen) {
+		if (source === undefined || source === null) return null;
+		if (source === "A") return a;
+		if (source === "B") return b;
+		if (seen[source]) return null;
+		seen[source] = true;
+		var gate = circuitFindGate(lab, Number(source.slice(1)));
+		if (gate === null) return null;
+		var x = circuitEval(lab, lab.wires[gate.id + ":0"], a, b, seen);
+		var y = gate.type === "not" ? 0 : circuitEval(lab, lab.wires[gate.id + ":1"], a, b, seen);
+		seen[source] = false;
+		if (x === null || y === null) return null;
+		if (gate.type === "and") return x && y ? 1 : 0;
+		if (gate.type === "or") return x || y ? 1 : 0;
+		if (gate.type === "not") return x ? 0 : 1;
+		if (gate.type === "nand") return x && y ? 0 : 1;
+		if (gate.type === "nor") return x || y ? 0 : 1;
+		return x === y ? 0 : 1;
+	}
+
+	function circuitRows(lab) {
+		if (lab.wires["Y"] === undefined) return null;
+		var rows = [];
+		for (var a = 0; a < 2; a++) {
+			for (var b = 0; b < 2; b++) {
+				var value = circuitEval(lab, lab.wires["Y"], a, b, {});
+				if (value === null) return null;
+				rows.push(value);
+			}
+		}
+		return rows;
+	}
+
+	function circuitSourcePoint(lab, source, position) {
+		if (source === "A") return { x: 70, y: 64 };
+		if (source === "B") return { x: 70, y: 196 };
+		var pos = position[Number(source.slice(1))];
+		return pos ? { x: pos.x + 86, y: pos.y + 31 } : null;
+	}
+
+	function circuitTargetPoint(key, position) {
+		if (key === "Y") return { x: 592, y: 130 };
+		var pair = key.split(":");
+		var pos = position[Number(pair[0])];
+		if (pos === undefined) return null;
+		return { x: pos.x, y: pos.y + (pair[1] === "1" ? 44 : 31) };
+	}
+
+	function renderCircuit() {
+		var body = document.getElementById("labBody");
+		if (body === null) return;
+		var lab = state.circuit;
+		var level = GATE_LEVELS[lab.level];
+		var allowed = level.allow || ["and", "or", "not", "nand", "nor", "xor"];
+		var position = {};
+		lab.gates.forEach(function (gate, index) {
+			var pos = gatePosition(index);
+			position[gate.id] = { x: pos.x, y: pos.y, type: gate.type };
+		});
+		var rows = circuitRows(lab);
+		var done = rows !== null && rows.join("") === level.want.join("");
+		var stars = lab.gates.length <= level.min ? 3 : (lab.gates.length <= level.min + 1 ? 2 : 1);
+		var parts = [];
+
+		Object.keys(lab.wires).forEach(function (key) {
+			var from = circuitSourcePoint(lab, lab.wires[key], position);
+			var to = circuitTargetPoint(key, position);
+			if (from === null || to === null) return;
+			parts.push('<path class="circuit-wire" d="M' + from.x + " " + from.y
+				+ " C" + (from.x + 46) + " " + from.y + ", " + (to.x - 46) + " " + to.y
+				+ ", " + to.x + " " + to.y + '"/>');
+		});
+
+		parts.push('<circle class="circuit-src" cx="52" cy="64" r="17"/>');
+		parts.push('<text x="52" y="69" text-anchor="middle" class="circuit-label">A</text>');
+		parts.push('<circle class="circuit-src" cx="52" cy="196" r="17"/>');
+		parts.push('<text x="52" y="201" text-anchor="middle" class="circuit-label">B</text>');
+		parts.push(circuitPin("src", "A", 70, 64, lab.pending === "A" ? "pending" : ""));
+		parts.push(circuitPin("src", "B", 70, 196, lab.pending === "B" ? "pending" : ""));
+
+		lab.gates.forEach(function (gate) {
+			var pos = position[gate.id];
+			var meta = GATE_META[gate.type];
+			parts.push('<rect class="circuit-gate" x="' + pos.x + '" y="' + pos.y + '" width="86" height="62" rx="10"/>');
+			parts.push('<text x="' + (pos.x + 43) + '" y="' + (pos.y + 37) + '" text-anchor="middle" class="circuit-label">' + meta.label + '</text>');
+			parts.push('<text class="circuit-x" x="' + (pos.x + 79) + '" y="' + (pos.y + 14) + '" text-anchor="middle" data-del="' + gate.id + '">×</text>');
+			parts.push(circuitPin("in", gate.id + ":0", pos.x, pos.y + (meta.inputs === 1 ? 31 : 18),
+				lab.wires[gate.id + ":0"] !== undefined ? "live" : ""));
+			if (meta.inputs === 2) {
+				parts.push(circuitPin("in", gate.id + ":1", pos.x, pos.y + 44,
+					lab.wires[gate.id + ":1"] !== undefined ? "live" : ""));
+			}
+			parts.push(circuitPin("src", "g" + gate.id, pos.x + 86, pos.y + 31,
+				lab.pending === "g" + gate.id ? "pending" : ""));
+		});
+
+		parts.push('<circle class="circuit-lamp' + (done ? " on" : "") + '" cx="618" cy="130" r="18"/>');
+		parts.push('<text x="618" y="135" text-anchor="middle" class="circuit-label">Y</text>');
+		parts.push(circuitPin("in", "Y", 592, 130, lab.wires["Y"] !== undefined ? "live" : ""));
+
+		var chips = allowed.map(function (type) {
+			var full = lab.gates.length >= 5;
+			return '<button type="button" class="chip"' + (full ? " disabled" : "") + ' data-gate-add="' + type + '">'
+				+ GATE_META[type].label + '</button>';
+		}).join("");
+
+		var starHtml = "";
+		for (var s = 0; s < 3; s++) {
+			starHtml += s < stars ? icon("star") : '<svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="m12 3.6 2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.6 9.7l5.8-.8z"/></svg>';
+		}
+		var foot = done
+			? '<span>输出与目标一致</span><span class="stars" aria-label="' + stars + ' 星">' + starHtml + '</span>'
+			: '<span>已用 ' + lab.gates.length + ' 门 · 最少 ' + level.min + ' 门</span>';
+
+		body.innerHTML = '<section class="panel lab-card">'
+			+ '<div class="lab-bar"><div class="chips">' + chips + '</div>'
+			+ '<span class="lab-status">第 ' + (lab.level + 1) + ' / ' + GATE_LEVELS.length + ' 关 · ' + esc(level.target) + '</span></div>'
+			+ '<div class="circuit-wrap">'
+			+ '<svg viewBox="0 0 700 300" role="img" aria-label="门电路拼装">' + parts.join("") + '</svg>'
+			+ '</div>'
+			+ '<div class="kmap-actions">'
+			+ '<button type="button" class="btn" id="circuitClear">清空</button>'
+			+ '<button type="button" class="btn" id="circuitNext">' + icon("refresh") + (done ? "下一关" : "换一题") + '</button>'
+			+ info("先点输出端（A、B 或门输出），再点要接的输入端；点已连线的输入端可断开。点门右上角的 × 删除该门。")
+			+ '</div>'
+			+ '<div class="kmap-foot">' + foot + '</div>'
+			+ '</section>';
+
+		var svg = body.querySelector(".circuit-wrap svg");
+		svg.querySelectorAll("[data-src]").forEach(function (pin) {
+			pin.addEventListener("click", function () {
+				var source = pin.getAttribute("data-src");
+				lab.pending = lab.pending === source ? null : source;
+				renderCircuit();
+			});
+		});
+		svg.querySelectorAll("[data-in]").forEach(function (pin) {
+			pin.addEventListener("click", function () {
+				var key = pin.getAttribute("data-in");
+				if (lab.pending === null) {
+					if (lab.wires[key] !== undefined) {
+						delete lab.wires[key];
+						renderCircuit();
+					}
+					return;
+				}
+				if (key === "Y") {
+					if (lab.pending.charAt(0) === "g") lab.wires[key] = lab.pending;
+				} else if (lab.pending !== "g" + key.split(":")[0]) {
+					lab.wires[key] = lab.pending;
+				}
+				lab.pending = null;
+				renderCircuit();
+			});
+		});
+		svg.querySelectorAll("[data-del]").forEach(function (mark) {
+			mark.addEventListener("click", function () {
+				var id = Number(mark.getAttribute("data-del"));
+				lab.gates = lab.gates.filter(function (gate) { return gate.id !== id; });
+				Object.keys(lab.wires).forEach(function (key) {
+					if (key.indexOf(id + ":") === 0 || lab.wires[key] === "g" + id) delete lab.wires[key];
+				});
+				if (lab.pending === "g" + id) lab.pending = null;
+				renderCircuit();
+			});
+		});
+		body.querySelectorAll("[data-gate-add]").forEach(function (chip) {
+			chip.addEventListener("click", function () {
+				if (lab.gates.length >= 5) return;
+				lab.gates.push({ id: lab.nextId, type: chip.getAttribute("data-gate-add") });
+				lab.nextId += 1;
+				renderCircuit();
+			});
+		});
+		document.getElementById("circuitClear").addEventListener("click", function () {
+			lab.gates = [];
+			lab.wires = {};
+			lab.pending = null;
+			renderCircuit();
+		});
+		document.getElementById("circuitNext").addEventListener("click", function () {
+			lab.level = (lab.level + 1) % GATE_LEVELS.length;
+			lab.gates = [];
+			lab.wires = {};
+			lab.pending = null;
+			renderCircuit();
 		});
 	}
 

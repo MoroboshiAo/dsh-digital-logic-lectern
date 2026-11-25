@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 The Git route clones the repository before installing, so git and network access are required. The repository is public. The three routes are equivalent: npm name, Git URL, local directory or tgz.
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.8.0.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.9.0.tgz
 ```
 
 Copying `skills/digital-logic-lectern` into `~/.dsh/skills/` works too. Pick one route; installing twice makes the two copies of the same skill shadow each other. Restart the client afterwards.
@@ -75,7 +75,7 @@ The "搜题" (Ask) button at the top right of a question hands the stem and opti
 
 **Review.** Wrong answers are collected automatically and can be redone. Favorites and wrong answers stay in the browser's local storage.
 
-**Lab.** The waveform lab covers a D flip-flop, a JK flip-flop, and a 4-bit counter: flip the inputs, press "上升沿" or let the clock run, and the timing diagram of CLK, inputs, and outputs updates. The Karnaugh-map game has eight levels; select cells and commit them as a legal rectangle, including wrap-around groups. Illegal groups are rejected, and finishing a level earns stars based on the minimum number of groups.
+**Lab.** The waveform lab covers a D flip-flop, a JK flip-flop, and a 4-bit counter: flip the inputs, press "上升沿" or let the clock run, and the timing diagram of CLK, inputs, and outputs updates. The Karnaugh-map game has eight levels; select cells and commit them as a legal rectangle, including wrap-around groups. Illegal groups are rejected, and finishing a level earns stars based on the minimum number of groups. Gate assembly has six levels: place AND, OR, NOT, NAND, NOR, or XOR chips, click an output pin and then an input pin to wire them, and the level clears when the output matches the target truth table. The last level allows NAND gates only.
 
 ## Command-line tools
 
