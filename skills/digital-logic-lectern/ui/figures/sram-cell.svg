@@ -22,5 +22,5 @@
 <line x1="340" y1="190" x2="470" y2="190" class="s"/><line x1="470" y1="190" x2="470" y2="165" class="s"/>
 <text x="210" y="238" class="m">M1-M4 交叉耦合保持状态，M5、M6 受字线控制接入位线</text>
 <text x="430" y="90" class="m">Q</text><text x="430" y="176" class="m">Q̄</text>
-<text x="410" y="234" class="m">不断电即可保持</text>
+<text x="330" y="214" class="m">不断电即可保持</text>
 </svg>

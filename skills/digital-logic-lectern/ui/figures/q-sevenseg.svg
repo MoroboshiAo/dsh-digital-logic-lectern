@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 340" role="img" aria-label="七段数码管显示数字 6">
+<style>
+.t{fill:#9aa2b1;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:13px}
+</style>
+<rect width="100%" height="100%" fill="#141821"/>
+<rect x="30" y="50" width="200" height="240" rx="16" fill="#1b2029" stroke="#3a4250" stroke-width="1.5"/>
+<rect x="66" y="64" width="128" height="12" rx="4" fill="#58cc02"/>
+<rect x="194" y="78" width="12" height="84" rx="4" fill="#2c313b"/>
+<rect x="194" y="178" width="12" height="84" rx="4" fill="#58cc02"/>
+<rect x="66" y="262" width="128" height="12" rx="4" fill="#58cc02"/>
+<rect x="54" y="178" width="12" height="84" rx="4" fill="#58cc02"/>
+<rect x="54" y="78" width="12" height="84" rx="4" fill="#58cc02"/>
+<rect x="66" y="170" width="128" height="12" rx="4" fill="#58cc02"/>
+</svg>

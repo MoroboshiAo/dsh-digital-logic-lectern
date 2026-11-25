@@ -13,16 +13,16 @@
 		<path d="M462 150l14 10-14 10"/>
 	</g>
 	<g font-family="Segoe UI, Microsoft YaHei, sans-serif" fill="#9aa2b1" font-size="13">
-		<text x="12" y="82">D</text>
-		<text x="12" y="130">CLK</text>
-		<text x="180" y="114">Q</text>
-		<text x="206" y="82">J</text>
-		<text x="206" y="118">CLK</text>
-		<text x="206" y="154">K</text>
-		<text x="392" y="114">Q</text>
-		<text x="416" y="82">T</text>
-		<text x="416" y="130">CLK</text>
-		<text x="588" y="114">Q</text>
+		<text x="12" y="78">D</text>
+		<text x="12" y="124">CLK</text>
+		<text x="176" y="102">Q</text>
+		<text x="206" y="78">J</text>
+		<text x="206" y="114">CLK</text>
+		<text x="206" y="150">K</text>
+		<text x="388" y="102">Q</text>
+		<text x="416" y="78">T</text>
+		<text x="416" y="126">CLK</text>
+		<text x="584" y="102">Q</text>
 	</g>
 	<g font-family="Segoe UI, Microsoft YaHei, sans-serif" text-anchor="middle">
 		<text x="105" y="120" fill="#e6e8ee" font-size="16" font-weight="600">D</text>

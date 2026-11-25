@@ -1,39 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" role="img" aria-label="与或式经两次取反改成与非-与非结构">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 330" role="img" aria-label="与或式用两级与非门实现">
 <style>
 .s{fill:none;stroke:#58cc02;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .t{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px}
 .b{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;font-weight:600}
 .m{fill:#9aa2b1;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:12.5px}
 .g{fill:none;stroke:#3a4250;stroke-width:1.2}
-.d{fill:none;stroke:#3a4250;stroke-width:1.2;stroke-dasharray:5 5}
-.box{fill:#1b2029;stroke:#3a4250;stroke-width:1.5}
-.code{fill:#e6e8ee;font-family:"Consolas","Courier New",monospace;font-size:13px}
-</style><defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#58cc02"/></marker></defs>
+</style>
 <rect width="100%" height="100%" fill="#141821"/>
 <text x="24" y="30" class="b">与或式转与非-与非</text>
 <text x="24" y="64" class="t">F = AB + CD</text>
-<text x="24" y="94" class="t">= ( (AB)′ · (CD)′ )′</text>
+<text x="24" y="92" class="t">= ( (AB)′ · (CD)′ )′</text>
 <text x="24" y="120" class="m">先两次取反，再用反演律拆开中间的或</text>
-<g transform="translate(0 66)">
-<path d="M122 81 h16 a24 24 0 0 1 0 48 h-16 z" class="s"/>
-<circle cx="167" cy="105" r="5" class="s"/>
-<line x1="172" y1="105" x2="210" y2="105" class="s"/>
-<line x1="90" y1="95" x2="122" y2="95" class="s"/>
-<line x1="90" y1="115" x2="122" y2="115" class="s"/>
-<text x="82" y="100" class="t" text-anchor="end">A</text>
-<text x="82" y="120" class="t" text-anchor="end">B</text>
-<path d="M122 181 h16 a24 24 0 0 1 0 48 h-16 z" class="s"/>
-<circle cx="167" cy="205" r="5" class="s"/>
-<line x1="172" y1="205" x2="210" y2="205" class="s"/>
-<line x1="90" y1="195" x2="122" y2="195" class="s"/>
-<line x1="90" y1="215" x2="122" y2="215" class="s"/>
-<text x="82" y="200" class="t" text-anchor="end">C</text>
-<text x="82" y="220" class="t" text-anchor="end">D</text>
-<path d="M342 131 h16 a24 24 0 0 1 0 48 h-16 z" class="s"/>
-<circle cx="387" cy="155" r="5" class="s"/>
-<line x1="392" y1="155" x2="440" y2="155" class="s"/>
-<text x="448" y="160" class="t">F</text>
-<path d="M210 105 H250 V145 H342" class="s"/>
-<path d="M210 205 H250 V165 H342" class="s"/>
-</g>
+
+<path d="M122 148 h16 a24 24 0 0 1 0 48 h-16 z" class="s"/>
+<circle cx="182" cy="172" r="4" fill="#141821" stroke="#58cc02" stroke-width="2"/>
+<line x1="90" y1="162" x2="122" y2="162" class="s"/>
+<line x1="90" y1="182" x2="122" y2="182" class="s"/>
+<text x="82" y="166" class="t" text-anchor="end">A</text>
+<text x="82" y="186" class="t" text-anchor="end">B</text>
+<line x1="186" y1="172" x2="210" y2="172" class="s"/>
+<line x1="210" y1="172" x2="210" y2="205" class="s"/>
+<line x1="210" y1="205" x2="342" y2="205" class="s"/>
+
+<path d="M122 238 h16 a24 24 0 0 1 0 48 h-16 z" class="s"/>
+<circle cx="182" cy="262" r="4" fill="#141821" stroke="#58cc02" stroke-width="2"/>
+<line x1="90" y1="252" x2="122" y2="252" class="s"/>
+<line x1="90" y1="272" x2="122" y2="272" class="s"/>
+<text x="82" y="256" class="t" text-anchor="end">C</text>
+<text x="82" y="276" class="t" text-anchor="end">D</text>
+<line x1="186" y1="262" x2="230" y2="262" class="s"/>
+<line x1="230" y1="262" x2="230" y2="229" class="s"/>
+<line x1="230" y1="229" x2="342" y2="229" class="s"/>
+
+<path d="M342 193 h16 a24 24 0 0 1 0 48 h-16 z" class="s"/>
+<circle cx="402" cy="217" r="4" fill="#141821" stroke="#58cc02" stroke-width="2"/>
+<line x1="406" y1="217" x2="448" y2="217" class="s"/>
+<text x="456" y="221" class="t">F</text>
 </svg>

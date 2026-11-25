@@ -12,7 +12,7 @@
 <rect x="40" y="70" width="100" height="60" rx="6" class="box"/><text x="90" y="104" class="t" text-anchor="middle">采样保持</text>
 <rect x="190" y="70" width="100" height="60" rx="6" class="box"/><text x="240" y="104" class="t" text-anchor="middle">比较器</text>
 <line x1="140" y1="100" x2="190" y2="100" class="s"/>
-<text x="24" y="96" class="t">Vin</text><line x1="30" y1="96" x2="40" y2="96" class="s"/>
+<text x="8" y="90" class="t">Vin</text><line x1="18" y1="96" x2="40" y2="96" class="s"/>
 <line x1="290" y1="100" x2="330" y2="100" class="s"/><line x1="290" y1="100" x2="330" y2="100" class="s"/><path d="M330 100 l-7 -3.5 v7 z" fill="#58cc02"/>
 <rect x="330" y="70" width="110" height="60" rx="6" class="box"/><text x="385" y="104" class="t" text-anchor="middle">SAR 寄存器</text>
 <line x1="440" y1="100" x2="500" y2="100" class="s"/><text x="508" y="104" class="t">数字输出</text>
@@ -22,5 +22,5 @@
 <rect x="190" y="170" width="100" height="55" rx="6" class="box"/><text x="240" y="198" class="t" text-anchor="middle">控制逻辑</text>
 <line x1="330" y1="198" x2="330" y2="130" class="s"/><path d="M330 130 l-7 -3.5 v7 z" fill="#58cc02"/>
 <text x="190" y="248" class="m">从最高位起逐位试探，n 位需 n 个节拍</text>
-<text x="420" y="248" class="m">速度与位数折中</text>
+<text x="440" y="248" class="m">速度与位数折中</text>
 </svg>

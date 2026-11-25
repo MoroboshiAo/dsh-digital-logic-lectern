@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 220" role="img" aria-label="四位 R-2R 数模转换器输入为 1000">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 235" role="img" aria-label="四位 R-2R 数模转换器输入为 1000">
 <style>
 .s{fill:none;stroke:#58cc02;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .t{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px}
@@ -14,5 +14,5 @@
 <line x1="90" y1="76" x2="120" y2="76" class="s"/><line x1="90" y1="110" x2="120" y2="110" class="s"/><line x1="90" y1="144" x2="120" y2="144" class="s"/><line x1="90" y1="178" x2="120" y2="178" class="s"/>
 <line x1="250" y1="125" x2="320" y2="125" class="s"/><path d="M320 95 l50 30 l-50 30 z" class="box"/>
 <line x1="370" y1="125" x2="410" y2="125" class="s"/><text x="418" y="129" class="t">Vo</text>
-<text x="90" y="205" class="m">满量程对应 Vref</text>
+<text x="90" y="218" class="m">满量程对应 Vref</text>
 </svg>

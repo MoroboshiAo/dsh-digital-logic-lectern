@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-label="JTAG 边界扫描链把各芯片的扫描单元串接在 TDI 与 TDO 之间">
+<style>
+.s{fill:none;stroke:#58cc02;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.t{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:13px}
+.b{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;font-weight:600}
+.m{fill:#9aa2b1;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:12.5px}
+</style>
+<rect width="100%" height="100%" fill="#141821"/>
+<text x="24" y="28" class="b">边界扫描链</text>
+<rect x="40" y="110" width="100" height="60" rx="6" fill="#1b2029" stroke="#58cc02" stroke-width="2"/>
+<rect x="170" y="110" width="100" height="60" rx="6" fill="#1b2029" stroke="#58cc02" stroke-width="2"/>
+<rect x="300" y="110" width="100" height="60" rx="6" fill="#1b2029" stroke="#58cc02" stroke-width="2"/>
+<rect x="430" y="110" width="100" height="60" rx="6" fill="#1b2029" stroke="#58cc02" stroke-width="2"/>
+<text x="90" y="146" class="t" text-anchor="middle">扫描单元</text>
+<text x="220" y="146" class="t" text-anchor="middle">扫描单元</text>
+<text x="350" y="146" class="t" text-anchor="middle">扫描单元</text>
+<text x="480" y="146" class="t" text-anchor="middle">扫描单元</text>
+<text x="90" y="100" class="m" text-anchor="middle">U1</text>
+<text x="220" y="100" class="m" text-anchor="middle">U2</text>
+<text x="350" y="100" class="m" text-anchor="middle">U3</text>
+<text x="480" y="100" class="m" text-anchor="middle">U4</text>
+<line x1="20" y1="140" x2="40" y2="140" class="s"/>
+<line x1="140" y1="140" x2="170" y2="140" class="s"/>
+<line x1="270" y1="140" x2="300" y2="140" class="s"/>
+<line x1="400" y1="140" x2="430" y2="140" class="s"/>
+<line x1="530" y1="140" x2="590" y2="140" class="s"/>
+<text x="20" y="130" class="m">TDI</text>
+<text x="590" y="130" class="m" text-anchor="end">TDO</text>
+<text x="40" y="230" class="m">TDI 到 TDO 串成一条链，TMS 控制状态，TCK 提供移位时钟</text>
+<text x="40" y="262" class="m">测试时无需探针，可直接观察引脚电平</text>
+</svg>

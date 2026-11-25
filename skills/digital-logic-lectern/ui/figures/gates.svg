@@ -16,12 +16,12 @@
 		<text x="246" y="192">或 F=A+B</text>
 		<text x="392" y="192">非 F=A′</text>
 		<text x="556" y="192">与非 F=(AB)′</text>
-		<text x="22" y="80">A</text>
-		<text x="22" y="128">B</text>
-		<text x="178" y="80">A</text>
-		<text x="178" y="128">B</text>
-		<text x="334" y="80">A</text>
-		<text x="484" y="80">A</text>
-		<text x="484" y="128">B</text>
+		<text x="22" y="70">A</text>
+		<text x="22" y="118">B</text>
+		<text x="178" y="70">A</text>
+		<text x="178" y="118">B</text>
+		<text x="334" y="70">A</text>
+		<text x="484" y="70">A</text>
+		<text x="484" y="118">B</text>
 	</g>
 </svg>

@@ -24,7 +24,7 @@
 		<text x="205" y="66">EN=1</text>
 		<text x="392" y="156">EN=1</text>
 		<text x="112" y="150">EN=1</text>
-		<text x="132" y="30">EN=0</text>
+		<text x="162" y="26">EN=0</text>
 		<text x="250" y="286">三个状态循环，模为 3</text>
 	</g>
 </svg>

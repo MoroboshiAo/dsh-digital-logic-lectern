@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="七段数码管的 a 到 g 段与数字 5 的点亮情况">
+<style>
+.t{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:13px}
+.b{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;font-weight:600}
+.m{fill:#9aa2b1;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:12.5px}
+</style>
+<rect width="100%" height="100%" fill="#141821"/>
+<text x="24" y="28" class="b">七段数码管与显示译码</text>
+<rect x="50" y="50" width="230" height="280" rx="16" fill="#1b2029" stroke="#3a4250" stroke-width="1.5"/>
+<rect x="90" y="64" width="140" height="14" rx="4" fill="#58cc02"/>
+<rect x="230" y="80" width="14" height="100" rx="4" fill="#2c313b"/>
+<rect x="230" y="194" width="14" height="100" rx="4" fill="#58cc02"/>
+<rect x="90" y="300" width="140" height="14" rx="4" fill="#58cc02"/>
+<rect x="66" y="194" width="14" height="100" rx="4" fill="#2c313b"/>
+<rect x="66" y="80" width="14" height="100" rx="4" fill="#58cc02"/>
+<rect x="90" y="186" width="140" height="14" rx="4" fill="#58cc02"/>
+<text x="160" y="40" class="m" text-anchor="middle">a</text>
+<text x="256" y="134" class="m">b</text>
+<text x="256" y="248" class="m">c</text>
+<text x="160" y="348" class="m" text-anchor="middle">d</text>
+<text x="40" y="248" class="m">e</text>
+<text x="40" y="134" class="m">f</text>
+<text x="256" y="196" class="m">g</text>
+<text x="330" y="80" class="b">显示译码器</text>
+<text x="330" y="118" class="m">8421 码进，七段控制出</text>
+<text x="330" y="150" class="m">共阴接法：段码 1 点亮</text>
+<text x="330" y="182" class="m">共阳接法：段码 0 点亮</text>
+<text x="330" y="214" class="m">数字 5 点亮 a、c、d、f、g</text>
+<text x="330" y="246" class="m">另设灭零与试灯控制端</text>
+</svg>
