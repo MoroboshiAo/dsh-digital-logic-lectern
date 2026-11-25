@@ -605,7 +605,7 @@
 	var footer = document.getElementById("footer");
 	var STORAGE_KEY = "dl-wrong-book-v1";
 	var FAV_KEY = "dl-favorites-v1";
-	var APP_VERSION = "0.10.0";
+	var APP_VERSION = "0.11.0";
 
 	var MODULES = {
 		M1: "数制与编码", M2: "逻辑代数", M3: "组合逻辑", M4: "时序逻辑",
@@ -1689,7 +1689,11 @@
 		{ groups: [[[0, 0], [0, 1]], [[1, 0]]], dc: [[1, 1]] },
 		{ groups: [[[0, 0], [1, 0]], [[3, 0]]], dc: [[2, 0]] },
 		{ groups: [[[0, 0], [0, 1]], [[1, 0], [1, 1]], [[2, 0]], [[3, 0], [3, 1]]], dc: [[2, 1]] },
-		{ groups: [[[0, 0], [0, 1]], [[1, 0]], [[3, 0], [3, 1], [3, 2], [3, 3]]], dc: [[1, 1]] }
+		{ groups: [[[0, 0], [0, 1]], [[1, 0]], [[3, 0], [3, 1], [3, 2], [3, 3]]], dc: [[1, 1]] },
+		{ groups: [[[0, 3]], [[1, 0], [1, 1], [1, 2], [1, 3]], [[2, 2]], [[3, 2], [3, 3]]] },
+		{ groups: [[[0, 1], [0, 2]], [[2, 1], [2, 2], [2, 3]], [[3, 0], [3, 1]]], dc: [[2, 0]] },
+		{ groups: [[[0, 0], [0, 1]], [[1, 1], [1, 2]], [[2, 0], [2, 1]], [[2, 3]], [[3, 0], [3, 1]]] },
+		{ groups: [[[0, 0]], [[1, 0], [1, 1]], [[2, 0], [2, 1]], [[2, 3]], [[3, 0], [3, 1]], [[3, 3]]] }
 	];
 
 	function renderLab() {
@@ -2126,12 +2130,13 @@
 		}
 
 		body.innerHTML = '<section class="panel lab-card">'
-			+ '<div class="kmap-head"><h2>卡诺图消消乐' + info("行与列的首尾相接：上下相邻、左右相邻、跨过边界的 1 都能圈成一组。每组只能是长方形，格数为 1、2、4、8、16。× 是无关项，可圈可不圈，圈进来能让组更大。") + '</h2>'
+			+ '<div class="kmap-head"><h2>卡诺图消消乐' + info("行与列的首尾相接：上下相邻、左右相邻、跨过边界的 1 都能圈成一组。每组只能是长方形，格数为 1、2、4、8、16，并且至少要圈进一个还没覆盖的 1。× 是无关项，可圈可不圈，圈进来能让组更大。") + '</h2>'
 			+ '<span class="kmap-level">第 ' + (kmapState.level + 1) + ' / ' + KMAP_LEVELS.length + ' 关 · 还剩 ' + left + ' 格</span></div>'
 			+ '<div class="kmap-grid">' + head + cells + '</div>'
 			+ '<div class="kmap-actions">'
 			+ '<button type="button" class="btn primary" id="kmapCommit"' + (done || kmapState.selected.length === 0 ? " disabled" : "") + '>' + icon("check") + '圈定</button>'
 			+ '<button type="button" class="btn" id="kmapClearSel"' + (kmapState.selected.length === 0 ? " disabled" : "") + '>重选</button>'
+			+ '<button type="button" class="btn" id="kmapUndo"' + (kmapState.groups.length === 0 ? " disabled" : "") + '>撤销</button>'
 			+ '<button type="button" class="btn" id="kmapNext">' + icon("refresh") + (done ? "下一关" : "换一题") + '</button></div>'
 			+ '<div class="kmap-foot' + (kmapState.bad ? " bad" : "") + '">' + foot + '</div>'
 			+ '</section>';
@@ -2139,7 +2144,6 @@
 		body.querySelectorAll("[data-kmap-cell]").forEach(function (button) {
 			button.addEventListener("click", function () {
 				if (button.classList.contains("zero")) return;
-				if (button.classList.contains("covered")) return;
 				var key = button.getAttribute("data-kmap-cell");
 				var at = kmapState.selected.indexOf(key);
 				if (at === -1) kmapState.selected.push(key);
@@ -2161,6 +2165,16 @@
 				var pair = key.split(",");
 				return [Number(pair[0]), Number(pair[1])];
 			});
+			var gained = group.filter(function (cell) {
+				var bit = 1 << kmapMinterm(cell[0], cell[1]);
+				return (ones & bit) !== 0 && (covered & bit) === 0;
+			}).length;
+			if (gained === 0) {
+				kmapState.msg = "这一组没有新的 1";
+				kmapState.bad = true;
+				renderKmap();
+				return;
+			}
 			kmapState.groups.push(group);
 			kmapState.selected = [];
 			kmapState.msg = "圈定 " + group.length + " 格";
@@ -2168,6 +2182,13 @@
 			renderKmap();
 		});
 		document.getElementById("kmapClearSel").addEventListener("click", function () {
+			kmapState.selected = [];
+			kmapState.msg = "";
+			kmapState.bad = false;
+			renderKmap();
+		});
+		document.getElementById("kmapUndo").addEventListener("click", function () {
+			kmapState.groups.pop();
 			kmapState.selected = [];
 			kmapState.msg = "";
 			kmapState.bad = false;
