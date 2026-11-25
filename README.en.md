@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 The Git route clones the repository before installing, so git and network access are required. The repository is public. The three routes are equivalent: npm name, Git URL, local directory or tgz.
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.14.0.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.15.0.tgz
 ```
 
 Copying `skills/digital-logic-lectern` into `~/.dsh/skills/` works too. Pick one route; installing twice makes the two copies of the same skill shadow each other. Restart the client afterwards.
@@ -115,7 +115,7 @@ cordis.patch.yml          patch file required by the plugin manifest
 
 ## Figures
 
-The notes carry 40 diagrams covering codes, gates, Boolean identities, Karnaugh maps, the design flow, NAND equivalent circuits, multiplexers, decoders, adders, latches and flip-flops, shift registers, counters, state diagrams, memory arrays, FLASH cells, capacity expansion, PLD/CPLD/FPGA, datapaths, microcode, controllers, sampling and quantization, A/D and D/A conversion, and Verilog modules; the question bank adds eleven figure-based questions. All are hand-drawn SVG in this repository on a fixed dark base so text stays readable in both themes; they are inlined as data URIs at build time, so the page needs no extra image route. No original figures from the textbook or its answer set are reproduced.
+The notes carry 56 diagrams covering codes, gates, Boolean identities, Karnaugh maps, the design flow, NAND equivalent circuits, multiplexers, decoders, adders, latches and flip-flops, shift registers, counters, state diagrams, memory arrays, FLASH cells, capacity expansion, PLD/CPLD/FPGA, datapaths, microcode, controllers, sampling and quantization, A/D and D/A conversion, and Verilog modules; the question bank adds thirteen figure-based questions. All are hand-drawn SVG in this repository on a fixed dark base so text stays readable in both themes; they are inlined as data URIs at build time, so the page needs no extra image route. No original figures from the textbook or its answer set are reproduced.
 
 ## Limits
 

@@ -14,5 +14,5 @@
 <text x="84" y="90" class="t">D = 0</text><line x1="132" y1="86" x2="150" y2="86" class="s"/>
 <text x="180" y="190" class="t">CP = 1</text><line x1="240" y1="186" x2="240" y2="160" class="s"/>
 <line x1="330" y1="110" x2="390" y2="110" class="s"/><text x="398" y="114" class="t">Q</text>
-<text x="420" y="90" class="m">CP 有效期间输出跟随 D</text>
+<text x="408" y="90" class="m">CP 有效期间输出跟随 D</text>
 </svg>

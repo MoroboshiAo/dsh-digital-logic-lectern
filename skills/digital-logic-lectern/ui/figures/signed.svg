@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-label="以负五为例，四位带符号数的原码、反码与补码对照">
+<style>
+	.t{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px}
+	.b{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;font-weight:600}
+	.m{fill:#9aa2b1;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:12.5px}
+	.g{fill:none;stroke:#3a4250;stroke-width:1.2}
+	.code{fill:#58cc02;font-family:Consolas,"Courier New",monospace;font-size:15px;font-weight:600}
+</style>
+<rect width="100%" height="100%" fill="#141821"/>
+<text x="24" y="30" class="b">四位带符号数的三种表示（以 −5 为例）</text>
+<text x="36" y="76" class="m">表示法</text>
+<text x="210" y="76" class="m">求法</text>
+<text x="540" y="76" class="m" text-anchor="middle">代码</text>
+<line x1="36" y1="88" x2="604" y2="88" class="g"/>
+<line x1="36" y1="236" x2="604" y2="236" class="g"/>
+<line x1="180" y1="60" x2="180" y2="236" class="g"/>
+<line x1="470" y1="60" x2="470" y2="236" class="g"/>
+<text x="36" y="126" class="t">原码</text>
+<text x="196" y="126" class="m">符号位取 1，数值位不变</text>
+<text x="540" y="126" class="code" text-anchor="middle">1101</text>
+<text x="36" y="174" class="t">反码</text>
+<text x="196" y="174" class="m">符号位不动，数值位取反</text>
+<text x="540" y="174" class="code" text-anchor="middle">1010</text>
+<text x="36" y="222" class="t">补码</text>
+<text x="196" y="222" class="m">反码末位加 1</text>
+<text x="540" y="222" class="code" text-anchor="middle">1011</text>
+<text x="36" y="270" class="m">范围 −8 到 +7，零的补码只有一种写法</text>
+</svg>

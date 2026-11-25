@@ -25,7 +25,7 @@ https://github.com/MoroboshiAo/dsh-digital-logic-lectern.git
 Git 方式会克隆仓库再安装，需要本机有 git 与网络。仓库已公开，不需要凭据。三种写法等价：npm 包名、Git 地址、本地目录或 tgz。
 
 ```bash
-dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.14.0.tgz
+dsh plugin --profile <profile> add file:/absolute/path/dsh-digital-logic-lectern-0.15.0.tgz
 ```
 
 也可以把 `skills/digital-logic-lectern` 复制到 `~/.dsh/skills/`。几种方式只选一种，重复安装会让同名技能互相遮蔽。安装后重启客户端。
@@ -115,7 +115,7 @@ cordis.patch.yml          插件清单要求的补丁文件
 
 ## 插图
 
-学习资料配 40 幅示意图，覆盖编码、门电路、布尔代数公式、卡诺图、设计流程、与非等价变换、数据选择器、译码器、加法器、锁存器与触发器、移位寄存器、计数器、状态图、存储器阵列、FLASH 结构、容量扩展、PLD/CPLD/FPGA、数据通路、微程序、控制器、采样量化、A/D 与 D/A 转换以及 Verilog 模块；题库另有 11 幅题目图。全部为仓库自绘 SVG，固定深色底板保证深浅色主题下文字都可读，构建时内联成 data URI，页面不依赖额外图片路由，不复刻教材或配套答案中的原图。
+学习资料配 56 幅示意图，覆盖编码、门电路、布尔代数公式、卡诺图、设计流程、与非等价变换、数据选择器、译码器、加法器、锁存器与触发器、移位寄存器、计数器、状态图、存储器阵列、FLASH 结构、容量扩展、PLD/CPLD/FPGA、数据通路、微程序、控制器、采样量化、A/D 与 D/A 转换以及 Verilog 模块；题库另有 13 幅题目图。全部为仓库自绘 SVG，固定深色底板保证深浅色主题下文字都可读，构建时内联成 data URI，页面不依赖额外图片路由，不复刻教材或配套答案中的原图。
 
 ## 限制
 

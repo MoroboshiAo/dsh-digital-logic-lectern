@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" role="img" aria-label="采样保持电路跟踪输入并在采样时刻把电压保持到下一次采样">
+<style>
+	.s{fill:none;stroke:#58cc02;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+	.t{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px}
+	.b{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;font-weight:600}
+	.m{fill:#9aa2b1;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:12.5px}
+	.g{fill:none;stroke:#3a4250;stroke-width:1.2}
+	.d{fill:none;stroke:#9aa2b1;stroke-width:1.5;stroke-dasharray:4 4}
+	.sp{fill:none;stroke:#9aa2b1;stroke-width:1.8;stroke-linejoin:round}
+</style>
+<rect width="100%" height="100%" fill="#141821"/>
+<text x="24" y="30" class="b">采样保持的跟踪与保持</text>
+<line x1="60" y1="60" x2="60" y2="268" class="g"/>
+<line x1="60" y1="268" x2="600" y2="268" class="g"/>
+<text x="52" y="84" class="m" text-anchor="end">输入</text>
+<text x="52" y="116" class="m" text-anchor="end">输出</text>
+<text x="52" y="244" class="m" text-anchor="end">SH</text>
+<path d="M70 186 C90 190 106 184 120 180 C150 172 176 156 200 150 C235 142 256 130 280 120 C315 132 340 152 360 160 C396 148 416 112 440 100 C470 118 496 136 520 140 C550 130 570 114 590 110" class="d"/>
+<path d="M70 186 H120 V180 H200 V150 H280 V120 H360 V160 H440 V100 H520 V140 H590 V110" class="s"/>
+<g fill="#58cc02">
+	<circle cx="120" cy="180" r="4"/>
+	<circle cx="200" cy="150" r="4"/>
+	<circle cx="280" cy="120" r="4"/>
+	<circle cx="360" cy="160" r="4"/>
+	<circle cx="440" cy="100" r="4"/>
+	<circle cx="520" cy="140" r="4"/>
+	<circle cx="590" cy="110" r="4"/>
+</g>
+<path d="M110 250 V230 H126 V250 M190 250 V230 H206 V250 M270 250 V230 H286 V250 M350 250 V230 H366 V250 M430 250 V230 H446 V250 M510 250 V230 H526 V250 M580 250 V230 H596 V250" class="sp"/>
+<text x="320" y="298" class="m" text-anchor="middle">虚线为输入，实线为保持输出，下方脉冲为采样命令</text>
+<text x="320" y="322" class="m" text-anchor="middle">孔径时间是保持命令到开关真正断开的延迟</text>
+</svg>

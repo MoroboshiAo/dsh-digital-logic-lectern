@@ -17,7 +17,7 @@
 <text x="296" y="84" class="m">C</text>
 <line x1="278" y1="90" x2="278" y2="130" class="s"/><line x1="262" y1="130" x2="294" y2="130" class="s"/>
 <text x="196" y="118" class="m">电荷表示 1/0</text>
-<line x1="300" y1="62" x2="300" y2="225" class="g"/>
+<line x1="312" y1="62" x2="312" y2="225" class="g"/>
 <text x="330" y="74" class="b">刷新</text>
 <text x="330" y="104" class="m">电容电荷会泄漏</text>
 <text x="330" y="132" class="m">按行读出并原样写回</text>

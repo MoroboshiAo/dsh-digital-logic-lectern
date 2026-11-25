@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-label="用预置法和复位法把十六进制计数器改成模六计数器">
+<style>
+	.s{fill:none;stroke:#58cc02;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+	.t{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px}
+	.b{fill:#e6e8ee;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;font-weight:600}
+	.m{fill:#9aa2b1;font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:12.5px}
+	.g{fill:none;stroke:#3a4250;stroke-width:1.2}
+	.d{fill:none;stroke:#3a4250;stroke-width:1.2;stroke-dasharray:5 4}
+	.box{fill:#1b2029;stroke:#3a4250;stroke-width:1.5}
+	.code{fill:#e6e8ee;font-family:Consolas,"Courier New",monospace;font-size:13px}
+</style>
+<rect width="100%" height="100%" fill="#141821"/>
+<text x="32" y="40" class="b">预置法：模 6，置入初值 10</text>
+<rect x="36" y="54" width="64" height="38" rx="4" class="box"/><text x="68" y="78" class="code" text-anchor="middle">1010</text>
+<rect x="116" y="54" width="64" height="38" rx="4" class="box"/><text x="148" y="78" class="code" text-anchor="middle">1011</text>
+<rect x="196" y="54" width="64" height="38" rx="4" class="box"/><text x="228" y="78" class="code" text-anchor="middle">1100</text>
+<rect x="276" y="54" width="64" height="38" rx="4" class="box"/><text x="308" y="78" class="code" text-anchor="middle">1101</text>
+<rect x="356" y="54" width="64" height="38" rx="4" class="box"/><text x="388" y="78" class="code" text-anchor="middle">1110</text>
+<rect x="436" y="54" width="64" height="38" rx="4" class="box"/><text x="468" y="78" class="code" text-anchor="middle">1111</text>
+<g class="s">
+	<line x1="100" y1="73" x2="116" y2="73"/>
+	<line x1="180" y1="73" x2="196" y2="73"/>
+	<line x1="260" y1="73" x2="276" y2="73"/>
+	<line x1="340" y1="73" x2="356" y2="73"/>
+	<line x1="420" y1="73" x2="436" y2="73"/>
+	<line x1="500" y1="73" x2="524" y2="73"/>
+	<line x1="524" y1="73" x2="524" y2="112"/>
+	<line x1="524" y1="112" x2="68" y2="112"/>
+	<line x1="68" y1="112" x2="68" y2="92"/>
+</g>
+<text x="300" y="132" class="m" text-anchor="middle">同步置数回到 1010</text>
+<text x="32" y="186" class="b">复位法：模 6，计到 0110 清零</text>
+<rect x="36" y="200" width="64" height="38" rx="4" class="box"/><text x="68" y="224" class="code" text-anchor="middle">0000</text>
+<rect x="116" y="200" width="64" height="38" rx="4" class="box"/><text x="148" y="224" class="code" text-anchor="middle">0001</text>
+<rect x="196" y="200" width="64" height="38" rx="4" class="box"/><text x="228" y="224" class="code" text-anchor="middle">0010</text>
+<rect x="276" y="200" width="64" height="38" rx="4" class="box"/><text x="308" y="224" class="code" text-anchor="middle">0011</text>
+<rect x="356" y="200" width="64" height="38" rx="4" class="box"/><text x="388" y="224" class="code" text-anchor="middle">0100</text>
+<rect x="436" y="200" width="64" height="38" rx="4" class="box"/><text x="468" y="224" class="code" text-anchor="middle">0101</text>
+<rect x="526" y="200" width="98" height="38" rx="4" fill="#1b2029" stroke="#58cc02" stroke-width="1.6" stroke-dasharray="5 4"/>
+<text x="575" y="224" class="code" text-anchor="middle">0110</text>
+<g class="s">
+	<line x1="100" y1="219" x2="116" y2="219"/>
+	<line x1="180" y1="219" x2="196" y2="219"/>
+	<line x1="260" y1="219" x2="276" y2="219"/>
+	<line x1="340" y1="219" x2="356" y2="219"/>
+	<line x1="420" y1="219" x2="436" y2="219"/>
+	<line x1="500" y1="219" x2="526" y2="219"/>
+	<line x1="575" y1="238" x2="575" y2="258"/>
+	<line x1="575" y1="258" x2="68" y2="258"/>
+	<line x1="68" y1="258" x2="68" y2="238"/>
+</g>
+<text x="300" y="278" class="m" text-anchor="middle">异步清零回到 0000</text>
+</svg>
