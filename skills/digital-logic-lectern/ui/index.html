@@ -489,6 +489,9 @@
 	.lab-bar .chips { flex: 1 1 300px; }
 	.lab-status { margin-left: auto; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 	.lab-inputs { margin-bottom: 14px; }
+	.lab-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+	.lab-head h2 { margin: 0; font-size: 18px; display: flex; align-items: center; gap: 6px; }
+	.lab-card > .chips { margin-bottom: 12px; }
 
 	.wave-wrap {
 		border: 1px solid var(--line); border-radius: 10px; background: var(--soft-bg);
@@ -521,7 +524,8 @@
 		color: var(--text); font: inherit; font-size: 15px; font-variant-numeric: tabular-nums;
 		display: grid; place-items: center; cursor: pointer;
 	}
-	.kmap-cell[data-one="0"] { color: var(--info-text); background: var(--soft-bg); cursor: default; }
+	.kmap-cell.zero { color: var(--info-text); background: var(--soft-bg); cursor: default; }
+	.kmap-cell.dc { color: var(--muted); background: var(--soft-bg); border-style: dashed; }
 	.kmap-cell.sel { border-color: var(--blue); background: var(--chip-active); color: var(--link); font-weight: 700; box-shadow: inset 0 0 0 2px var(--blue); }
 	.kmap-cell.covered { background: var(--ok-bg); border-color: var(--ok-border); color: var(--primary-ink); }
 	.kmap-cell .tag { position: absolute; top: 2px; right: 5px; font-size: 10px; color: var(--primary-ink); }
@@ -601,7 +605,7 @@
 	var footer = document.getElementById("footer");
 	var STORAGE_KEY = "dl-wrong-book-v1";
 	var FAV_KEY = "dl-favorites-v1";
-	var APP_VERSION = "0.9.0";
+	var APP_VERSION = "0.10.0";
 
 	var MODULES = {
 		M1: "数制与编码", M2: "逻辑代数", M3: "组合逻辑", M4: "时序逻辑",
@@ -723,7 +727,7 @@
 		search: "",
 		openSubs: {},
 		lab: "wave",
-		wave: { scene: "d", d: 1, j: 1, k: 0, clr: 0, cycles: [], auto: false },
+		wave: { scene: "d", d: 1, j: 1, k: 0, clr: 0, si: 1, dir: 0, x: 1, cycles: [], auto: false },
 		kmap: { level: 0, selected: [], groups: [], msg: "", bad: false },
 		circuit: { level: 0, nextId: 1, gates: [], wires: {}, pending: null }
 	};
@@ -1656,15 +1660,19 @@
 	/* ---------- 实验室 ---------- */
 
 	var WAVE_SCENES = [
-		{ id: "d", label: "D 触发器" },
-		{ id: "jk", label: "JK 触发器" },
-		{ id: "cnt", label: "4 位计数器" }
+		{ id: "d", label: "D 触发器", tip: "上升沿把 D 送入 Q。拨 D 后点「上升沿」看 Q 与 Q̄；CLR 置 1 时下一上升沿清零。" },
+		{ id: "jk", label: "JK 触发器", tip: "J=1、K=0 置 1，J=0、K=1 清 0，J=K=1 翻转，J=K=0 保持；都在上升沿生效。" },
+		{ id: "cnt", label: "4 位计数器", tip: "每个上升沿加 1 或减 1，计满 16 自动回绕；CLR 置 1 时下一上升沿清零。" },
+		{ id: "shift", label: "4 位移位寄存器", tip: "每个上升沿把 SI 移入一端：左移时新位进 Q0，右移时进 Q3，溢出位丢弃。" },
+		{ id: "seq", label: "1101 序列检测", tip: "状态按 0 → 1 → 11 → 110 推进，在 110 后再收到 1 时 Z 输出 1。末尾的 1 同时作为下一段的开头，可重叠检测。" }
 	];
 
 	var WAVE_INPUTS = {
-		d: [{ key: "d", label: "D" }],
-		jk: [{ key: "j", label: "J" }, { key: "k", label: "K" }],
-		cnt: [{ key: "clr", label: "CLR" }]
+		d: [{ key: "d", label: "D" }, { key: "clr", label: "CLR" }],
+		jk: [{ key: "j", label: "J" }, { key: "k", label: "K" }, { key: "clr", label: "CLR" }],
+		cnt: [{ key: "clr", label: "CLR" }, { key: "dir", label: "方向", text: ["加计数", "减计数"] }],
+		shift: [{ key: "si", label: "SI" }, { key: "dir", label: "方向", text: ["左移", "右移"] }, { key: "clr", label: "CLR" }],
+		seq: [{ key: "x", label: "X" }, { key: "clr", label: "CLR" }]
 	};
 
 	var KMAP_ORDER = [0, 1, 3, 2];
@@ -1677,7 +1685,11 @@
 		{ groups: [[[1, 1], [1, 2]], [[2, 1], [2, 2]], [[0, 0], [0, 3]]] },
 		{ groups: [[[0, 0], [0, 1], [0, 2], [0, 3]], [[3, 0], [3, 1]], [[2, 2], [2, 3]]] },
 		{ groups: [[[0, 0], [0, 1], [1, 0], [1, 1]], [[0, 2], [0, 3], [1, 2], [1, 3]], [[2, 0], [2, 1], [2, 2], [2, 3]]] },
-		{ groups: [[[0, 0], [1, 0], [2, 0], [3, 0]], [[0, 3], [1, 3], [2, 3], [3, 3]], [[1, 1], [1, 2]], [[2, 1], [2, 2]]] }
+		{ groups: [[[0, 0], [1, 0], [2, 0], [3, 0]], [[0, 3], [1, 3], [2, 3], [3, 3]], [[1, 1], [1, 2]], [[2, 1], [2, 2]]] },
+		{ groups: [[[0, 0], [0, 1]], [[1, 0]]], dc: [[1, 1]] },
+		{ groups: [[[0, 0], [1, 0]], [[3, 0]]], dc: [[2, 0]] },
+		{ groups: [[[0, 0], [0, 1]], [[1, 0], [1, 1]], [[2, 0]], [[3, 0], [3, 1]]], dc: [[2, 1]] },
+		{ groups: [[[0, 0], [0, 1]], [[1, 0]], [[3, 0], [3, 1], [3, 2], [3, 3]]], dc: [[1, 1]] }
 	];
 
 	function renderLab() {
@@ -1704,19 +1716,40 @@
 	/* ---------- 波形实验室 ---------- */
 
 	function waveCurrent(wave) {
-		if (wave.cycles.length === 0) return wave.scene === "cnt" ? { n: 0 } : { q: 0 };
+		if (wave.cycles.length === 0) {
+			if (wave.scene === "cnt" || wave.scene === "shift") return { n: 0 };
+			if (wave.scene === "seq") return { s: 0, z: 0 };
+			return { q: 0 };
+		}
 		return wave.cycles[wave.cycles.length - 1].after;
 	}
 
 	function waveAfter(wave, current) {
-		if (wave.scene === "d") return { q: wave.d };
+		if (wave.scene === "d") return { q: wave.clr ? 0 : wave.d };
 		if (wave.scene === "jk") {
+			if (wave.clr) return { q: 0 };
 			if (wave.j && wave.k) return { q: current.q ? 0 : 1 };
 			if (wave.j) return { q: 1 };
 			if (wave.k) return { q: 0 };
 			return { q: current.q };
 		}
-		return { n: wave.clr ? 0 : (current.n + 1) % 16 };
+		if (wave.scene === "cnt") {
+			if (wave.clr) return { n: 0 };
+			return { n: wave.dir ? (current.n + 15) % 16 : (current.n + 1) % 16 };
+		}
+		if (wave.scene === "shift") {
+			if (wave.clr) return { n: 0 };
+			var shifted = wave.dir
+				? ((current.n >> 1) | (wave.si << 3)) & 15
+				: ((current.n << 1) | wave.si) & 15;
+			return { n: shifted };
+		}
+		if (wave.clr) return { s: 0, z: 0 };
+		var state = current.s;
+		if (state === 0) return { s: wave.x ? 1 : 0, z: 0 };
+		if (state === 1) return { s: wave.x ? 2 : 0, z: 0 };
+		if (state === 2) return { s: wave.x ? 2 : 3, z: 0 };
+		return { s: wave.x ? 1 : 0, z: wave.x ? 1 : 0 };
 	}
 
 	function waveStep() {
@@ -1725,7 +1758,7 @@
 		wave.cycles.push({
 			before: current,
 			after: waveAfter(wave, current),
-			inputs: { d: wave.d, j: wave.j, k: wave.k, clr: wave.clr }
+			inputs: { d: wave.d, j: wave.j, k: wave.k, clr: wave.clr, si: wave.si, dir: wave.dir, x: wave.x }
 		});
 		if (wave.cycles.length > 24) wave.cycles.splice(0, wave.cycles.length - 24);
 	}
@@ -1761,13 +1794,40 @@
 				{ label: "Q", kind: "out", value: function (cycle, high) { return high ? cycle.after.q : cycle.before.q; } }
 			];
 		}
+		if (wave.scene === "cnt") {
+			return [
+				{ label: "CLR", kind: "in", value: function (cycle) { return cycle.inputs.clr; } },
+				{ label: "CLK", kind: "clk", value: function (cycle, high) { return high; } },
+				{ label: "Q3", kind: "out", value: bit(3) },
+				{ label: "Q2", kind: "out", value: bit(2) },
+				{ label: "Q1", kind: "out", value: bit(1) },
+				{ label: "Q0", kind: "out", value: bit(0) }
+			];
+		}
+		if (wave.scene === "shift") {
+			return [
+				{ label: "SI", kind: "in", value: function (cycle) { return cycle.inputs.si; } },
+				{ label: "DIR", kind: "in", value: function (cycle) { return cycle.inputs.dir; } },
+				{ label: "CLR", kind: "in", value: function (cycle) { return cycle.inputs.clr; } },
+				{ label: "CLK", kind: "clk", value: function (cycle, high) { return high; } },
+				{ label: "Q3", kind: "out", value: bit(3) },
+				{ label: "Q2", kind: "out", value: bit(2) },
+				{ label: "Q1", kind: "out", value: bit(1) },
+				{ label: "Q0", kind: "out", value: bit(0) }
+			];
+		}
+		var stateBit = function (shift) {
+			return function (cycle, high) {
+				var state = high ? cycle.after.s : cycle.before.s;
+				return (state >> shift) & 1;
+			};
+		};
 		return [
-			{ label: "CLR", kind: "in", value: function (cycle) { return cycle.inputs.clr; } },
+			{ label: "X", kind: "in", value: function (cycle) { return cycle.inputs.x; } },
 			{ label: "CLK", kind: "clk", value: function (cycle, high) { return high; } },
-			{ label: "Q3", kind: "out", value: bit(3) },
-			{ label: "Q2", kind: "out", value: bit(2) },
-			{ label: "Q1", kind: "out", value: bit(1) },
-			{ label: "Q0", kind: "out", value: bit(0) }
+			{ label: "S1", kind: "out", value: stateBit(1) },
+			{ label: "S0", kind: "out", value: stateBit(0) },
+			{ label: "Z", kind: "out", value: function (cycle, high) { return high ? cycle.after.z : 0; } }
 		];
 	}
 
@@ -1816,10 +1876,16 @@
 
 	function waveStatus(wave) {
 		var current = waveCurrent(wave);
-		if (wave.scene === "cnt") {
+		if (wave.scene === "cnt" || wave.scene === "shift") {
 			var bits = "";
 			for (var i = 3; i >= 0; i--) bits += String((current.n >> i) & 1);
-			return "Q3Q2Q1Q0 = " + bits + " · 十进制 " + current.n;
+			var name = wave.scene === "cnt" ? "十进制 " : "十六进制 ";
+			var shown = wave.scene === "cnt" ? current.n : current.n.toString(16).toUpperCase();
+			return "Q3Q2Q1Q0 = " + bits + " · " + name + shown;
+		}
+		if (wave.scene === "seq") {
+			var names = ["初态", "收到 1", "收到 11", "收到 110"];
+			return "状态 " + names[current.s] + " · Z = " + current.z;
 		}
 		return "Q = " + current.q + " · Q̄ = " + (current.q ? 0 : 1);
 	}
@@ -1828,18 +1894,21 @@
 		var body = document.getElementById("labBody");
 		if (body === null) return;
 		var wave = state.wave;
-		var sceneChips = WAVE_SCENES.map(function (scene) {
-			return '<button type="button" class="chip' + (scene.id === wave.scene ? " active" : "") + '" data-wave-scene="' + scene.id + '">' + scene.label + '</button>';
+		var scene = WAVE_SCENES.filter(function (item) { return item.id === wave.scene; })[0];
+		var sceneChips = WAVE_SCENES.map(function (item) {
+			return '<button type="button" class="chip' + (item.id === wave.scene ? " active" : "") + '" data-wave-scene="' + item.id + '">' + item.label + '</button>';
 		}).join("");
 		var inputChips = WAVE_INPUTS[wave.scene].map(function (item) {
 			var value = wave[item.key];
-			return '<button type="button" class="chip' + (value ? " active" : "") + '" data-wave-input="' + item.key
-				+ '" aria-pressed="' + (value ? "true" : "false") + '">' + item.label + " = " + value + '</button>';
+			var text = item.text ? item.text[value] : item.label + " = " + value;
+			return '<button type="button" class="chip' + (item.text ? "" : (value ? " active" : "")) + '" data-wave-input="' + item.key
+				+ '" aria-pressed="' + (value ? "true" : "false") + '">' + text + '</button>';
 		}).join("");
 
 		body.innerHTML = '<section class="panel lab-card">'
-			+ '<div class="lab-bar"><div class="chips">' + sceneChips + '</div>'
+			+ '<div class="lab-head"><h2>波形实验室' + info(scene.tip) + '</h2>'
 			+ '<span class="lab-status">' + waveStatus(wave) + '</span></div>'
+			+ '<div class="chips">' + sceneChips + '</div>'
 			+ '<div class="chips lab-inputs">' + inputChips + '</div>'
 			+ '<div class="lab-bar">'
 			+ '<button type="button" class="btn primary" id="waveStep">上升沿</button>'
@@ -1907,6 +1976,14 @@
 		return mask;
 	}
 
+	function kmapDc(level) {
+		var mask = 0;
+		(level.dc || []).forEach(function (cell) {
+			mask |= 1 << kmapMinterm(cell[0], cell[1]);
+		});
+		return mask;
+	}
+
 	function kmapRuns() {
 		var runs = [];
 		[1, 2, 4].forEach(function (length) {
@@ -1930,8 +2007,9 @@
 		return breaks === 1;
 	}
 
-	function kmapMinimum(ones) {
+	function kmapMinimum(ones, dc) {
 		if (ones === 0) return 0;
+		var pool = ones | (dc || 0);
 		var runs = kmapRuns();
 		var candidates = [];
 		runs.forEach(function (rows) {
@@ -1940,10 +2018,11 @@
 				rows.forEach(function (row) {
 					cols.forEach(function (col) { mask |= 1 << kmapMinterm(row, col); });
 				});
-				if ((mask & ones) === mask) candidates.push(mask);
+				if ((mask & pool) === mask) candidates.push(mask);
 			});
 		});
 		var memo = {};
+		var fill = ones | (dc || 0);
 		function solve(mask) {
 			if (mask === 0) return 0;
 			if (memo[mask] !== undefined) return memo[mask];
@@ -1951,8 +2030,8 @@
 			var best = 99;
 			candidates.forEach(function (group) {
 				if ((group & first) === 0) return;
-				if ((group & mask) !== group) return;
-				var rest = solve(mask ^ group) + 1;
+				if ((group & fill) !== group) return;
+				var rest = solve(mask & ~group) + 1;
 				if (rest < best) best = rest;
 			});
 			memo[mask] = best;
@@ -1961,17 +2040,18 @@
 		return solve(ones);
 	}
 
-	function kmapCheck(kmapState, ones) {
+	function kmapCheck(kmapState, ones, dc) {
 		var cells = kmapState.selected;
 		if (cells.length === 0) return "先点选格子";
 		if ([1, 2, 4, 8, 16].indexOf(cells.length) === -1) return "每组只能是 1、2、4、8、16 格";
+		var pool = ones | (dc || 0);
 		var rows = [];
 		var cols = [];
 		for (var i = 0; i < cells.length; i++) {
 			var pair = cells[i].split(",");
 			var row = Number(pair[0]);
 			var col = Number(pair[1]);
-			if ((ones & (1 << kmapMinterm(row, col))) === 0) return "0 不能圈进来";
+			if ((pool & (1 << kmapMinterm(row, col))) === 0) return "0 不能圈进来";
 			if (rows.indexOf(row) === -1) rows.push(row);
 			if (cols.indexOf(col) === -1) cols.push(col);
 		}
@@ -1990,6 +2070,7 @@
 		var kmapState = state.kmap;
 		var level = KMAP_LEVELS[kmapState.level];
 		var ones = kmapOnes(level);
+		var dc = kmapDc(level);
 		var covered = 0;
 		kmapState.groups.forEach(function (group) {
 			group.forEach(function (cell) {
@@ -2021,18 +2102,19 @@
 				var key = row + "," + col;
 				var minterm = kmapMinterm(row, col);
 				var one = (ones >> minterm) & 1;
+				var loose = (dc >> minterm) & 1;
 				var coveredOne = (covered >> minterm) & 1;
-				var classes = "kmap-cell";
+				var classes = "kmap-cell" + (one ? "" : loose ? " dc" : " zero");
 				if (kmapState.selected.indexOf(key) !== -1) classes += " sel";
 				if (coveredOne) classes += " covered";
-				cells += '<button type="button" class="' + classes + '" data-kmap-cell="' + key + '" data-one="' + one + '">'
-					+ (one ? "1" : "0") + (tagOf[key] ? '<span class="tag">' + tagOf[key] + '</span>' : "") + '</button>';
+				cells += '<button type="button" class="' + classes + '" data-kmap-cell="' + key + '">'
+					+ (one ? "1" : loose ? "×" : "0") + (tagOf[key] ? '<span class="tag">' + tagOf[key] + '</span>' : "") + '</button>';
 			}
 		}
 
 		var foot = "";
 		if (done) {
-			var minimum = kmapMinimum(ones);
+			var minimum = kmapMinimum(ones, dc);
 			var stars = kmapState.groups.length <= minimum ? 3 : (kmapState.groups.length <= minimum + 1 ? 2 : 1);
 			var starHtml = "";
 			for (var s = 0; s < 3; s++) {
@@ -2044,7 +2126,7 @@
 		}
 
 		body.innerHTML = '<section class="panel lab-card">'
-			+ '<div class="kmap-head"><h2>卡诺图消消乐' + info("行与列的首尾相接：上下相邻、左右相邻、跨过边界的 1 都能圈成一组。每组只能是长方形，格数为 1、2、4、8、16。") + '</h2>'
+			+ '<div class="kmap-head"><h2>卡诺图消消乐' + info("行与列的首尾相接：上下相邻、左右相邻、跨过边界的 1 都能圈成一组。每组只能是长方形，格数为 1、2、4、8、16。× 是无关项，可圈可不圈，圈进来能让组更大。") + '</h2>'
 			+ '<span class="kmap-level">第 ' + (kmapState.level + 1) + ' / ' + KMAP_LEVELS.length + ' 关 · 还剩 ' + left + ' 格</span></div>'
 			+ '<div class="kmap-grid">' + head + cells + '</div>'
 			+ '<div class="kmap-actions">'
@@ -2056,7 +2138,7 @@
 
 		body.querySelectorAll("[data-kmap-cell]").forEach(function (button) {
 			button.addEventListener("click", function () {
-				if (button.getAttribute("data-one") === "0") return;
+				if (button.classList.contains("zero")) return;
 				if (button.classList.contains("covered")) return;
 				var key = button.getAttribute("data-kmap-cell");
 				var at = kmapState.selected.indexOf(key);
@@ -2068,7 +2150,7 @@
 			});
 		});
 		document.getElementById("kmapCommit").addEventListener("click", function () {
-			var error = kmapCheck(kmapState, ones);
+			var error = kmapCheck(kmapState, ones, dc);
 			if (error !== "") {
 				kmapState.msg = error;
 				kmapState.bad = true;
@@ -2118,7 +2200,11 @@
 		{ target: "Y = ¬(A·B)", want: [1, 1, 1, 0], min: 1 },
 		{ target: "Y = A⊕B", want: [0, 1, 1, 0], min: 1 },
 		{ target: "Y = A⊙B", want: [1, 0, 0, 1], min: 1 },
-		{ target: "Y = A⊕B，只用与非门", want: [0, 1, 1, 0], min: 4, allow: ["nand"] }
+		{ target: "Y = A⊕B，只用与非门", want: [0, 1, 1, 0], min: 4, allow: ["nand"] },
+		{ target: "Y = A·B + C", vars: 3, want: [0, 1, 0, 1, 0, 1, 1, 1], min: 2 },
+		{ target: "Y = A·B + A·C + B·C", vars: 3, want: [0, 0, 0, 1, 0, 1, 1, 1], min: 4 },
+		{ target: "Y = A⊕B⊕C", vars: 3, want: [0, 1, 1, 0, 1, 0, 0, 1], min: 2 },
+		{ target: "Y = A·B，只用或非门", want: [0, 0, 0, 1], min: 3, allow: ["nor"] }
 	];
 
 	function gatePosition(index) {
@@ -2127,7 +2213,7 @@
 
 	function circuitPin(attr, value, cx, cy, extra) {
 		var label = attr === "src"
-			? (value === "A" || value === "B" ? value + " 输出" : "门 " + value.slice(1) + " 输出")
+			? (value.length === 1 ? value + " 输出" : "门 " + value.slice(1) + " 输出")
 			: (value === "Y" ? "输出 Y" : "门 " + value.split(":")[0] + " 输入 " + (Number(value.split(":")[1]) + 1));
 		return '<g data-' + attr + '="' + value + '" role="button" aria-label="' + label + '">'
 			+ '<circle cx="' + cx + '" cy="' + cy + '" r="11" fill="transparent"/>'
@@ -2142,16 +2228,17 @@
 		return null;
 	}
 
-	function circuitEval(lab, source, a, b, seen) {
+	function circuitEval(lab, source, a, b, c, seen) {
 		if (source === undefined || source === null) return null;
 		if (source === "A") return a;
 		if (source === "B") return b;
+		if (source === "C") return c;
 		if (seen[source]) return null;
 		seen[source] = true;
 		var gate = circuitFindGate(lab, Number(source.slice(1)));
 		if (gate === null) return null;
-		var x = circuitEval(lab, lab.wires[gate.id + ":0"], a, b, seen);
-		var y = gate.type === "not" ? 0 : circuitEval(lab, lab.wires[gate.id + ":1"], a, b, seen);
+		var x = circuitEval(lab, lab.wires[gate.id + ":0"], a, b, c, seen);
+		var y = gate.type === "not" ? 0 : circuitEval(lab, lab.wires[gate.id + ":1"], a, b, c, seen);
 		seen[source] = false;
 		if (x === null || y === null) return null;
 		if (gate.type === "and") return x && y ? 1 : 0;
@@ -2164,20 +2251,24 @@
 
 	function circuitRows(lab) {
 		if (lab.wires["Y"] === undefined) return null;
+		var level = GATE_LEVELS[lab.level];
+		var vars = level.vars === 3 ? 3 : 2;
 		var rows = [];
-		for (var a = 0; a < 2; a++) {
-			for (var b = 0; b < 2; b++) {
-				var value = circuitEval(lab, lab.wires["Y"], a, b, {});
-				if (value === null) return null;
-				rows.push(value);
-			}
+		for (var i = 0; i < (1 << vars); i++) {
+			var a = (i >> (vars - 1)) & 1;
+			var b = (i >> (vars - 2)) & 1;
+			var c = vars === 3 ? i & 1 : 0;
+			var value = circuitEval(lab, lab.wires["Y"], a, b, c, {});
+			if (value === null) return null;
+			rows.push(value);
 		}
 		return rows;
 	}
 
 	function circuitSourcePoint(lab, source, position) {
 		if (source === "A") return { x: 70, y: 64 };
-		if (source === "B") return { x: 70, y: 196 };
+		if (source === "B") return { x: 70, y: 184 };
+		if (source === "C") return { x: 70, y: 304 };
 		var pos = position[Number(source.slice(1))];
 		return pos ? { x: pos.x + 86, y: pos.y + 31 } : null;
 	}
@@ -2196,6 +2287,7 @@
 		var lab = state.circuit;
 		var level = GATE_LEVELS[lab.level];
 		var allowed = level.allow || ["and", "or", "not", "nand", "nor", "xor"];
+		var sources = level.vars === 3 ? ["A", "B", "C"] : ["A", "B"];
 		var position = {};
 		lab.gates.forEach(function (gate, index) {
 			var pos = gatePosition(index);
@@ -2215,12 +2307,12 @@
 				+ ", " + to.x + " " + to.y + '"/>');
 		});
 
-		parts.push('<circle class="circuit-src" cx="52" cy="64" r="17"/>');
-		parts.push('<text x="52" y="69" text-anchor="middle" class="circuit-label">A</text>');
-		parts.push('<circle class="circuit-src" cx="52" cy="196" r="17"/>');
-		parts.push('<text x="52" y="201" text-anchor="middle" class="circuit-label">B</text>');
-		parts.push(circuitPin("src", "A", 70, 64, lab.pending === "A" ? "pending" : ""));
-		parts.push(circuitPin("src", "B", 70, 196, lab.pending === "B" ? "pending" : ""));
+		sources.forEach(function (name) {
+			var point = circuitSourcePoint(lab, name, position);
+			parts.push('<circle class="circuit-src" cx="' + (point.x - 18) + '" cy="' + point.y + '" r="17"/>');
+			parts.push('<text x="' + (point.x - 18) + '" y="' + (point.y + 5) + '" text-anchor="middle" class="circuit-label">' + name + '</text>');
+			parts.push(circuitPin("src", name, point.x, point.y, lab.pending === name ? "pending" : ""));
+		});
 
 		lab.gates.forEach(function (gate) {
 			var pos = position[gate.id];
@@ -2243,7 +2335,7 @@
 		parts.push(circuitPin("in", "Y", 592, 130, lab.wires["Y"] !== undefined ? "live" : ""));
 
 		var chips = allowed.map(function (type) {
-			var full = lab.gates.length >= 5;
+			var full = lab.gates.length >= 6;
 			return '<button type="button" class="chip"' + (full ? " disabled" : "") + ' data-gate-add="' + type + '">'
 				+ GATE_META[type].label + '</button>';
 		}).join("");
@@ -2260,12 +2352,12 @@
 			+ '<div class="lab-bar"><div class="chips">' + chips + '</div>'
 			+ '<span class="lab-status">第 ' + (lab.level + 1) + ' / ' + GATE_LEVELS.length + ' 关 · ' + esc(level.target) + '</span></div>'
 			+ '<div class="circuit-wrap">'
-			+ '<svg viewBox="0 0 700 300" role="img" aria-label="门电路拼装">' + parts.join("") + '</svg>'
+			+ '<svg viewBox="0 0 700 340" role="img" aria-label="门电路拼装">' + parts.join("") + '</svg>'
 			+ '</div>'
 			+ '<div class="kmap-actions">'
 			+ '<button type="button" class="btn" id="circuitClear">清空</button>'
 			+ '<button type="button" class="btn" id="circuitNext">' + icon("refresh") + (done ? "下一关" : "换一题") + '</button>'
-			+ info("先点输出端（A、B 或门输出），再点要接的输入端；点已连线的输入端可断开。点门右上角的 × 删除该门。")
+			+ info("先点输出端（A、B、C 或门输出），再点要接的输入端；点已连线的输入端可断开。点门右上角的 × 删除该门，最多放 6 个门。")
 			+ '</div>'
 			+ '<div class="kmap-foot">' + foot + '</div>'
 			+ '</section>';
@@ -2310,7 +2402,7 @@
 		});
 		body.querySelectorAll("[data-gate-add]").forEach(function (chip) {
 			chip.addEventListener("click", function () {
-				if (lab.gates.length >= 5) return;
+				if (lab.gates.length >= 6) return;
 				lab.gates.push({ id: lab.nextId, type: chip.getAttribute("data-gate-add") });
 				lab.nextId += 1;
 				renderCircuit();
